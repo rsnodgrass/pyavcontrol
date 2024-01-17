@@ -4,8 +4,10 @@ classes together for the common use case. More advanced clients that require
 more advanced functionality can wire together the client, connection, model,
 and/or library directly.
 """
+import logging
 from pyavcontrol import DeviceClient, DeviceModelLibrary
 
+LOG = logging.getLogger(__name__)
 
 async def construct_async_client(
     model_id: str, url: str, event_loop, connection_config: dict = None
