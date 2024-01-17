@@ -4,7 +4,8 @@ Tests DeviceModel validation
 
 import pytest
 import logging
-import asyncio
+
+from pyavcontrol.library.model import DeviceModel
 
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.INFO)

@@ -54,3 +54,8 @@ expected-line-ending-format = "LF"
 
 [tool.pylint.CODE_STYLE]
 max-line-length-suggestions = 90
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
