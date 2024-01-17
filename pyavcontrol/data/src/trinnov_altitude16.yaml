@@ -1,0 +1,11 @@
+---
+id: trinnov_altitude16
+
+import_models:
+  - trinnov_altitude32
+
+manufacturer:
+  name: Trinnov
+  model: Altitude16
+
+tested: false

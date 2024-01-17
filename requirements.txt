@@ -1,0 +1,7 @@
+coloredlogs>=15.0.1
+pydantic>=2.5.3
+pyserial>=3.5
+pyserial-asyncio>=0.6
+ratelimit>=2.2.1
+syncer>=2.0.3
+yaml

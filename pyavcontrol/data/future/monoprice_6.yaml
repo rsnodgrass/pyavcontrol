@@ -1,0 +1,106 @@
+---
+id: monoprice_6
+description: Monoprice API
+urls:
+  - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
+
+manufacturer:
+  name: Monoprice
+  model: '6-Zone (model 10761)'
+
+tested: false
+
+connection:
+  rs232:
+    baudrate: 9600
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 2.0
+
+format:
+  command:
+    format: <{cmd}{eol}
+    eol: "\r"    # CR Carriage Return
+    separator: '#'
+
+  message:
+    format: '>{msg}{eol}'
+    eol: "\r"
+
+api:
+  zone:
+    actions:
+      status:
+        cmd:
+          fstring: '?{zone}'
+          regex: '\?(?P<zone>[1-3][1-6])'
+        msg:
+          regex: '#>(?P<zone>\d{2})(?P<pa>\d{2})(?P<power>[01]{2})(?P<mute>[01]{2})(?P<do_not_disturb>[01]{2})(?P<volume>\d{2})(?P<treble>\d{2})(?P<bass>\d{2})(?P<balance>\d{2})(?P<source>\d{2})(?P<keypad>\d{2})'
+          tests:
+            '#>1100010000130707100600':
+              zone: 11
+              pa: 0
+              power: 1
+              mute: 0
+              do_not_disturb: 0
+              volume: 13
+              treble: 7
+              bass: 7
+              balance: 10
+              source: 6
+              keypad: 0
+
+      all_status:
+        description: Special status request that returns statue for all zones for a specific hardware unit
+        cmd:
+          fstring: '?{zone_group}0'
+          regex: '\?(?P<zone_group[1-3]0)'
+          tests:
+            '?10':
+              zone_group: 1
+            '?20':
+              zone_group: 2
+            '?30':
+              zone_group: 3
+        msg:
+          # FIXME: this regexp repeats 6+ times!
+          regex: '#>(?P<zone>\d{2})(?P<pa>\d{2})(?P<power>[01]{2})(?P<mute>[01]{2})(?P<do_not_disturb>[01]{2})(?P<volume>\d{2})(?P<treble>\d{2})(?P<bass>\d{2})(?P<balance>\d{2})(?P<source>\d{2})(?P<keypad>\d{2})'
+
+
+  power:
+    actions:
+      set:
+        cmd:
+          fstring: '<{zone}PR0{power}'
+          regex: '\?(?P<zone>\d+)PR0(?P<power>[01])'
+          tests:
+            '?1PR01':
+              power: 1
+      'on':
+        cmd:
+          fstring: <{zone}PR01
+      'off':
+        cmd:
+          fstring: <{zone}PR00
+
+  mute:
+    description: Mute
+    actions:
+      'on':
+        description: Mute on
+        cmd:
+          fstring: <{zone}MU01
+      'off':
+        description: Mute off
+        cmd:
+          fstring: <{zone}MU00
+
+  volume:
+    description: Volume controls
+    actions:
+      set:
+        description: Set volume
+        cmd:
+          fstring: '<{zone}VO{volume:02}'
+          regex: '<(?P<zone>\d+)VO(?P<volume>\d+)'

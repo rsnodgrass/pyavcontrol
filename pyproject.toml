@@ -1,0 +1,56 @@
+#[project]
+[tool.poetry]
+name = "pyavcontrol"
+version = "0.0.1"
+description = "Python Control of RS232/IP Audio/Visual Equipment"
+readme = "README.md"
+license = "LICENSE"
+authors = [ "Ryan Snodgrass <rsnodgrass@gmail.com>" ]
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pyserial = "^3.5"
+pyserial-asyncio = "^0.6"
+ratelimit = "^2.2.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project.optional-dependencies]
+test = [    # pip install .[test]
+    "coloredlogs",
+    "pre-commit"
+]
+doc = [
+    "sphinx",
+]
+
+[tool.isort]
+profile = "black"
+force_to_top = [ "logging" ]
+balanced_wrapping = true
+
+[tool.black]
+line-length = 88
+
+#[tool.brunette]
+#line-length = 88
+#single-quotes = true
+
+[tool.pycln]
+all = true
+
+[tool.refurb]
+quiet = true
+ignore = [ "FURB184" ]
+
+[tool.pylint.format]
+max-line-length = "88"
+
+[tool.pylint.FORMAT]
+expected-line-ending-format = "LF"
+
+[tool.pylint.CODE_STYLE]
+max-line-length-suggestions = 90

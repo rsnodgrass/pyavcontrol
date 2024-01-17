@@ -1,0 +1,54 @@
+---
+id: mcintosh_mx180
+name: McIntosh MX180 Protocol
+
+import_models:
+  - mx170
+
+ref: Based on MX180 Serial Control Manual V1 (2022-03-29)
+delete:
+  buttons:
+    - source
+        # MX180 only has HDMIOUT 1-2
+  hdmi:
+    - out3
+    - out4
+    - out5
+        # MX180 has no MULTIVIEW
+  mview:
+    - set
+    - active
+    - src
+
+vars:
+  input:
+    type: int
+    min: 0
+    max: 25
+    values:
+      0: HDMI 1
+      1: HDMI 2
+      2: HDMI 3
+      3: HDMI 4
+      4: HDMI 5
+      5: HDMI 6
+      6: HDMI 7
+      7: HDMI 8
+      8: Audio Return
+      9: SPDIF 1 (Optical)
+      10: SPDIF 2 (Optical)
+      11: SPDIF 3 (Optical)
+      12: SPDIF 4 (Optical)
+      13: SPDIF 5 (AES/EBU)
+      14: SPDIF 6 (Coaxial)
+      15: SPDIF 7 (Coaxial)
+      16: SPDIF 8 (Coaxial)
+      17: USB Audio
+      18: Analog 1
+      19: Analog 2
+      20: Analog 3
+      21: Analog 4
+      22: Balanced 1
+      23: Balanced 2
+      24: Phono
+      25: 8 Channel Analog

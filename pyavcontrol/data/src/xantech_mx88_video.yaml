@@ -1,0 +1,17 @@
+---
+id: xantech_mx88_video
+description: Xantech audio and video matrix MX88, MRC88, MRC88m, CM8X8, CM8X8DR
+urls:
+  - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
+
+manufacturer:
+  name: Xantech
+  models:
+    - MX88
+    - MRC88
+    - MRC88m
+    - CM8X8
+    - CM8X8DR
+
+import_models:
+  - xantech_mx88

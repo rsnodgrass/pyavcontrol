@@ -1,0 +1,317 @@
+---
+id: xantech_mx88_audio
+description: Xantech matrix audio only MRAUDIO8x8, MRAUDIO8x8m, MX88a, MX88ai
+urls:
+  - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
+
+manufacturer:
+  name: Xantech
+  models:
+    - MRAUDIO8X8
+    - MRAUDIO8X8m
+    - MX88a
+    - MX88ai
+
+tested: false
+
+connection:
+  rs232:
+    baudrate: 9600
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 1.0
+
+format:
+  command:
+    eol: "\r"    # CR Carriage Return
+    separator: '+'
+
+  message:
+    eol: "\r"
+    separator: '+'
+
+api:
+  zone:
+    actions:
+      status:
+        cmd:
+          fstring: '?{zone}ZD'
+          regex: '\?(?P<zone>[1-3][1-8])ZD'
+          tests:
+            '?11ZD':
+              zone: 11
+        msg:
+          regex: '#(?P<zone>\d+)ZS PR(?P<power>[01]) SS(?P<source>[1-8]) VO(?P<volume>\d+) MU(?P<mute>[01]) TR(?P<treble>\d+) BS(?P<bass>\d+) BA(?P<balance>\d+) LS(?P<linked>[01]) PS(?P<paged>[01])\+'
+          tests:
+            '#1ZS PR1 SS1 VO0 MU1 TR7 BS7 BA32 LS0 PS0+':
+              zone: 1
+              power: 1
+              source: 1
+              volume: 0
+              mute: 1
+              treble: 7
+              bass: 7
+              balance: 32
+              linked: 0
+              paged: 0
+
+      all_status:
+        description: Special status request that returns statue for all zones for a specific hardware unit
+        cmd:
+          fstring: '?{zone_group}0'
+          regex: '\?(?P<zone_group>[1-3])0'
+          tests:
+            '?10':
+              zone_group: 1
+            '?20':
+              zone_group: 2
+            '?30':
+              zone_group: 3
+        msg:
+          # FIXME: this regexp repeats 6+ times!
+          regex: '#>(?P<zone>\d{2})(?P<pa>\d{2})(?P<power>[01]{2})(?P<mute>[01]{2})(?P<do_not_disturb>[01]{2})(?P<volume>\d{2})(?P<treble>\d{2})(?P<bass>\d{2})(?P<balance>\d{2})(?P<source>\d{2})(?P<keypad>\d{2})'
+
+
+  power:
+    actions:
+      get:
+        cmd:
+          fstring: '?{zone}PR'
+          regex: '\?(?P<zone>\d+)PR'
+        msg:
+          regex: '\?(?P<zone>\d+)PR(?P<power>[01])\+'
+      set:
+        cmd:
+          fstring: '!{zone}PR{power}'
+          regex: '!(?P<zone>\d+)PR(?P<power>[01])'
+          tests:
+            '!1PR1':
+              power: 1
+      'on':
+        cmd:
+          fstring: '!{zone}PR1'
+      'off':
+        cmd:
+          fstring: '!{zone}PR0'
+      toggle:
+        cmd:
+          fstring: '!{zone}PT'
+          regex: '!(?P<zone>\d+)PT'
+      all_zones_off:
+        cmd:
+          fstring: '!AO'
+
+  mute:
+    description: Mute
+    actions:
+      get:
+        description: Get mute status
+        cmd:
+          fstring: '?{zone}MU'
+          regex: '\?(?P<zone>\d+)MU'
+        msg:
+          regex: '\?(?P<zone>\d+)MU(?P<mute>[01])\+'
+          tests:
+            '?11MU0':
+              zone: 11
+              mute: 0
+            '?18MU1':
+              zone: 18
+              mute: 1
+      'on':
+        description: Mute on
+        cmd:
+          fstring: '!{zone}MU1'
+          regex: '!(?P<zone>\d+)MU1'
+      'off':
+        description: Mute off
+        cmd:
+          fstring: '!{zone}MU0'
+          regex: '!(?P<zone>\d+)MU0'
+      toggle:
+        description: Toggle mute
+        cmd:
+          fstring: '!{zone}MT'
+          regex: '!(?P<zone>\d+)MT'
+      set:
+        description: Set mute (0=off; 1=on)
+        cmd:
+          fstring: '!{zone}MU{mute}'
+          regex: '!(?P<zone>\d+)MU(?P<mute>[01])'
+
+  volume:
+    description: Volume controls
+    actions:
+      set:
+        description: Set volume
+        cmd:
+          fstring: '!{zone}VO{volume:02}'
+          regex: '!(?P<zone>\d+)VO(?P<volume>\d+)'
+      up:
+        description: Volume up
+        cmd:
+          fstring: '!{zone}VI'
+          regex: '!(?P<zone>\d+)VI'
+      down:
+        description: Volume down
+        cmd:
+          fstring: '!{zone}VD'
+          regex: '!(?P<zone>\d+)VD'
+      get:
+        description: Volume status
+        cmd:
+          fstring: '?{zone}VO'
+          regex: '\?(?P<zone>\d+)VO'
+        msg:
+          regex: '\?(?P<zone>\d+)VO(?P<volume>\d+)'
+          tests:
+            '?11VO12':
+              zone: 11
+              volume: 12
+
+  source:
+    description: Source select
+    actions:
+      get:
+        description: Get current source
+        cmd:
+          fstring: '?{zone}SS'
+          regex: '\?(?P<zone>\d+)SS'
+        msg:
+          regex: '\?(?P<zone>\d+)SS(?P<source>[1-8])'
+          tests:
+            '?12SS2':
+              zone: 12
+              source: 2
+      set:
+        description: Set source
+        cmd:
+          fstring: '!{zone}SS{source:02}'
+          regex: '!(?P<zone>\d+)VO(?P<source>\d+)'
+
+  balance:
+    description: Zone balance control
+    actions:
+      get:
+        description: Get current balance
+        cmd:
+          fstring: '?{zone}BA'
+          regex: '\?(?P<zone>\d+)BA'
+        msg:
+          regex: '\?(?P<zone>\d+)BA(?P<balance>\d{2})'
+          tests:
+            '?12BA33':
+              zone: 12
+              balance: 33
+      set:
+        description: Set balance
+        cmd:
+          fstring: '!{zone}BA{balance:02}'
+          regex: '!(?P<zone>\d+)BA(?P<balance>\d{2})'
+          tests:
+            '!11BA02':
+              zone: 11
+              balance: 2
+      left:
+        description: Balance left
+        cmd:
+          fstring: '!{zone}BL'
+          regex: '!(?P<zone>\d+)BL'
+      right:
+        description: Balance right
+        cmd:
+          fstring: '!{zone}BR'
+          regex: '!(?P<zone>\d+)BR'
+
+  bass:
+    description: Zone bass control
+    actions:
+      get:
+        description: Get current bass
+        cmd:
+          fstring: '?{zone}BS'
+          regex: '\?(?P<zone>\d+)BS'
+        msg:
+          regex: '\?(?P<zone>\d+)BS(?P<bass>\d{2})'
+          tests:
+            '?12BS02':
+              zone: 12
+              bass: 2
+      set:
+        description: Set bass
+        cmd:
+          fstring: '!{zone}BS{bass:02}'
+          regex: '!(?P<zone>\d+)BS(?P<bass>\d{2})'
+          tests:
+            '!11BS02':
+              zone: 11
+              bass: 2
+      up:
+        description: Bass up
+        cmd:
+          fstring: '!{zone}BI'
+          regex: '!(?P<zone>\d+)BI'
+      down:
+        description: Bass down
+        cmd:
+          fstring: '!{zone}BD'
+          regex: '!(?P<zone>\d+)BD'
+
+  treble:
+    description: Zone treble control
+    actions:
+      get:
+        description: Get current treble
+        cmd:
+          fstring: '?{zone}TR'
+          regex: '\?(?P<zone>\d+)TR'
+        msg:
+          regex: '\?(?P<zone>\d+)TR(?P<treble>\d{2})'
+          tests:
+            '?12TR02':
+              zone: 12
+              bass: 2
+      set:
+        description: Set treble
+        cmd:
+          fstring: '!{zone}TR{treble:02}'
+          regex: '!(?P<zone>\d+)TR(?P<treble>\d{2})'
+          tests:
+            '!11TR02':
+              zone: 11
+              bass: 2
+      up:
+        description: Treble up
+        cmd:
+          fstring: '!{zone}TI'
+          regex: '!(?P<zone>\d+)TI'
+      down:
+        description: Treble down
+        cmd:
+          fstring: '!{zone}TD'
+          regex: '!(?P<zone>\d+)TD'
+
+  activity_updates:
+    description: Activity update stream
+    actions:
+      'on':
+        description: Enable activity update stream
+        cmd:
+          fstring: '!ZP1'
+      'off':
+        description: Disable activity update stream
+        cmd:
+          fstring: '!ZP0'
+
+  status_updates:
+    description: Status update stream
+    actions:
+      'on':
+        description: Enable status update stream
+        cmd:
+          fstring: '!ZP1'
+      'off':
+        description: Disable status update stream
+        cmd:
+          fstring: '!ZP0'
