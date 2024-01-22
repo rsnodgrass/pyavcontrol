@@ -13,17 +13,8 @@ class DeviceClientSync(DeviceClient):
     """Synchronous client for communicating with devices via the provided connection"""
 
     def __init__(self, model: DeviceModel, connection: DeviceConnection):
-        DeviceClient.__init__(self, model, connection)
-        self._protocol_defs = None
-
-        # FIXME:
-        # self._connection = serial.serial_for_url(url, **serial_config)
-        self._connection = connection
-
+        super().__init__(model, connection)
         self._callback = None
-        self._encoding = (
-            model.encoding
-        )  # serial_config.get('encoding', DEFAULT_ENCODING)
 
     @synchronized
     def send_raw(self, data: bytes) -> None:

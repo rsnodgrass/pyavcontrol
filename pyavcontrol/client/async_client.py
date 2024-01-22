@@ -17,15 +17,9 @@ class DeviceClientAsync(DeviceClient):
     """Asynchronous client for communicating with devices via the provided connection"""
 
     def __init__(self, model: DeviceModel, connection: DeviceConnection, loop):
-        DeviceClient.__init__(self, model, connection)
-        self._connection = connection
+        super().__init__(model, connection)
         self._loop = loop
         self._callback = None
-
-        # FIXME: encoding should come from model
-        self._encoding = (
-            model.encoding
-        )  # serial_config.get(CONFIG.encoding, DEFAULT_ENCODING)
 
     @property
     def is_async(self):
