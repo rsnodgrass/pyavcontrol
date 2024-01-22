@@ -62,6 +62,12 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
             self._event_loop,
         )
 
+    def is_async(self) -> bool:
+        """
+        :return: always True since this connection implementation is asynchronous
+        """
+        return True
+
     async def is_connected(self) -> bool:
         return self._legacy_connection
 

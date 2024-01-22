@@ -8,11 +8,6 @@ from .base import DeviceClient
 
 LOG = logging.getLogger(__name__)
 
-# FIXME: actually the connection should be passed into the client; no need for DeviceClient
-# needing to know how to communicate with remote (or in process) instance. Especially for
-# testing.
-
-
 class DeviceClientAsync(DeviceClient):
     """Asynchronous client for communicating with devices via the provided connection"""
 
@@ -21,11 +16,12 @@ class DeviceClientAsync(DeviceClient):
         self._loop = loop
         self._callback = None
 
+        if not connection.is_async():
+            raise RuntimeError(f"Provided DeviceConnection is not asynchronous!")
+
     @property
     def is_async(self):
-        """
-        :return: True if this client implementation is asynchronous (asyncio) versus synchronous.
-        """
+        """:return: always true since this client implementation is asynchronous"""
         return True
 
     @locked_coro
