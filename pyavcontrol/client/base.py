@@ -1,6 +1,5 @@
-from __future__ import (  # postpone eval of annotations (for DeviceClient type annotation)
-    annotations,
-)
+# postpone eval of annotations (for DeviceClient type annotation)
+from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
@@ -81,8 +80,8 @@ def _inject_client_api(client: DeviceClient, model: DeviceModel):
     """
     api = model.definition.get(CONFIG.api, {})
     for group_name, group_actions in api.items():
-        if getattr(type(client), group_name):
-            raise RuntimeError(f'Injecting "{group_name}" failed as it already exists in class')
+        if hasattr(type(client), group_name):
+            raise RuntimeError(f'Injecting "{group_name}" failed as it already exists in {type(client)}')
 
         # LOG.debug(f'Adding property for group {group_name}')
         group_class = _create_activity_group_class(
@@ -157,7 +156,7 @@ class DeviceClient(ABC):
     """
 
     def __new__(cls, *args, **kwargs):
-        return super().__new__(cls, *args, **kwargs)
+        return super().__new__(cls)
 
     def __init__(self, model: DeviceModel, connection: DeviceConnection):
         super().__init__()
@@ -198,21 +197,6 @@ class DeviceClient(ABC):
         the yaml protocol configuration. No response messages are supported.
         """
         raise NotImplementedError()
-
-    def _command(self, model_id: str, format_code: str, args=None):
-        """
-        Convert group/action/args into the full command string that should be sent
-
-        FIXME: is this still even used/referenced?
-        """
-        cmd_eol = self._protocol_def.get(CONFIG.command_eol)
-        cmd_separator = self._protocol_def.get(CONFIG.command_separator)
-
-        rs232_commands = self._protocol_def.get('commands')
-        command = rs232_commands.get(format_code) + cmd_separator + cmd_eol
-        return command.format(**args).encode(
-            DEFAULT_ENCODING
-        )  # FIXME: should be proper encoding
 
     # @abstractmethod
     def describe(self) -> dict:
