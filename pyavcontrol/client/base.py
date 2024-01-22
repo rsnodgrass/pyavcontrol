@@ -155,22 +155,19 @@ class DeviceClient(ABC):
     to control a device.
     """
 
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(cls)
+    #def __new__(cls, *args, **kwargs):
+    #    return super().__new__(cls)
 
     def __init__(self, model: DeviceModel, connection: DeviceConnection):
         super().__init__()
         self._model = model
-        self._protocol_def = model.definition  # FIXME
         self._connection = connection
-        self._callback = None
-        self._encoding = DEFAULT_ENCODING
 
     def encoding(self) -> str:
         """
         :return: the bytes encoding format for requests/responses
         """
-        return self._encoding
+        return self._model.encoding
 
     @property
     def is_async(self):
@@ -200,7 +197,7 @@ class DeviceClient(ABC):
 
     # @abstractmethod
     def describe(self) -> dict:
-        return self._protocol_def
+        return self._model.definition
 
     # FIXME: should take:
     #   1. a model
