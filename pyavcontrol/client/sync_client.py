@@ -29,7 +29,7 @@ class DeviceClientSync(DeviceClient):
     def send_raw(self, data: bytes) -> None:
         if LOG.isEnabledFor(logging.DEBUG):
             LOG.debug(f'Sending {self._connection!r}: {data}')
-        self._connection.sent(data)
+        self._connection.send(data)
 
     @synchronized
     def send_command(self, group: str, action: str, **kwargs) -> None:
