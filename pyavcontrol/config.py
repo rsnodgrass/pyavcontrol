@@ -1,4 +1,3 @@
-import typing as t
 from dataclasses import dataclass
 
 # FIXME: also consider pydantic
@@ -15,6 +14,7 @@ class _Config:
     timeout = 'timeout'
     min_time_between_commands = 'min_time_between_commands'
     format = 'format'
+    baudrate = 'baudrate'
 
 
 CONFIG = _Config()

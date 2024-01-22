@@ -20,15 +20,16 @@ async def construct_async_client(
     :param connection_config: pyserial configuration overrides (defaults come from for model_def)
     :param event_loop: (optional) event loop if an asynchronous client is desired
     """
+    from pyavcontrol.connection.async_connection import AsyncDeviceConnection
 
-    if not connection_config:
-        connection_config = {}
-
+    # load the model and settings for interacting with the device
     library = DeviceModelLibrary.create(event_loop=event_loop)
     model = await library.load_model(model_id)
     # FIXME: err handling
 
-    from pyavcontrol.connection.async_connection import AsyncDeviceConnection
+    # FIXME: need to load connection_config also from the model!?
+    if not connection_config:
+        connection_config = {}
 
     connection = AsyncDeviceConnection(url, connection_config, event_loop)
 
@@ -49,15 +50,16 @@ def construct_synchronous_client(
     :param url: The pyserial compatible connection URL
     :param connection_config: pyserial configuration overrides (defaults come from for model_def)
     """
-    if not connection_config:
-        connection_config = {}
+    from pyavcontrol.connection.sync_connection import SyncDeviceConnection
 
-    # load the model
+    # load the model and settings for interacting with the device
     library = DeviceModelLibrary.create()
     model_def = library.load_model(model_id)
     # FIXME: err handling
 
-    from pyavcontrol.connection.sync_connection import SyncDeviceConnection
+    # FIXME: need to load connection_config also from the model!?
+    if not connection_config:
+        connection_config = {}
 
     connection = SyncDeviceConnection(url, connection_config)
 

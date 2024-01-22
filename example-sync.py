@@ -10,6 +10,7 @@ import argparse as arg
 import coloredlogs
 
 from pyavcontrol import DeviceClient, DeviceModelLibrary
+from pyavcontrol.helper import construct_synchronous_client
 
 LOG = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')
@@ -37,10 +38,9 @@ if args.debug:
 
 
 def main():
-    model_def = DeviceModelLibrary.create().load_model(args.model)
-    client = DeviceClient.create(
-        model_def, args.url, connection_config_overrides={'baudrate': args.baud}
-    )
+    config_overrides = {'baudrate': args.baud}
+    client = construct_synchronous_client(args.model, args.url,
+                                          connection_config=config_overrides)
 
     client.send_raw(b'!PING?')
     print(client.ping.ping())

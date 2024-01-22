@@ -11,9 +11,8 @@ from ..const import *  # noqa: F403
 from ..core import (
     camel_case,
     generate_docs_for_action,
-    get_args_for_command,
     missing_keys_in_dict,
-    substitute_fstring_vars,
+    substitute_fstring_vars, get_args_for_command,
 )
 from ..library.model import DeviceModel
 
@@ -82,6 +81,9 @@ def _inject_client_api(client: DeviceClient, model: DeviceModel):
     """
     api = model.definition.get(CONFIG.api, {})
     for group_name, group_actions in api.items():
+        if getattr(type(client), group_name):
+            raise RuntimeError(f'Injecting "{group_name}" failed as it already exists in class')
+
         # LOG.debug(f'Adding property for group {group_name}')
         group_class = _create_activity_group_class(
             client, model, group_name, group_actions
@@ -89,7 +91,6 @@ def _inject_client_api(client: DeviceClient, model: DeviceModel):
         setattr(type(client), group_name, group_class)
 
     return client
-
 
 def _create_action_method(
     client: DeviceClient,
@@ -106,6 +107,7 @@ def _create_action_method(
     a synchronous method is returned by default. Calling code knows whether they
     instantiated a synchronous or asynchronous client.
     """
+    # noinspection PyShadowingNames
     LOG = logging.getLogger(cls_name)
     required_args = get_args_for_command(action_def)
     wait_for_response = False
@@ -123,12 +125,14 @@ def _create_action_method(
                 return request.encode(client.encoding())
         return None
 
+    # noinspection PyUnusedLocal
     def _activity_call_sync(self, **kwargs) -> None:
         """Synchronous version of making a client call"""
         if request := _prepare_request(**kwargs):
             return client.send_raw(request)
         LOG.warning(f'Failed to make request for {group_name}.{action_name}')
 
+    # noinspection PyUnusedLocal
     async def _activity_call_async(self, **kwargs) -> None:
         """
         Asynchronous version of making a client call is used when an event_loop
@@ -152,9 +156,8 @@ class DeviceClient(ABC):
     to control a device.
     """
 
-    def _new__(cls, *args, **kwargs):
+    def __new__(cls, *args, **kwargs):
         return super().__new__(cls, *args, **kwargs)
-        # return
 
     def __init__(self, model: DeviceModel, connection: DeviceConnection):
         super().__init__()
@@ -177,15 +180,15 @@ class DeviceClient(ABC):
         """
         return False
 
-    @abstractmethod
-    def send_command(self, group: str, action: str, **kwargs) -> None:
-        """
-        Call a command by the group/action and args as defined in the
-        device's protocol yaml. E.g.
 
-        client.send_command(group, action, arg1=one, my_arg=my_arg)
-        """
-        raise NotImplementedError()
+    #@abstractmethod
+    #def send_command(self, group: str, action: str, **kwargs) -> None:
+        #"""
+        #Call a command by the group/action and args as defined in the
+        #device's protocol yaml. E.g.
+        #client.send_command(group, action, arg1=one, my_arg=my_arg)
+        #"""
+        #raise NotImplementedError()
 
     @abstractmethod
     def send_raw(self, data: bytes) -> None:
@@ -242,8 +245,7 @@ class DeviceClient(ABC):
         is returned.
 
         :param model: DeviceModel
-        :param url: pyserial supported url for communication (e.g. '/dev/ttyUSB0' or 'socket://remote-host:4999/')
-        :param connection_config_overrides: dictionary of serial port configuration overrides (e.g. baudrate)
+        :param connection: connection to the device
         :param event_loop: optionally to get an interface that can be used asynchronously, pass in an event loop
 
         :return an instance of DeviceControllerBase

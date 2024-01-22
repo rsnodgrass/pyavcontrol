@@ -4,7 +4,7 @@ from typing import List
 
 LOG = logging.getLogger(__name__)
 
-NAMED_REGEX_PATTERN = re.compile(r'\(\?P\<(?P<name>.+)\>(?P<regex>.+)\)')
+NAMED_REGEX_PATTERN = re.compile(r'\(\?P<(?P<name>.+)>(?P<regex>.+)\)')
 FSTRING_ARG_PATTERN = re.compile(r'{(?P<arg_name>.+)}')
 
 

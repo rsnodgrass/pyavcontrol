@@ -30,22 +30,24 @@ class SyncDeviceConnection(DeviceConnection, ABC):
     Synchronous device connection implementation (NOT YET IMPLEMENTED)
     """
 
-    def __init__(self, url: str, config: dict, connection_config: dict):
+    def __init__(self, url: str, connection_config: dict):
         """
         :param url: pyserial compatible url
         """
-        super.__init__()
+        super().__init__()
 
         self._url = url
-        self._config = config
         self._connection_config = connection_config
 
         self._encoding = connection_config.get(CONFIG.encoding, DEFAULT_ENCODING)
+
+        # FIXME: remove the following
+        config = connection_config # FIXME: remove
         self._eol = config.get(CONFIG.response_eol, DEFAULT_EOL).encode(self._encoding)
 
         # FIXME: all min time between commands should probably be at the client level and
         # not at the raw connection... move up!
-        self._min_time_between_commands = self._config.get(
+        self._min_time_between_commands = config.get(
             CONFIG.min_time_between_commands, 0
         )
 
@@ -69,16 +71,17 @@ class SyncDeviceConnection(DeviceConnection, ABC):
 
     def send(self, data: bytes, callback=None, wait_for_response=False):
         """
-        :param data: request that is sent to the device
-        :param skip: number of bytes to skip for end of transmission decoding
+        :param data: data bytes sent to the device
+        :param callback: (optional)
+        :param wait_for_response: (optional)
         :return:  string returned by device
         """
 
         @limits(calls=1, period=self._min_time_between_commands)
-        def write_rate_limited(data: bytes):
-            LOG.debug(f'>> {self._url}: %s', data)
+        def write_rate_limited(data_bytes: bytes):
+            LOG.debug(f'>> {self._url}: %s', data_bytes)
             # send data and force flush to send immediately
-            self._port.write(data)
+            self._port.write(data_bytes)
             self._port.flush()
 
         # clear any pending transactions

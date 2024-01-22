@@ -59,7 +59,6 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
             self._url,
             self._connection_config,  # self._config,
             self._connection_config,
-            self._connection_config.get(CONFIG.format, {}),  # self._protocol_def,
             self._event_loop,
         )
 
@@ -72,7 +71,7 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
 
 
 async def async_get_rs232_connection(
-    serial_port: str, config: dict, connection_config: dict, protocol_def: dict, loop
+    serial_port: str, config: dict, connection_config: dict, loop
 ):
     # ensure only a single, ordered command is sent to RS232 at a time (non-reentrant lock)
     def locked_method(method):
@@ -97,8 +96,9 @@ async def async_get_rs232_connection(
         return wrapper
 
     class RS232ControlProtocol(asyncio.Protocol):
+        # noinspection PyShadowingNames
         def __init__(
-            self, serial_port, config, connection_config, protocol_config, loop
+            self, serial_port, config, connection_config, loop
         ):
             super().__init__()
 
@@ -149,9 +149,9 @@ async def async_get_rs232_connection(
         @ensure_connected
         async def send(self, data: bytes, callback=None, wait_for_reply=False):
             @limits(calls=1, period=self._min_time_between_commands)
-            async def write_rate_limited(data: bytes):
-                LOG.debug(f'>> {self._url}: %s', data)
-                self._transport.serial.write(data)
+            async def write_rate_limited(data_bytes: bytes):
+                LOG.debug(f'>> {self._url}: %s', data_bytes)
+                self._transport.serial.write(data_bytes)
 
             # clear all buffers of any data waiting to be read before sending the request
             await self._reset_buffers()
@@ -186,7 +186,7 @@ async def async_get_rs232_connection(
                 raise
 
     factory = functools.partial(
-        RS232ControlProtocol, serial_port, config, connection_config, protocol_def, loop
+        RS232ControlProtocol, serial_port, config, connection_config, loop
     )
 
     LOG.info(f'Connecting to {serial_port}: {connection_config}')

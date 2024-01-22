@@ -12,6 +12,7 @@ import asyncio
 import coloredlogs
 
 from pyavcontrol import DeviceClient, DeviceModelLibrary
+from pyavcontrol.helper import construct_async_client
 
 LOG = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')
@@ -41,15 +42,11 @@ if args.debug:
 async def main():
     try:
         loop = asyncio.get_event_loop()
-        library = DeviceModelLibrary.create(event_loop=loop)
-        model_def = await library.load_model(args.model)
 
-        client = DeviceClient.create(
-            model_def,
-            args.url,
-            connection_config_overrides={'baudrate': args.baud},
-            event_loop=loop,
-        )
+        # FIXME: connection!
+
+        config_overrides = {'baudrate': args.baud}
+        client = construct_async_client(args.model, args.url, loop, connection_config=config_overrides)
 
         #       help(client.power)
         await client.send_raw(b'!PING?')
