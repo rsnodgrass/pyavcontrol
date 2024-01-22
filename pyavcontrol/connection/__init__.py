@@ -28,6 +28,12 @@ class DeviceConnection:
         """
         raise NotImplementedError()
 
+    def is_async(self) -> bool:
+        """
+        :return: True if this connection implementation is asynchronous (asyncio) versus synchronous.
+        """
+        return False
+
     def __repr__(self) -> str:
         return self.__class__.__name__
 
