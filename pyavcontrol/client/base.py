@@ -233,6 +233,8 @@ class DeviceClient(ABC):
         """
         LOG.debug(f'Connecting to {model.id} at {connection!r}')
 
+        print("WHAT!!!")
+
         if event_loop:
             # lazy import the async client to avoid loading both sync/async
             from .async_client import DeviceClientAsync
@@ -248,10 +250,13 @@ class DeviceClient(ABC):
         LOG.debug(f'Creating {class_name} client with {model.id} protocol API')
 
         dynamic_class = type(class_name, base_classes, {})
+        print("FA")
 
         # if event_loop provided, return an asynchronous client; otherwise synchronous
         if event_loop:
             client = dynamic_class(model, connection, event_loop)
+            print("FOO")
+            print(client)
         else:
             client = dynamic_class(model, connection)
 

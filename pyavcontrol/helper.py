@@ -12,6 +12,7 @@ LOG = logging.getLogger(__name__)
 async def construct_async_client(
     model_id: str, url: str, event_loop, connection_config: dict = None
 ) -> DeviceClient:
+    print('....')
     """
     Construct an asynchronous client
 
@@ -36,7 +37,7 @@ async def construct_async_client(
     # FIXME: how does this handle failed connections? retries? lazy connections? that can be
     # a wrapper around the DeviceConnection object.
 
-    client = DeviceClient.create(model, connection)
+    client = DeviceClient.create(model, connection, event_loop=event_loop)
     return client
 
 

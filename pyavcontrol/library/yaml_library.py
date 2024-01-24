@@ -104,7 +104,7 @@ class DeviceModelLibrarySync(DeviceModelLibrary, ABC):
                         name = pathlib.Path(model_file).stem
                         supported_models[name] = model_file
 
-        self._supported_models = frozenset(supported_models.keys())  # immutable
+        self._supported_models = frozenset(supported_models.keys()) # immutable
         return self._supported_models
 
 

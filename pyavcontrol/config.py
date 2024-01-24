@@ -15,6 +15,7 @@ class _Config:
     min_time_between_commands = 'min_time_between_commands'
     format = 'format'
     baudrate = 'baudrate'
+    clear_before_new_commands = 'clear_before_new_commands'
 
 
 CONFIG = _Config()

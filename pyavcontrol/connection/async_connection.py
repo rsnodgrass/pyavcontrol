@@ -37,8 +37,6 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
         :param url: pyserial compatible url
         :param connection_config: pyserial connection config (plus additional attributes timeout/encoding)
         """
-        super().__init__()
-
         self._url = url
         self._connection_config = connection_config
         self._event_loop = loop
