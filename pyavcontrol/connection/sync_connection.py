@@ -34,8 +34,6 @@ class SyncDeviceConnection(DeviceConnection, ABC):
         """
         :param url: pyserial compatible url
         """
-        super().__init__()
-
         self._url = url
         self._connection_config = connection_config
 
@@ -53,13 +51,14 @@ class SyncDeviceConnection(DeviceConnection, ABC):
 
         # FIXME: contemplate on this more, do we really want to reset/clear
         self._clear_before_new_commands = connection_config.get(
-            'clear_before_new_commands', False
+            CONFIG.clear_before_new_commands, False
         )
 
         self._port = serial.serial_for_url(self._url, **self._connection_config)
 
     def __repr__(self) -> str:
-        return f'{self.__name__} / {self._url}'
+#        return f'{self.__class__.__name__}->{self._url}'
+        return f'{self._url}'
 
     def encoding(self) -> str:
         return self._encoding

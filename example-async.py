@@ -46,7 +46,7 @@ async def main():
         # FIXME: connection!
 
         config_overrides = {'baudrate': args.baud}
-        client = construct_async_client(args.model, args.url, loop, connection_config=config_overrides)
+        client = await construct_async_client(args.model, args.url, loop, connection_config=config_overrides)
 
         #       help(client.power)
         await client.send_raw(b'!PING?')
