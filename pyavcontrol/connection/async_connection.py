@@ -76,8 +76,6 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
         if not self._legacy_connection:
             await self._connect()
 
-        print("WOW")
-
         return await self._legacy_connection.send(data, wait_for_reply=reply)
 
 
