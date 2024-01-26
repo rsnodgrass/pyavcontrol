@@ -12,7 +12,6 @@ LOG = logging.getLogger(__name__)
 async def construct_async_client(
     model_id: str, url: str, event_loop, connection_config: dict = None
 ) -> DeviceClient:
-    print('....')
     """
     Construct an asynchronous client
 

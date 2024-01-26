@@ -39,6 +39,7 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
         """
         self._url = url
         self._connection_config = connection_config
+        self._legacy_connection = None
         self._event_loop = loop
 
         # FIXME: I think encoding should be moved up a level
@@ -49,7 +50,7 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
         asyncio.create_task(self._connect())
 
     def __repr__(self) -> str:
-        return f'{self.__name__} / {self._url}'
+        return f'{self.__class__.__name__} / {self._url}'
 
     async def _connect(self) -> None:
         # FIXME: hacky...merge this old code into this class eventually...
@@ -71,7 +72,13 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
 
     async def send(self, data: bytes, callback=None):
         reply = False  # depends on action! FIXME
-        return await self._legacy_connection.send(self, data, wait_for_reply=reply)
+
+        if not self._legacy_connection:
+            await self._connect()
+
+        print("WOW")
+
+        return await self._legacy_connection.send(data, wait_for_reply=reply)
 
 
 async def async_get_rs232_connection(
@@ -152,6 +159,7 @@ async def async_get_rs232_connection(
         @locked_method
         @ensure_connected
         async def send(self, data: bytes, callback=None, wait_for_reply=False):
+
             @limits(calls=1, period=self._min_time_between_commands)
             async def write_rate_limited(data_bytes: bytes):
                 LOG.debug(f'>> {self._url}: %s', data_bytes)
