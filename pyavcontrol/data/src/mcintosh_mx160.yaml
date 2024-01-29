@@ -24,6 +24,7 @@ connection:
     stopbits: 1
     timeout: 2.0
     encoding: 'ascii' # FIXME: remove
+    response_eol: '\r'
 
 hardware:
   type: processor

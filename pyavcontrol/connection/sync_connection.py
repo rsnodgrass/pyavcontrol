@@ -51,7 +51,7 @@ class SyncDeviceConnection(DeviceConnection, ABC):
 
         # FIXME: contemplate on this more, do we really want to reset/clear
         self._clear_before_new_commands = connection_config.get(
-            CONFIG.clear_before_new_commands, False
+            CONFIG.clear_before_new_commands, True
         )
 
         self._port = serial.serial_for_url(self._url, **self._connection_config)
@@ -64,9 +64,8 @@ class SyncDeviceConnection(DeviceConnection, ABC):
         return self._encoding
 
     def _reset_buffers(self):
-        if self._clear_before_new_commands:
-            self._port.reset_output_buffer()
-            self._port.reset_input_buffer()
+        self._port.reset_output_buffer()
+        self._port.reset_input_buffer()
 
     def send(self, data: bytes, callback=None, wait_for_response: bool=False):
         """
@@ -83,22 +82,29 @@ class SyncDeviceConnection(DeviceConnection, ABC):
             self._port.write(data_bytes)
             self._port.flush()
 
-        # clear any pending transactions
-        self._reset_buffers()
+        # clear any pending transactions if a response is expected
+        if response_expected := (callback or wait_for_response):
+            if self._clear_before_new_commands:
+                self._reset_buffers()
 
         write_rate_limited(data)
 
         # if the caller has requested to receive the result, send it to any
         # provided callback and return the result
-        if callback or wait_for_response:
+        if response_expected:
+            LOG.debug(f"Waiting for response (EOL={self._eol})...")
+
             result = self.handle_receive()
             LOG.debug(f'<< {self._url}: %s', result)
+
             if callback:
                 callback(result)
             return result
 
     def handle_receive(self) -> str:
         skip = 0
+
+        print(self._eol)
 
         len_eol = len(self._eol)
 
@@ -108,7 +114,6 @@ class SyncDeviceConnection(DeviceConnection, ABC):
         result = bytearray()
         while True:
             c = self._port.read(1)
-            # print(c)
             if not c:
                 ret = bytes(result)
                 LOG.info(ret)
