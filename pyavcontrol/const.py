@@ -3,7 +3,7 @@
 import os
 
 DEFAULT_ENCODING = "ascii"
-DEFAULT_EOL = "\r\n"
+DEFAULT_EOL = "\r" # ""\r\n"
 DEFAULT_TCP_IP_PORT = 4999  # IP2SL / Virtual IP2SL uses this port
 DEFAULT_TIMEOUT = 1.0
 

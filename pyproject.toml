@@ -1,7 +1,7 @@
 #[project]
 [tool.poetry]
 name = "pyavcontrol"
-version = "0.0.1"
+version = "0.1.0"
 description = "Python Control of RS232/IP Audio/Visual Equipment"
 readme = "README.md"
 license = "LICENSE"
