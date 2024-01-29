@@ -2,7 +2,7 @@
 name = "pyavcontrol"
 version = "0.1.0"
 requires-python = ">=3.10"
-description = "Python Control of Audio/Visual Equipment via RS232/IP"
+description = "Python Control of Audio/Visual Equipment (RS232/IP)"
 readme = "README.md"
 classifiers = [
   # How mature is this project? Common values are
@@ -18,7 +18,7 @@ authors = [ { name="Ryan Snodgrass", email="rsnodgrass@gmail.com" } ]
 [tool.poetry]
 name = "pyavcontrol"
 version = "0.1.0"
-description = "Python Control of Audio/Visual Equipment via RS232/IP"
+description = "Python Control of Audio/Visual Equipment (RS232/IP)"
 readme = "README.md"
 license = "LICENSE"
 authors = [ "Ryan Snodgrass <rsnodgrass@gmail.com>" ]
