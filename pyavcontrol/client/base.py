@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 import logging
+import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from ..config import CONFIG
 from ..connection import DeviceConnection
-from ..const import *  # noqa: F403
 from ..core import (
     camel_case,
     generate_docs_for_action,
@@ -141,24 +141,32 @@ def _create_action_method(client: DeviceClient, cls_name: str, action: ActionDef
             LOG.error(err_msg)
             raise ValueError(err_msg)
 
-        # FIXME: explain the intent...and kwargs
+        # substitute any templated fstrings in the command with provided kwargs
         if cmd := action.definition.get('cmd'):
-            print(cmd)
             if fstring := cmd.get('fstring'):
                 request = substitute_fstring_vars(fstring, kwargs)
                 return request.encode(client.encoding())
 
         return None
 
+    def _extract_vars_in_response(response: bytes) -> dict:
+        if msg := action.definition.get('msg'):
+            if regex := msg.get('regex'):
+                return re.match(regex, response).groupdict()
+        return {}
+
     # noinspection PyUnusedLocal
-    def _activity_call_sync(self, **kwargs) -> None:
+    def _activity_call_sync(self, **kwargs):
         """Synchronous version of making a client call"""
         if request := _prepare_request(**kwargs):
-            return client.send_raw(request, wait_for_response=action.response_expected)
+            if response := client.send_raw(request, wait_for_response=action.response_expected):
+                response = response.decode(client.encoding())
+                return _extract_vars_in_response(response)
+            return
         LOG.warning(f'Failed to make request for {action.group}.{action.name}')
 
     # noinspection PyUnusedLocal
-    async def _activity_call_async(self, **kwargs) -> None:
+    async def _activity_call_async(self, **kwargs):
         """
         Asynchronous version of making a client call is used when an event_loop
         is provided. Calling code knows whether they instantiated a synchronous
@@ -166,7 +174,10 @@ def _create_action_method(client: DeviceClient, cls_name: str, action: ActionDef
         """
         if request := _prepare_request(**kwargs):
             # noinspection PyUnresolvedReferences
-            return await client.send_raw(request, wait_for_response=action.response_expected)
+            if response := await client.send_raw(request, wait_for_response=action.response_expected):
+                response = response.decode(client.encoding())
+                return _extract_vars_in_response(response)
+            return
         LOG.warning(f'Failed to make request for {action.group}.{action.name}')
 
     # return the async or sync version of the request method
