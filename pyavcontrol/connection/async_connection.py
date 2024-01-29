@@ -31,6 +31,7 @@ def locked_coro(coro):
     return wrapper
 
 
+
 class AsyncDeviceConnection(DeviceConnection, ABC):
     def __init__(self, url: str, connection_config: dict, loop):
         """
@@ -54,12 +55,17 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
 
     async def _connect(self) -> None:
         # FIXME: hacky...merge this old code into this class eventually...
-        self._legacy_connection = await async_get_rs232_connection(
-            self._url,
-            self._connection_config,  # self._config,
-            self._connection_config,
-            self._event_loop,
-        )
+        if not self._legacy_connection:
+            try:
+                self._legacy_connection = await async_get_rs232_connection(
+                    self._url,
+                    self._connection_config,  # self._config,
+                    self._connection_config,
+                    self._event_loop,
+                )
+            except Exception as e:
+                LOG.error(f"Failed connecting to {self._url}", e)
+
 
     def is_async(self) -> bool:
         """
@@ -70,13 +76,23 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
     async def is_connected(self) -> bool:
         return self._legacy_connection
 
-    async def send(self, data: bytes, callback=None):
-        reply = False  # depends on action! FIXME
+    # check if connected, and abort calling provided method if no connection before timeout
+    @staticmethod
+    def ensure_connected(method):
+        @wraps(method)
+        async def wrapper(self, *method_args, **method_kwargs):
+            try:
+                await self._connect()
+                return await method(self, *method_args, **method_kwargs)
+            except Exception as e:
+                LOG.warning(f'Cannot connect to {self._url}!', e)
+                raise e
+        return wrapper
 
-        if not self._legacy_connection:
-            await self._connect()
 
-        return await self._legacy_connection.send(data, wait_for_reply=reply)
+    @ensure_connected
+    async def send(self, data: bytes, callback=None, wait_for_response: bool=False):
+        return await self._legacy_connection.send(data, wait_for_response=wait_for_response)
 
 
 async def async_get_rs232_connection(
@@ -92,14 +108,14 @@ async def async_get_rs232_connection(
         return wrapper
 
     # check if connected, and abort calling provided method if no connection before timeout
-    def ensure_connected(method):
+    def ensure_connected_legacy(method):
         @wraps(method)
         async def wrapper(self, *method_args, **method_kwargs):
             try:
                 await asyncio.wait_for(self._connected.wait(), self._timeout)
-            except Exception:
-                LOG.debug(f'Timeout sending data to {self._url}, no connection!')
-                return
+            except Exception as e:
+                LOG.debug(f'Timeout sending data to {self._url}, no connection!', e)
+                raise e
             return await method(self, *method_args, **method_kwargs)
 
         return wrapper
@@ -155,8 +171,8 @@ async def async_get_rs232_connection(
                 self._q.get_nowait()
 
         @locked_method
-        @ensure_connected
-        async def send(self, data: bytes, callback=None, wait_for_reply=False):
+        @ensure_connected_legacy
+        async def send(self, data: bytes, callback=None, wait_for_response=False):
 
             @limits(calls=1, period=self._min_time_between_commands)
             async def write_rate_limited(data_bytes: bytes):
@@ -169,7 +185,7 @@ async def async_get_rs232_connection(
             await write_rate_limited(data)
 
             # FIXME: move away from this with callbacks instead
-            if callback or wait_for_reply:
+            if callback or wait_for_response:
                 result = await self.receive_response(data)
                 LOG.debug(f'<< {self._url}: %s', result)
                 if callback:

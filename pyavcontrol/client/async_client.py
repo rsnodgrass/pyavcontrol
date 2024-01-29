@@ -25,17 +25,11 @@ class DeviceClientAsync(DeviceClient):
         return True
 
     @locked_coro
-    async def send_raw(self, data: bytes):
+    async def send_raw(self, data: bytes, wait_for_response=False):
         if LOG.isEnabledFor(logging.DEBUG):
             LOG.debug(f'Sending {self._connection!r}: {data}')
         # FIXME: should this do encoding? based on the model?
-        return await self._connection.send(data)
-
-    @locked_coro
-    async def send_command(self, group: str, action: str, **kwargs) -> None:
-        # await self.send_raw(data.bytes())
-        # FIXME: implement, if necessary?
-        LOG.error(f'Not implemented send_command!')
+        return await self._connection.send(data, wait_for_response=wait_for_response)
 
     @locked_coro
     def register_callback(self, callback: Callable[[str], None]) -> None:

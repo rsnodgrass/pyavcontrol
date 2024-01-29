@@ -68,12 +68,12 @@ class SyncDeviceConnection(DeviceConnection, ABC):
             self._port.reset_output_buffer()
             self._port.reset_input_buffer()
 
-    def send(self, data: bytes, callback=None, wait_for_response=False):
+    def send(self, data: bytes, callback=None, wait_for_response: bool=False):
         """
         :param data: data bytes sent to the device
         :param callback: (optional)
         :param wait_for_response: (optional)
-        :return:  string returned by device
+        :return: string returned by device
         """
 
         @limits(calls=1, period=self._min_time_between_commands)

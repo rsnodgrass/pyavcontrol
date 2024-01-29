@@ -11,7 +11,6 @@ import asyncio
 
 import coloredlogs
 
-from pyavcontrol import DeviceClient, DeviceModelLibrary
 from pyavcontrol.helper import construct_async_client
 
 LOG = logging.getLogger(__name__)
@@ -49,7 +48,7 @@ async def main():
         client = await construct_async_client(args.model, args.url, loop, connection_config=config_overrides)
 
         #       help(client.power)
-        await client.send_raw(b'!PING?')
+        await client.send_raw(b"!PING?\r")
         await client.ping.ping()
         # await client.volume.set(volume=20)
         await client.power.off()
