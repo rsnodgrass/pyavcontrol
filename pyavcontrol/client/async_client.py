@@ -26,9 +26,8 @@ class DeviceClientAsync(DeviceClient):
 
     @locked_coro
     async def send_raw(self, data: bytes, wait_for_response=False):
-        if LOG.isEnabledFor(logging.DEBUG):
-            LOG.debug(f'Sending {self._connection!r}: {data}')
-        # FIXME: should this do encoding? based on the model?
+        #if LOG.isEnabledFor(logging.DEBUG):
+        #    LOG.debug(f'Sending {self._connection!r}: {data}')
         return await self._connection.send(data, wait_for_response=wait_for_response)
 
     @locked_coro

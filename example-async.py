@@ -49,8 +49,12 @@ async def main():
 
         #       help(client.power)
         await client.send_raw(b"!PING?\r")
+
         await client.ping.ping()
-        # await client.volume.set(volume=20)
+
+        #help(client.volume)
+        await client.volume.set(volume=20)
+
         await client.power.off()
 
     except Exception as e:
