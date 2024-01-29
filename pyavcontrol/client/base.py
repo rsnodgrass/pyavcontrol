@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 from ..config import CONFIG
 from ..connection import DeviceConnection
@@ -56,14 +57,14 @@ def _create_activity_group_class(
         if type(action_name) is bool:
             action_name = 'on' if action_name else 'off'
 
+        action = ActionDef(group_name, action_name, action_def)
+        action.required_args = get_args_for_command(action.definition)
+
         # if a response msg is defined, then wait for a response
-        is_response_msg_defined = 'msg' in action_def
+        action.response_expected = 'msg' in action_def
 
         # ClientAPIAction(group=group, name=action_name, definition=action_def)
-        method = _create_action_method(
-            client, cls_name, group_name, action_name, action_def,
-            wait_for_response=is_response_msg_defined
-        )
+        method = _create_action_method(client, cls_name, action)
 
         # FIXME: danger Will Robinson...potential exploits (need to explore how to filter out)
         method.__name__ = action_name
@@ -75,6 +76,14 @@ def _create_activity_group_class(
     cls = type(cls_name, cls_bases, cls_props)
     return cls(model.id, actions_model['actions'])
 
+
+@dataclass
+class ActionDef:
+    group: str
+    name: str
+    definition: dict
+    required_args: list[str] = ()
+    response_expected: bool = False
 
 def _inject_client_api(client: DeviceClient, model: DeviceModel):
     """
@@ -95,14 +104,24 @@ def _inject_client_api(client: DeviceClient, model: DeviceModel):
 
     return client
 
-def _create_action_method(
-    client: DeviceClient,
-    cls_name: str,
-    group_name: str,
-    action_name: str,
-    action_def: dict,
-    wait_for_response: bool=False
-):
+
+def _encode_request(client, action_name, action_def: dict, values: dict, kwargs):
+    # FIXME: explain the intent...and kwargs
+
+    if cmd := action_def.get('cmd'):
+        if fstring := cmd.get('fstring'):
+            request = substitute_fstring_vars(fstring, dict)
+            return request.encode(client.encoding())
+
+    LOG.error(f"Invalid action_def for {action_name} - cannot form a request: {action_def}")
+    return None
+
+def _decode_response(action_def: dict):
+    values = {}
+
+    return values
+
+def _create_action_method(client: DeviceClient, cls_name: str, action: ActionDef):
     """
     Creates a dynamic method that makes calls against the provided client using
     the command format for the given action definition.
@@ -113,28 +132,30 @@ def _create_action_method(
     """
     # noinspection PyShadowingNames
     LOG = logging.getLogger(cls_name)
-    required_args = get_args_for_command(action_def)
 
     # FIXME: need to also convert response back into dictionary!
 
     def _prepare_request(**kwargs):
-        if missing_keys := missing_keys_in_dict(required_args, kwargs):
-            err_msg = f'Call to {group_name}.{action_name} missing required keys {missing_keys}, skipping!'
+        if missing_keys := missing_keys_in_dict(action.required_args, kwargs):
+            err_msg = f'Call to {action.group}.{action.name} missing required keys {missing_keys}, skipping!'
             LOG.error(err_msg)
             raise ValueError(err_msg)
 
-        if cmd := action_def.get('cmd'):
+        # FIXME: explain the intent...and kwargs
+        if cmd := action.definition.get('cmd'):
+            print(cmd)
             if fstring := cmd.get('fstring'):
                 request = substitute_fstring_vars(fstring, kwargs)
                 return request.encode(client.encoding())
+
         return None
 
     # noinspection PyUnusedLocal
     def _activity_call_sync(self, **kwargs) -> None:
         """Synchronous version of making a client call"""
         if request := _prepare_request(**kwargs):
-            return client.send_raw(request, wait_for_response=wait_for_response)
-        LOG.warning(f'Failed to make request for {group_name}.{action_name}')
+            return client.send_raw(request, wait_for_response=action.response_expected)
+        LOG.warning(f'Failed to make request for {action.group}.{action.name}')
 
     # noinspection PyUnusedLocal
     async def _activity_call_async(self, **kwargs) -> None:
@@ -145,8 +166,8 @@ def _create_action_method(
         """
         if request := _prepare_request(**kwargs):
             # noinspection PyUnresolvedReferences
-            return await client.send_raw(request, wait_for_response=wait_for_response)
-        LOG.warning(f'Failed to make request for {group_name}.{action_name}')
+            return await client.send_raw(request, wait_for_response=action.response_expected)
+        LOG.warning(f'Failed to make request for {action.group}.{action.name}')
 
     # return the async or sync version of the request method
     if client.is_async:
@@ -181,22 +202,14 @@ class DeviceClient(ABC):
         """
         return False
 
-
-    #@abstractmethod
-    #def send_command(self, group: str, action: str, **kwargs) -> None:
-        #"""
-        #Call a command by the group/action and args as defined in the
-        #device's protocol yaml. E.g.
-        #client.send_command(group, action, arg1=one, my_arg=my_arg)
-        #"""
-        #raise NotImplementedError()
-
     @abstractmethod
-    def send_raw(self, data: bytes, wait_for_response: bool=False) -> None:
+    def send_raw(self, data: bytes, wait_for_response: bool=False, return_raw=False):
         """
         Allows sending a raw data to the device. Generally this should not
         be used except for testing, since all commands should be defined in
         the yaml protocol configuration. No response messages are supported.
+
+        :return: (optional) if response, return dict of decoded values (and raw response if return_raw set)
         """
         raise NotImplementedError()
 
