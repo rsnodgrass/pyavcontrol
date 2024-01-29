@@ -56,9 +56,13 @@ def _create_activity_group_class(
         if type(action_name) is bool:
             action_name = 'on' if action_name else 'off'
 
+        # if a response msg is defined, then wait for a response
+        is_response_msg_defined = 'msg' in action_def
+
         # ClientAPIAction(group=group, name=action_name, definition=action_def)
         method = _create_action_method(
-            client, cls_name, group_name, action_name, action_def
+            client, cls_name, group_name, action_name, action_def,
+            wait_for_response=is_response_msg_defined
         )
 
         # FIXME: danger Will Robinson...potential exploits (need to explore how to filter out)
@@ -97,6 +101,7 @@ def _create_action_method(
     group_name: str,
     action_name: str,
     action_def: dict,
+    wait_for_response: bool=False
 ):
     """
     Creates a dynamic method that makes calls against the provided client using
@@ -109,7 +114,7 @@ def _create_action_method(
     # noinspection PyShadowingNames
     LOG = logging.getLogger(cls_name)
     required_args = get_args_for_command(action_def)
-    wait_for_response = False
+
     # FIXME: need to also convert response back into dictionary!
 
     def _prepare_request(**kwargs):
@@ -128,7 +133,7 @@ def _create_action_method(
     def _activity_call_sync(self, **kwargs) -> None:
         """Synchronous version of making a client call"""
         if request := _prepare_request(**kwargs):
-            return client.send_raw(request)
+            return client.send_raw(request, wait_for_response=wait_for_response)
         LOG.warning(f'Failed to make request for {group_name}.{action_name}')
 
     # noinspection PyUnusedLocal
@@ -140,7 +145,7 @@ def _create_action_method(
         """
         if request := _prepare_request(**kwargs):
             # noinspection PyUnresolvedReferences
-            return await client.send_raw(request)
+            return await client.send_raw(request, wait_for_response=wait_for_response)
         LOG.warning(f'Failed to make request for {group_name}.{action_name}')
 
     # return the async or sync version of the request method
@@ -187,7 +192,7 @@ class DeviceClient(ABC):
         #raise NotImplementedError()
 
     @abstractmethod
-    def send_raw(self, data: bytes) -> None:
+    def send_raw(self, data: bytes, wait_for_response: bool=False) -> None:
         """
         Allows sending a raw data to the device. Generally this should not
         be used except for testing, since all commands should be defined in

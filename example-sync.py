@@ -9,7 +9,6 @@ import argparse as arg
 
 import coloredlogs
 
-from pyavcontrol import DeviceClient, DeviceModelLibrary
 from pyavcontrol.helper import construct_synchronous_client
 
 LOG = logging.getLogger(__name__)

@@ -17,15 +17,10 @@ class DeviceClientSync(DeviceClient):
         self._callback = None
 
     @synchronized
-    def send_raw(self, data: bytes) -> None:
+    def send_raw(self, data: bytes, wait_for_response: bool=False) -> None:
         if LOG.isEnabledFor(logging.DEBUG):
             LOG.debug(f'Sending {self._connection!r}: {data}')
-        self._connection.send(data)
-
-    @synchronized
-    def send_command(self, group: str, action: str, **kwargs) -> None:
-        # self.send_raw(data.bytes())
-        LOG.error(f'Not implemented!')  # FIXME
+        self._connection.send(data, wait_for_response=wait_for_response)
 
     @synchronized
     def register_callback(self, callback: Callable[[str], None]) -> None:

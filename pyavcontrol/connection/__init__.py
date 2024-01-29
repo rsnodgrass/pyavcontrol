@@ -20,7 +20,7 @@ class DeviceConnection:
         """
         raise NotImplementedError()
 
-    def send(self, data: bytes, callback=None):
+    def send(self, data: bytes, callback=None, wait_for_response: bool=False):
         """
         Send data to the remote device.
 
