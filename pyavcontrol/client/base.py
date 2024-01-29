@@ -152,9 +152,12 @@ def _create_action_method(client: DeviceClient, cls_name: str, action: ActionDef
     def _extract_vars_in_response(response: bytes) -> dict:
         """Given a response, extract all the known values using the response
             message regex defined for this action."""
+        response_text = response.decode(client.encoding())
+
         if msg := action.definition.get('msg'):
             if regex := msg.get('regex'):
-                return re.match(regex, response).groupdict()
+                return re.match(regex, response_text).groupdict()
+
         return {}
 
     # noinspection PyUnusedLocal
@@ -162,7 +165,6 @@ def _create_action_method(client: DeviceClient, cls_name: str, action: ActionDef
         """Synchronous version of making a client call"""
         if request := _prepare_request(**kwargs):
             if response := client.send_raw(request, wait_for_response=action.response_expected):
-                response = response.decode(client.encoding())
                 return _extract_vars_in_response(response)
             return
         LOG.warning(f'Failed to make request for {action.group}.{action.name}')
@@ -177,7 +179,6 @@ def _create_action_method(client: DeviceClient, cls_name: str, action: ActionDef
         if request := _prepare_request(**kwargs):
             # noinspection PyUnresolvedReferences
             if response := await client.send_raw(request, wait_for_response=action.response_expected):
-                response = response.decode(client.encoding())
                 return _extract_vars_in_response(response)
             return
         LOG.warning(f'Failed to make request for {action.group}.{action.name}')

@@ -101,10 +101,8 @@ class SyncDeviceConnection(DeviceConnection, ABC):
                 callback(result)
             return result
 
-    def handle_receive(self) -> str:
+    def handle_receive(self) -> bytes:
         skip = 0
-
-        print(self._eol)
 
         len_eol = len(self._eol)
 
@@ -128,4 +126,4 @@ class SyncDeviceConnection(DeviceConnection, ABC):
 
         ret = bytes(result)
         LOG.debug(f'Received {self._url} "%s"', ret)
-        return ret.decode(self._encoding)
+        return ret

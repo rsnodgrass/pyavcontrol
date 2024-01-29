@@ -42,10 +42,14 @@ def main():
                                           connection_config=config_overrides)
 
     client.send_raw(b'!PING?')
-    print(client.ping.ping())
+    client.ping.ping()
+
+    result = client.volume.get()
+    print(f"Response: {result}")
+
+    client.volume.set(volume=15)
+
     client.power.off()
-    client.ping.ping()
-    client.ping.ping()
 
 
 main()

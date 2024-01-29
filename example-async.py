@@ -53,8 +53,10 @@ async def main():
         await client.ping.ping()
 
         #help(client.volume)
+
         result = await client.volume.get()
-        print(f"WHAT: {result}")
+        print(f"Response: {result}")
+
         await client.volume.set(volume=20)
 
         await client.power.off()
