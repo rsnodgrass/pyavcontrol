@@ -6,6 +6,10 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
+
+# See Alos:
+# https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
+
 name: Upload Python Package
 
 on:
