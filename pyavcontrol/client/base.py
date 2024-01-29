@@ -150,6 +150,8 @@ def _create_action_method(client: DeviceClient, cls_name: str, action: ActionDef
         return None
 
     def _extract_vars_in_response(response: bytes) -> dict:
+        """Given a response, extract all the known values using the response
+            message regex defined for this action."""
         if msg := action.definition.get('msg'):
             if regex := msg.get('regex'):
                 return re.match(regex, response).groupdict()
