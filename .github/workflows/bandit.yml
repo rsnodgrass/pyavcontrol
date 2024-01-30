@@ -1,4 +1,5 @@
 # see https://github.com/shundor/python-bandit-scan
+# see https://github.com/mdegis/bandit-action
 
 name: Bandit
 on:
@@ -22,7 +23,8 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Bandit Scan
-        uses: shundor/bandit-action@v1
+#        uses: shundor/bandit-action@v1
+        uses: mdegis/bandit-action@v1
         with:
           # Github token of the repository (automatically created by Github)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # needed to get PR info
