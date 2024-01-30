@@ -22,37 +22,34 @@ LOG = logging.getLogger(__name__)
 class DynamicActions:
     """
     Dynamically created class representing a group of actions that can be called
-    on a device.
+    on a connection to the device.
     """
-
-    def __init__(self, model_name, actions_def):
+    def __init__(self, model_name, group_actions_def):
         self._model_name = model_name
-        self._actions_def = actions_def
+        self._group_actions = group_actions_def
 
 
 def _create_activity_group_class(
     client: DeviceClient,
     model: DeviceModel,
     group_name: str,
-    actions_model: dict,
-    cls_bases=None,
+    group_actions: dict
 ):
     """
     Create dynamic class that represents a group of activities for a specific
     DeviceClient. These are injected into the DeviceClient as properties that
     can be accessed by the caller.
     """
+    cls_props = {}
+    cls_bases = (DynamicActions,)
+
     # CamelCase the model+group to represent this dynamic class of action methods
     cls_name = camel_case(f'{model.id} {group_name}')
     if client.is_async:
         cls_name += 'Async'
 
-    if not cls_bases:
-        cls_bases = (DynamicActions,)
-    cls_props = {}
-
     # dynamically add methods (and associated documentation) for each action
-    for action_name, action_def in actions_model['actions'].items():
+    for action_name, action_def in group_actions.items():
         # handle yamlfmt/yamlfix rewriting of "on" and "off" as YAML keys into bools
         if type(action_name) is bool:
             action_name = 'on' if action_name else 'off'
@@ -74,7 +71,7 @@ def _create_activity_group_class(
 
     # return the new dynamic class that contains the above actions
     cls = type(cls_name, cls_bases, cls_props)
-    return cls(model.id, actions_model['actions'])
+    return cls(model.id, group_actions)
 
 
 @dataclass
@@ -92,14 +89,12 @@ def _inject_client_api(client: DeviceClient, model: DeviceModel):
     model definition, the client is returned unchanged.
     """
     api = model.definition.get(CONFIG.api, {})
-    for group_name, group_actions in api.items():
+    for group_name, group_def in api.items():
         if hasattr(type(client), group_name):
             raise RuntimeError(f'Injecting "{group_name}" failed as it already exists in {type(client)}')
 
-        # LOG.debug(f'Adding property for group {group_name}')
-        group_class = _create_activity_group_class(
-            client, model, group_name, group_actions
-        )
+        group_actions = group_def['actions']
+        group_class = _create_activity_group_class(client, model, group_name, group_actions)
         setattr(type(client), group_name, group_class)
 
     return client
@@ -115,11 +110,6 @@ def _encode_request(client, action_name, action_def: dict, values: dict, kwargs)
 
     LOG.error(f"Invalid action_def for {action_name} - cannot form a request: {action_def}")
     return None
-
-def _decode_response(action_def: dict):
-    values = {}
-
-    return values
 
 def _create_action_method(client: DeviceClient, cls_name: str, action: ActionDef):
     """
@@ -194,10 +184,6 @@ class DeviceClient(ABC):
     DeviceClientBase base class that defines operations allowed
     to control a device.
     """
-
-    #def __new__(cls, *args, **kwargs):
-    #    return super().__new__(cls)
-
     def __init__(self, model: DeviceModel, connection: DeviceConnection):
         super().__init__()
         self._model = model
@@ -216,7 +202,15 @@ class DeviceClient(ABC):
         """
         return False
 
-    @abstractmethod
+    @property
+    def is_connected(self):
+        """
+        :return: True if client is connected to device
+        """
+        return True
+
+
+@abstractmethod
     def send_raw(self, data: bytes, wait_for_response: bool=False, return_raw=False):
         """
         Allows sending a raw data to the device. Generally this should not
@@ -231,10 +225,6 @@ class DeviceClient(ABC):
     def describe(self) -> dict:
         return self._model.definition
 
-    # FIXME: should take:
-    #   1. a model
-    #   2. a connection
-    #   3. whether asynchronous
     @classmethod
     def create(
         cls,
@@ -257,34 +247,27 @@ class DeviceClient(ABC):
         asynchronous implementation. By default, the synchronous interface
         is returned.
 
-        :param model: DeviceModel
+        :param model: DeviceModel representing the API and protocol for the device
         :param connection: connection to the device
-        :param event_loop: optionally to get an interface that can be used asynchronously, pass in an event loop
+        :param event_loop: (optional) pass in event loop to get an asynchronous interface
 
-        :return an instance of DeviceControllerBase
+        :return: an instance of DeviceControllerBase
         """
-        LOG.debug(f'Connecting to {model.id} at {connection!r}')
+        class_name = camel_case(f'{model.id} Client')
+        LOG.debug(f'Connecting to {model.id} at {connection!r} (class={class_name})')
 
+        # if event_loop provided, return an asynchronous client; otherwise synchronous
         if event_loop:
             # lazy import the async client to avoid loading both sync/async
             from .async_client import DeviceClientAsync
 
-            base_classes = (DeviceClientAsync,)
+            # dynamically create subclass
+            dynamic_class = type(class_name, (DeviceClientAsync,), {})
+            client = dynamic_class(model, connection, event_loop)
         else:
             from .sync_client import DeviceClientSync
 
-            base_classes = (DeviceClientSync,)
-
-        # dynamically create subclass
-        class_name = camel_case(f'{model.id} Client')
-        LOG.debug(f'Creating {class_name} client with {model.id} protocol API')
-
-        dynamic_class = type(class_name, base_classes, {})
-
-        # if event_loop provided, return an asynchronous client; otherwise synchronous
-        if event_loop:
-            client = dynamic_class(model, connection, event_loop)
-        else:
+            dynamic_class = type(class_name, (DeviceClientSync,), {})
             client = dynamic_class(model, connection)
 
         client.__module__ = f'pyavcontrol.client.{model.id}'
