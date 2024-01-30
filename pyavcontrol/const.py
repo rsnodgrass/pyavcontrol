@@ -13,3 +13,5 @@ DEFAULT_MODEL_LIBRARIES = (
     f"{PACKAGE_PATH}/data/flattened",
     f"{PACKAGE_PATH}/data/src",
 )  # FIXME: remove this later
+
+BAUD_RATES = [ 4800, 9600, 19200, 38400, 57600, 115200 ]
