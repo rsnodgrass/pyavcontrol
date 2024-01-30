@@ -46,6 +46,7 @@ line-length = 88
 all = true
 
 [tool.refurb]
+python_version = "3.11"
 quiet = true
 ignore = [ "FURB184" ]
 

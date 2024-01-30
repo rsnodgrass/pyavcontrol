@@ -23,19 +23,19 @@ def _load_yaml_file(path: str) -> dict:
                 return yaml.safe_load(stream)
     except yaml.YAMLError as exc:
         LOG.error(f'Failed reading YAML {path}: {exc}')
-        return {}
+    return {}
 
 
 class DeviceModelLibrary(ABC):
     @abstractmethod
-    def load_model(self, name: str) -> dict:
+    def load_model(self, name: str) -> DeviceModel | None:
         """
         :param name: model id or a complete path to a file
         """
         raise NotImplementedError('Subclasses must implement!')
 
     @abstractmethod
-    def supported_models(self) -> Set[str]:
+    def supported_models(self) -> frozenset[str]:
         """
         :return: all model ids supported by this library
         """
@@ -69,7 +69,7 @@ class DeviceModelLibrarySync(DeviceModelLibrary, ABC):
 
     def __init__(self, library_dirs: List[str]):
         self._dirs = library_dirs
-        self._supported_models = frozenset()
+        self._supported_models = None
 
     def load_model(self, model_id: str) -> DeviceModel | None:
         if '/' in model_id:
@@ -120,18 +120,17 @@ class DeviceModelLibraryAsync(DeviceModelLibrary, ABC):
     def __init__(self, library_dirs: List[str], event_loop):
         self._loop = event_loop
         self._dirs = library_dirs
-        self._supported_models = set()
         self._executor = ThreadPoolExecutor(max_workers=2)
 
         # FUTURE: implement any actual async library
         self._sync = DeviceModelLibrarySync(library_dirs)
 
-    async def load_model(self, name: str) -> DeviceModel:
+    async def load_model(self, name: str) -> DeviceModel | None:
         return await self._loop.run_in_executor(
             self._executor, self._sync.load_model, name
         )
 
-    async def supported_models(self) -> Set[str]:
+    async def supported_models(self) -> frozenset[str]:
         return await self._loop.run_in_executor(
             self._executor, self._sync.supported_models
         )

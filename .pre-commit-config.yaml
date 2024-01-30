@@ -7,7 +7,7 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
-      - id: trailing-whitespace
+#      - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: requirements-txt-fixer
 
@@ -15,8 +15,7 @@ repos:
     rev: 0.2.8
     hooks:
       - id: brunette
-        args: [--line-length=88, --single-quotes]
-
+        args: [--line-length=88, --single-quotes, --target-version py311]
 
 #-   repo: https://github.com/hadialqattan/pycln
 #    rev: v2.4.0

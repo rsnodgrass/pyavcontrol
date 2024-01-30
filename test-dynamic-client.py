@@ -38,18 +38,18 @@ from pyavcontrol.core import (
 from pyavcontrol.helper import construct_synchronous_client
 
 LOG = logging.getLogger(__name__)
-coloredlogs.install(level='DEBUG')
+coloredlogs.install(level="DEBUG")
 
 # SendFunction = Callable[[list[int]], bool]
 
 
 def main():
-    url = 'socket://localhost:4999'
+    url = "socket://localhost:4999"
     connection = NullConnection()
 
     library = DeviceModelLibrary.create()
     supported_models = library.supported_models()
-    supported_models = ['mcintosh_mx160']
+    supported_models = ["mcintosh_mx160"]
 
     for model_id in supported_models:
         model_def = library.load_model(model_id)
@@ -64,5 +64,5 @@ def main():
         # return
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

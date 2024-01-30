@@ -74,7 +74,7 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
         return True
 
     async def is_connected(self) -> bool:
-        return self._legacy_connection
+        return (self._legacy_connection is not None)
 
     # check if connected, and abort calling provided method if no connection before timeout
     @staticmethod
@@ -92,6 +92,9 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
 
     @ensure_connected
     async def send(self, data: bytes, callback=None, wait_for_response: bool=False):
+        if not self._legacy_connection:
+            LOG.error(f"Missing legacy connection!!!")
+            return
         return await self._legacy_connection.send(data, wait_for_response=wait_for_response)
 
 

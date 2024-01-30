@@ -210,7 +210,7 @@ class DeviceClient(ABC):
         return True
 
 
-@abstractmethod
+    @abstractmethod
     def send_raw(self, data: bytes, wait_for_response: bool=False, return_raw=False):
         """
         Allows sending a raw data to the device. Generally this should not

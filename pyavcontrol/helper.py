@@ -10,7 +10,7 @@ from pyavcontrol import DeviceClient, DeviceModelLibrary
 LOG = logging.getLogger(__name__)
 
 async def construct_async_client(
-    model_id: str, url: str, event_loop, connection_config: dict = None
+    model_id: str, url: str, event_loop, connection_config: dict | None = None
 ) -> DeviceClient:
     """
     Construct an asynchronous client
@@ -41,7 +41,7 @@ async def construct_async_client(
 
 
 def construct_synchronous_client(
-    model_id: str, url: str, connection_config: dict = None
+    model_id: str, url: str, connection_config: dict | None = None
 ) -> DeviceClient:
     """
     Construct a synchronous client

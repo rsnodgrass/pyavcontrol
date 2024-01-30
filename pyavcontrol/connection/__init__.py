@@ -39,13 +39,14 @@ class DeviceConnection:
 
 
 class NullConnection(DeviceConnection):
+    """NullConnection that sends all data to /dev/null; useful for testing"""
     def __init__(self):
         pass
 
     def is_connected(self) -> bool:
         return True
 
-    def send(self, data: bytes, callback=None) -> None:
+    def send(self, data: bytes, callback=None, wait_for_response: bool=False) -> None:
         pass
 
 
@@ -83,6 +84,6 @@ class Connection:
 
             return AsyncDeviceConnection(url, connection_config, event_loop)
         else:
-            from pyavcontrol.connection.async_connection import SyncDeviceConnection
+            from pyavcontrol.connection.sync_connection import SyncDeviceConnection
 
             return SyncDeviceConnection(url, connection_config)

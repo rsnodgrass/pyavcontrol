@@ -14,24 +14,24 @@ import coloredlogs
 from pyavcontrol.helper import construct_async_client
 
 LOG = logging.getLogger(__name__)
-coloredlogs.install(level='DEBUG')
+coloredlogs.install(level="DEBUG")
 
-p = arg.ArgumentParser(description='pyavcontrol client example (asynchronous)')
+p = arg.ArgumentParser(description="pyavcontrol client example (asynchronous)")
 p.add_argument(
-    '--url',
-    help='pyserial supported url for communication (e.g. /dev/tty.usbserial-A501SGSZ or socket://host:4999/)',
-    default='socket://localhost:4999/',
+    "--url",
+    help="pyserial supported url for communication (e.g. /dev/tty.usbserial-A501SGSZ or socket://host:4999/)",
+    default="socket://localhost:4999/",
 )
 p.add_argument(
-    '--model', default='mcintosh_mx160', help='device model (e.g. mcintosh_mx160)'
+    "--model", default="mcintosh_mx160", help="device model (e.g. mcintosh_mx160)"
 )
 p.add_argument(
-    '--baud',
+    "--baud",
     type=int,
     default=115200,
-    help='baud rate if local tty used (default=115200)',
+    help="baud rate if local tty used (default=115200)",
 )
-p.add_argument('-d', '--debug', action='store_true', help='verbose logging')
+p.add_argument("-d", "--debug", action="store_true", help="verbose logging")
 args = p.parse_args()
 
 if args.debug:
@@ -44,15 +44,17 @@ async def main():
 
         # FIXME: connection!
 
-        config_overrides = {'baudrate': args.baud}
-        client = await construct_async_client(args.model, args.url, loop, connection_config=config_overrides)
+        config_overrides = {"baudrate": args.baud}
+        client = await construct_async_client(
+            args.model, args.url, loop, connection_config=config_overrides
+        )
 
         #       help(client.power)
         await client.send_raw(b"!PING?\r")
 
         await client.ping.ping()
 
-        #help(client.volume)
+        # help(client.volume)
 
         result = await client.volume.get()
         print(f"Response: {result}")
@@ -62,7 +64,7 @@ async def main():
         await client.power.off()
 
     except Exception as e:
-        LOG.error(f'Failed for {args.model}', e)
+        LOG.error(f"Failed for {args.model}", e)
         return
 
 
