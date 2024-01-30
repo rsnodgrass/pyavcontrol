@@ -24,7 +24,7 @@ jobs:
       
       - name: Bandit Scan
 #        uses: shundor/bandit-action@v1
-        uses: mdegis/bandit-action@v1
+        uses: mdegis/bandit-action@v1.0.1
         with:
           # Github token of the repository (automatically created by Github)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # needed to get PR info
