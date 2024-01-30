@@ -1,19 +1,5 @@
 [project]
-name = "pyavcontrol"
-version = "0.1.1"
 requires-python = ">=3.10"
-description = "Python Control of Audio/Visual Equipment (RS232/IP)"
-readme = "README.md"
-classifiers = [
-  # How mature is this project? Common values are
-  #   3 - Alpha
-  #   4 - Beta
-  #   5 - Production/Stable
-  "Development Status :: 3 - Alpha",
-  "Programming Language :: Python",
-  "License :: OSI Approved :: MIT License",
-]
-authors = [ { name="Ryan Snodgrass", email="rsnodgrass@gmail.com" } ]
 
 [tool.poetry]
 name = "pyavcontrol"
@@ -38,14 +24,10 @@ pytest = "^8.0.0"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+# pip install .[test]
 [project.optional-dependencies]
-test = [    # pip install .[test]
-    "coloredlogs",
-    "pre-commit"
-]
-doc = [
-    "sphinx",
-]
+test = [ "coloredlogs", "pre-commit" ]
+doc = [ "sphinx" ]
 
 [tool.isort]
 profile = "black"
@@ -55,6 +37,7 @@ balanced_wrapping = true
 [tool.black]
 line-length = 88
 
+# NOTE: brunette does not use pyproject.toml -- see .pre-commit and .github/workflows/bruneete.yml
 #[tool.brunette]
 #line-length = 88
 #single-quotes = true
@@ -76,6 +59,4 @@ expected-line-ending-format = "LF"
 max-line-length-suggestions = 90
 
 [tool.pytest.ini_options]
-pythonpath = [
-  "."
-]
+pythonpath = [ "." ]
