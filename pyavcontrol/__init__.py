@@ -1,4 +1,4 @@
-__version__ = "2024.01.28"
+__version__ = "2024.01.30"
 
 # easily expose key classes and APIs that clients typically use
 from .client import DeviceClient
