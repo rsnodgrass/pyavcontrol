@@ -2,7 +2,7 @@
 id: marantz_av8805
 description: Marantz AV8805
 urls:
-  - https://www.marantz.com/-/media/files/documentmaster/marantzna/us/sr8001_rs232_control_spec_mai_v102.pdf
+  - https://www.marantz.com/-/media/files/documentmaster/marantzna/us/marantz_fy20_sr_nr_protocol_v03_20190827182350130.xls
 
 manufacturer:
   name: Marantz
@@ -47,6 +47,12 @@ vars:
     AUX7: AUX7
     NET: NET
     BT: BT
+  power:
+    ON: On
+    OFF: Off
+  mute:
+    ON: On
+    OFF: Off
 
 api:
   power:
@@ -86,7 +92,7 @@ api:
         cmd:
           fstring: 'MU?'
         msg:
-          regex: 'MU(?P<power>.+)'
+          regex: 'MU(?P<mute>.+)'
           tests:
             'MUOFF':
               mute: 'OFF'

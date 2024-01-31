@@ -238,7 +238,7 @@ api:
             '!AUDTYPE(Unknown)':
               type: Unknown
 
-  buttons:
+  button:
     description: Remote button presses
     actions:
       back:

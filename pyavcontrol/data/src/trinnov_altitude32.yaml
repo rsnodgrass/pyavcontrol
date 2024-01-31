@@ -93,7 +93,7 @@ vars:
 
 
 api:
-  buttons:
+  button:
     description: Remote button presses
     actions:
       light:

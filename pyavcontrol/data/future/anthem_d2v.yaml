@@ -1,0 +1,243 @@
+---
+id: anthem_d2v
+description: Anthem Statement D2v
+urls:
+  - https://www.anthemav.com/downloads/d2v_manual.pdf
+
+manufacturer:
+  name: Anthem
+  model: Statement D2v
+
+settings:
+  min_time_between_commands: 0.25
+
+tested: false
+
+connection:
+  ip:
+    port: 23
+  rs232:
+    baudrate: 9600
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 1.0
+
+vars:
+  zone:
+    1: Main
+    2: Zone 2
+    3: Zone 3
+  power:
+    0: Off
+    1: On
+
+
+format:
+  command:
+    eol: "\n"
+
+  message:
+    eol: "\n"
+
+api:
+  power:
+    description: Power control for the entire system
+    actions:
+      'on':
+        description: Turn entire system on
+        cmd:
+          fstring: 'Z{zone}POW1'
+      'off':
+        description: Turn entire system off
+        cmd:
+          fstring: 'Z{zone}POW0'
+      get:
+        description: Get system power status (0=off; 1=on)
+        cmd:
+          fstring: 'Z{zone}POW?'
+        msg:
+          regex: 'Z(?P<zone>[0-3])POW(?P<power>[01])'
+          tests:
+            'Z11':
+              zone: 1
+              power: 1
+            'PWSTANDBY':
+              power: STANDBY
+
+  mute:
+    description: Mute
+    actions:
+      get:
+        description: Get current Mute status
+        cmd:
+          fstring: 'Z{zone}MU?'
+        msg:
+          regex: 'Z(?P<zone>[0-3])MUT(?P<mute>[01])'
+          tests:
+            'Z1MUT0':
+              zone: 1
+              mute: 0
+            'Z2MUT1':
+              zone: 2
+              mute: 1
+      'off':
+        description: Mute off
+        cmd:
+          fstring: 'Z{zone}MU0'
+      'on':
+        description: Mute on
+        cmd:
+          fstring: 'Z{zone}MU1'
+      toggle:
+        description: Mute toggle
+        cmd:
+          fstring: 'Z{zone}MUt'
+
+  volume:
+    description: Volume controls
+    actions:
+      get:
+        description: Get current volume
+        cmd:
+          fstring: 'Z{zone}VOL?'
+        msg:
+          regex: 'Z(?P<zone>[0-3])VOL(?P<volume>[0-9]{1,3})'
+          tests:
+            'Z1VOL80':
+              zone: 1
+              volume: 80
+      set:
+        description: Set volume to x
+        cmd:
+          fstring: 'Z{zone}VOL{volume}'
+          regex: 'Z(?P<zone>[0-3])VOL(?P<volume>[0-9]{1,3})'
+      down:
+        description: Decrease volume
+        cmd:
+          fstring: 'Z{zone}VDN'
+      up:
+        description: Increase volume
+        cmd:
+          fstring: 'Z{zone}VUP'
+
+  source:
+    description: Input source selection
+    actions:
+      get:
+        description: Get info for currently active source
+        cmd:
+          fstring: 'SI?'
+        msg:
+          regex: 'SI(?P<source>.+)'
+          tests:
+            '!SRC(1) CD':
+              source: 1
+              name: CD
+      set:
+        description: Select source
+        cmd:
+          fstring: 'SI{source}'
+          docs:
+            source: Source to select (integer)
+
+  arc:
+    description: Anthem Room Correction (ARC) controls
+    actions:
+      'off':
+        description: ARC off
+        cmd:
+          fstring: 'Z1ARC0'
+      'on':
+        description: ARC on
+        cmd:
+          fstring: 'Z1ARC1'
+
+  trigger:
+    description: Set triggers on or off
+    actions:
+      'off':
+        description: Trigger off
+        cmd:
+          fstring: 'R{trigger}SET0'
+          regex: 'R(?P<trigger>[12])SET0'
+      'on':
+        description: ARC on
+        cmd:
+          fstring: 'R{trigger}SET1'
+          regex: 'R(?P<trigger>[12])SET1'
+
+  button:
+    description: Remote button presses
+    actions:
+      back:
+        description: Back button
+        cmd:
+          fstring: '!BACK'
+      down:
+        description: Direction Down button
+        cmd:
+          fstring: 'Z1SIM0019'
+      left:
+        description: Direction Left button
+        cmd:
+          fstring: 'Z1SIM0020'
+      right:
+        description: Direction Right button
+        cmd:
+          fstring: 'Z1SIM0022' # FIXME
+      up:
+        description: Direction Up button
+        cmd:
+          fstring: 'Z1SIM0021' # FIXME
+      guide:
+        description: Guide button
+        cmd:
+          fstring: 'Z1SIM0017'
+      number:
+        description: Number button
+        cmd:
+          fstring: 'Z1SIM000{num}'
+          regex: 'Z1SIM000(?P<num>[0-9])'
+          docs:
+            num: single digit integer (0-9)
+      num0:
+        description: Number button 0
+        cmd:
+          fstring: 'Z1SIM0000'
+      num1:
+        description: Number button 1
+        cmd:
+          fstring: 'Z1SIM0001'
+      num2:
+        description: Number button 2
+        cmd:
+          fstring: 'Z1SIM0002'
+      num3:
+        description: Number button 3
+        cmd:
+          fstring: 'Z1SIM0003'
+      num4:
+        description: Number button 4
+        cmd:
+          fstring: 'Z1SIM0004'
+      num5:
+        description: Number button 5
+        cmd:
+          fstring: 'Z1SIM0005'
+      num6:
+        description: Number button 6
+        cmd:
+          fstring: 'Z1SIM0006'
+      num7:
+        description: Number button 7
+        cmd:
+          fstring: 'Z1SIM0007'
+      num8:
+        description: Number button 8
+        cmd:
+          fstring: 'Z1SIM0008'
+      num9:
+        description: Number button 9
+        cmd:
+          fstring: 'Z1SIM0009'
