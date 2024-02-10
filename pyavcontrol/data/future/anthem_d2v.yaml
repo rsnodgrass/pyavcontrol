@@ -14,8 +14,6 @@ settings:
 tested: false
 
 connection:
-  ip:
-    port: 23
   rs232:
     baudrate: 9600
     bytesize: 8

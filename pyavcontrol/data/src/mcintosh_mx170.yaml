@@ -2,6 +2,8 @@
 id: mcintosh_mx170
 name: McIntosh MX170 Protocol
 description: McIntosh MX170 Protocol [2019-11-27 MX170 Serial Control Manual V2]
+urls:
+  - http://www.mcintoshcompendium.com/Compendium%20Docs/Home%20Theater%20Controllers/PDFs/MX170.pdf
 
 import_models:
   - mcintosh_mx160
