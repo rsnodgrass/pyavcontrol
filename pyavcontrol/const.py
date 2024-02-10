@@ -12,6 +12,7 @@ PACKAGE_PATH = os.path.dirname(__file__)
 DEFAULT_MODEL_LIBRARIES = (
     f"{PACKAGE_PATH}/data/flattened",
     f"{PACKAGE_PATH}/data/src",
+    f"{PACKAGE_PATH}/data/future",
 )  # FIXME: remove this later
 
 BAUD_RATES = [ 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000 ]

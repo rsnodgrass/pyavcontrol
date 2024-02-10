@@ -7,6 +7,7 @@ id: mcintosh_mx160
 description: McIntosh MX160 Protocol [2017-09-18 MX160 Serial Control Manual V7]
 urls:
   - https://www.mcintoshlabs.com/legacy-products/home-theater-processors/MX160
+  - http://www.mcintoshcompendium.com/Compendium%20Docs/Home%20Theater%20Controllers/PDFs/MX160.pdf
   - https://www.docdroid.net/OnipkTW/mx160-serial-control-manual-v3-pdf
 
 manufacturer:

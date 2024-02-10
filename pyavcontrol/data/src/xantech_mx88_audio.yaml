@@ -15,15 +15,21 @@ manufacturer:
 tested: false
 
 connection:
+  ip:
+    port: 23
+    timeout: 0.50
+    delay_between_commands: 0.2
   rs232:
-    baudrate: 9600
+    baudrate: 57600 # 9600 many models, 57600 for MX88ai
     bytesize: 8
     parity: N
     stopbits: 1
-    timeout: 1.0
+    timeout: 0.50
 
 format:
   command:
+    prefix: ''
+    postfix: '\r'
     eol: "\r"    # CR Carriage Return
     separator: '+'
 
