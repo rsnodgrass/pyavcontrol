@@ -34,19 +34,6 @@ device model based purely on the YAML definition and unit tests against those de
 
 Visit the [community support discussion thread](https://community.home-assistant.io/t/mcintosh/) for issues with this library.
 
-## Emulator
-
-Of particular interest, is the included device emulator which takes a properly defined
-device's protocol and starts a server that will respond to all commands as if the
-a physical device was connected. This is exceptionally useful for testing AND can be
-used by clients developed in other languages as well.
-
-Example starting the McIntosh MX160 emulator:
-
-```
-./emulator.py --model mx160 -d
-```
-
 ## Supported Equipment
 
 See [SUPPORTED.md](SUPPORTED.md) for the complete list of supported equipment.
