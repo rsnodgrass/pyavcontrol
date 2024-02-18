@@ -104,18 +104,16 @@ await client.volume.set(50)
 ### Connection URL
 
 This interface uses URLs for specifying the communication transport
-to use, as defined in [pyserial](https://pyserial.readthedocs.io/en/latest/url_handlers.html), to allow a wide variety of underlying mechanisms.
+to use, as defined in [pyserial](https://pyserial.readthedocs.io/en/latest/url_handlers.html), to allow a wide variety of underlying communication mechanisms.
 
-For example:
+Example URL formats supported by pyserial:
 
-| URL Format               | Notes                                                                                               |
+| URL                      | Notes                                                                                               |
 | ------------------------ | --------------------------------------------------------------------------------------------------- |
 | `/dev/ttyUSB0`           | directly attached serial device (Linux)                                                             |
 | `COM3`                   | directly attached serial device (Windows)                                                           |
 | `socket://<host>:<port>` | remote service exposing RS232 over TCP (natively or using something like [Virtual IP2SL](https://github.com/rsnodgrass/virtual-ip2sl)) |
 | `socket://mx160.local:84` | direct connection to MX160's port 84 interface |
-
-* See [pyserial](https://pyserial.readthedocs.io/en/latest/url_handlers.html) for additional URL formats supported.
 
 ## Future Ideas
 
