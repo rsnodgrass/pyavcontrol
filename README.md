@@ -115,9 +115,8 @@ For example:
 | `socket://<host>:<port>` | remote host that exposes RS232 over TCP ``*`` |
 | `socket://mx160.local:84` | direct connection to MX160's port 84 interface |
 
-* See [IP2SL](https://github.com/rsnodgrass/virtual-ip2sl) for example RS2332 over TCP.
-
-See [pyserial](https://pyserial.readthedocs.io/en/latest/url_handlers.html) for additional formats supported.
+* See [Virtual IP2SL](https://github.com/rsnodgrass/virtual-ip2sl) for example for how to expose an RS232 device over TCP.
+* See [pyserial](https://pyserial.readthedocs.io/en/latest/url_handlers.html) for additional URL formats supported.
 
 ## Future Ideas
 
