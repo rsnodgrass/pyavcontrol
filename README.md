@@ -85,10 +85,10 @@ DeviceModelLibrary or DeviceClient objects.
 Async example:
 
 ```python
-    loop = asyncio.get_event_loop()
+loop = asyncio.get_event_loop()
 
 library = DeviceModelLibrary.create(event_loop=loop)
-model_definition = library.load_model("mcintosh_mx160")
+model_definition = library.load_model('mcintosh_mx160')
 
 client = DeviceClient.create(
     model_definition,
@@ -108,14 +108,13 @@ to use, as defined in [pyserial](https://pyserial.readthedocs.io/en/latest/url_h
 
 For example:
 
-| URL                      | Notes                                                                                               |
+| URL Format               | Notes                                                                                               |
 | ------------------------ | --------------------------------------------------------------------------------------------------- |
 | `/dev/ttyUSB0`           | directly attached serial device (Linux)                                                             |
 | `COM3`                   | directly attached serial device (Windows)                                                           |
-| `socket://<host>:<port>` | remote host that exposes RS232 over TCP ``*`` |
+| `socket://<host>:<port>` | remote service exposing RS232 over TCP (natively or using something like [Virtual IP2SL](https://github.com/rsnodgrass/virtual-ip2sl)) |
 | `socket://mx160.local:84` | direct connection to MX160's port 84 interface |
 
-* See [Virtual IP2SL](https://github.com/rsnodgrass/virtual-ip2sl) for example for how to expose an RS232 device over TCP.
 * See [pyserial](https://pyserial.readthedocs.io/en/latest/url_handlers.html) for additional URL formats supported.
 
 ## Future Ideas
