@@ -126,3 +126,5 @@ Example URL formats supported by pyserial:
 - [avemu - A/V Equipment Emulator](https://github.com/rsnodgrass/avemu) (very useful for testing client libraries)
 - [Earlier McIntosh control in Home Assistant](https://community.home-assistant.io/t/need-help-using-rs232-to-control-a-receiver/95210/8)
 - https://drivers.control4.com/solr/drivers/browse?q=mcintosh
+- [RS232 to USB cable](https://www.amazon.com/RS232-to-USB/dp/B0759HSLP1?tag=carreramfi-20)
+
