@@ -1,17 +1,20 @@
 ---
 id: anthem_d2v
-description: Anthem Statement D2v
-urls:
-  - https://www.anthemav.com/downloads/d2v_manual.pdf
 
-manufacturer:
-  name: Anthem
-  model: Statement D2v
+info:
+  manufacturer: Anthem
+  models:
+    - Statement D2
+    - Statement D2v
+    - Statement D2v 3D
+  tested: false
+  urls:
+    - https://www.anthemav.com/downloads/d2v_manual.pdf
 
-settings:
+protocol:
   min_time_between_commands: 0.25
-
-tested: false
+  command_eol: "\n"
+  message_eol: "\n"
 
 connection:
   rs232:
@@ -29,14 +32,6 @@ vars:
   power:
     0: Off
     1: On
-
-
-format:
-  command:
-    eol: "\n"
-
-  message:
-    eol: "\n"
 
 api:
   power:

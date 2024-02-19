@@ -1,17 +1,14 @@
 ---
 id: hdfury_vrroom
 description: HDFury VRROOM Automation Protocol over RS232 and IP (FW 0.61, 2023-05-24)
-urls:
-  - https://www.hdfury.com/docs/HDfuryVRRoom.pdf
 
-settings:
-  min_time_between_commands: 0.4
-
-manufacturer:
-  name: HDFury
-  model: VRROOM
-
-tested: false
+info:
+  manufacturer: HDFury
+  models:
+    - VRROOM
+  tested: false
+  urls:
+    - https://www.hdfury.com/docs/HDfuryVRRoom.pdf
 
 connection:
   ip:
@@ -22,13 +19,13 @@ connection:
     parity: N
     stopbits: 1
     timeout: 1.0
+    min_time_between_commands: 0.4
 
-format:
-  command:
-    eol: "\n"
-
-  message:
-    eol: "\r\n"
+protocol:
+  encoding: ascii
+  command_eol: "\n"
+  message_eol: "\r\n"
+  min_time_between_commands: 0.4
 
 vars:
   opmode:

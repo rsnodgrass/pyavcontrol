@@ -20,11 +20,12 @@ class Info(BaseModel):
     tested: Optional[bool]
 
 class RS232(BaseModel):
-    baudrate: Optional[Literal[BAUD_RATES]] = 9600
-    bytesize: Optional[Literal[ALL_BYTESIZES]] = EIGHTBITS
-    parity: Optional[ALL_PARITY] = PARITY_NONE
-    stopbits: Optional[ALL_STOP_BITS] = STOPBITS_ONE
-    timeout: Optional[float] = DEFAULT_TIMEOUT  # pyserial read timeout
+    baudrate: Literal[BAUD_RATES] = 9600
+    bytesize: Literal[ALL_BYTESIZES] = EIGHTBITS
+    parity: ALL_PARITY = PARITY_NONE
+    stopbits: ALL_STOP_BITS = STOPBITS_ONE
+
+    timeout: Optional[float = DEFAULT_TIMEOUT  # pyserial read timeout
     encoding: Optional[str] = DEFAULT_ENCODING
     min_time_between_commands: Optional[float] = 0.25
 

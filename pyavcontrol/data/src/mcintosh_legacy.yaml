@@ -1,41 +1,36 @@
 ---
 id: mcintosh_legacy
-name: Original McIntosh RS232 Protocol
-description: Original RS232 protocol for McIntosh MX121/MX122/MX123 and compatible
-  models
-urls:
-  - https://github.com/RobKikta/IntoBlue/blob/master/McIntosh_RS232ControlApplicationNote.pdf
-  - https://community.home-assistant.io/t/need-help-using-rs232-to-control-a-receiver/95210/4
+description: Original RS232 protocol for McIntosh MX121/MX122/MX123 and compatible models
 
-manufacturer:
-  name: McIntosh
+info:
+  manufacturer: McIntosh
   models:
-    MX118:
-    MX119:
-    MX120:
-    MX121:
-    MX122:
-    MX123:
-    MX130:
-    MX132:
-    MX134:
-    MX135:
-    MX136:
-    MX150:
-    MX151:
-    MHT100:
-    MHT200:
+    - MX118
+    - MX119
+    - MX120
+    - MX121
+    - MX122
+    - MX123
+    - MX130
+    - MX132
+    - MX134
+    - MX135
+    - MX136
+    - MX150
+    - MX151
+    - MHT100
+    - MHT200
+  urls:
+    - https://github.com/RobKikta/IntoBlue/blob/master/McIntosh_RS232ControlApplicationNote.pdf
+    - https://community.home-assistant.io/t/need-help-using-rs232-to-control-a-receiver/95210/4
 
-format:
-  command:
-    eol: "\r"    # CR Carriage Return
-    separator: '#'     # FIXME: is this old?
+protocol:
+  command_eol: "\r"    # CR Carriage Return
+  command_separator: '#' # FIXME: is this old?
 
-  message:
-    eol: "\r"
-    separator: '#'
+  message_eol: "\r"
+  message_separator: '#' # FIXME: remove?
 
-api_settings:
   min_time_between_commands: 0.4
 
 vars:

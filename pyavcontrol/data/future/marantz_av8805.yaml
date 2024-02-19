@@ -1,14 +1,13 @@
 ---
 id: marantz_av8805
-description: Marantz AV8805
-urls:
-  - https://www.marantz.com/-/media/files/documentmaster/marantzna/us/marantz_fy20_sr_nr_protocol_v03_20190827182350130.xls
 
-manufacturer:
-  name: Marantz
-  model: AV8805
-
-tested: false
+info:
+  manufacturer: Marantz
+  models:
+   - AV8805
+  tested: false
+  urls:
+    - https://www.marantz.com/-/media/files/documentmaster/marantzna/us/marantz_fy20_sr_nr_protocol_v03_20190827182350130.xls
 
 connection:
   ip:
@@ -20,12 +19,9 @@ connection:
     stopbits: 1
     timeout: 1.0
 
-format:
-  command:
-    eol: "\r"
-
-  message:
-    eol: "\r"
+protocol:
+  command_eol: "\r"
+  message_eol: "\r"
 
 vars:
   source:

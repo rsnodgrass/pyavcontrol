@@ -1,13 +1,11 @@
 ---
 id: lyngdorf_mp60
-urls:
-  - https://
 
 manufacturer:
   name: Lyngdorf
-  model: MP-60
-
-tested: false
+  models:
+    - MP-60
+  tested: false
 
 connection:
   ip:

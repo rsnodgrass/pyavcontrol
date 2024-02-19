@@ -1,15 +1,14 @@
 ---
 id: acurus_m8
-name: Acurus M8
 description: Acurus Amplifier Control Protocol 1.0
-urls:
-  - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
 
-manufacturer:
-  name: Acurus
-  model: M8
-
-tested: false
+info:
+  manufacturer: Acurus
+  models:
+    - M8
+  tested: false
+  urls:
+    - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
 
 connection:
   rs232:
@@ -17,16 +16,14 @@ connection:
     bytesize: 8
     parity: N
     stopbits: 1
-    timeout: 2.0
+    timeout: 1.0
 
-format:
-  command:
-    format: '{cmd}{eol}'
-    eol: "\r"    # CR Carriage Return
+protocol:
+  command_eol: "\r"    # CR Carriage Return
+  command_format: '{cmd}{eol}'
 
-  message:
-    format: '{msg}{eol}'
-    eol: "\r\n"
+  message_format: '{msg}{eol}'
+  message_eol: "\r\n"
 
 api:
   power:
