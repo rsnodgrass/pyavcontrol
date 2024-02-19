@@ -4,8 +4,9 @@ id: jbl_sdp75
 import_models:
   - trinnov_altitude32
 
-manufacturer:
-  name: JBL Synthesis
-  model: SDP-75
+info:
+  manufacturer: JBL Synthesis
+  models:
+    - SDP-75
+  tested: false
 
-tested: false

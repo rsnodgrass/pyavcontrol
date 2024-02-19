@@ -1,18 +1,18 @@
 ---
 id: xantech_mx88_audio
 description: Xantech matrix audio only MRAUDIO8x8, MRAUDIO8x8m, MX88a, MX88ai
-urls:
-  - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
 
-manufacturer:
+info:
   name: Xantech
+  model: MRAUDIO8X8
   models:
     - MRAUDIO8X8
     - MRAUDIO8X8m
     - MX88a
     - MX88ai
-
-tested: false
+  tested: false
+  urls:
+    - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
 
 connection:
   ip:

@@ -6,13 +6,11 @@
 id: mcintosh_mx160
 description: McIntosh MX160 Protocol [2017-09-18 MX160 Serial Control Manual V7]
 
-manufacturer:
-  name: McIntosh
-  model: MX160
-
 info:
   name: McIntosh
-  model: MX160
+  models:
+    - MX160
+  type: processor
   tested: true
   urls:
     - https://www.mcintoshlabs.com/legacy-products/home-theater-processors/MX160
@@ -27,33 +25,16 @@ connection:
     stopbits: 1
     timeout: 2.0
     encoding: 'ascii' # FIXME: remove
-    response_eol: '\r'
+    response_eol: "\r"
 
-hardware:
-  type: processor
-  features:
-    zones: 8
-    sources: 8
+  # upon connection, initialize device with these commands
+  connection_init: '!VERB(2)'
 
 protocol:
   encoding: 'ascii'
   command_eol: "\r" # CR Carriage Return
   message_eol: "\r"
-
-format:
-  encoding: 'ascii'
-
-  command:
-    eol: "\r"    # CR Carriage Return
-
-  message:
-    eol: "\r"
-
-settings:
   min_time_between_commands: 0.4
-
-    # upon connection, initialize device with these commands
-  connection_init: '!VERB(2)'
 
 vars:
   zone:

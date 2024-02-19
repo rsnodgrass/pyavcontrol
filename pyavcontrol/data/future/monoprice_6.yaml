@@ -1,14 +1,14 @@
 ---
 id: monoprice_6
-description: Monoprice API
-urls:
-  - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
 
 manufacturer:
   name: Monoprice
-  model: '6-Zone (model 10761)'
-
-tested: false
+  models:
+    - MPR-6ZHMAUT
+    - Model 10761
+  tested: false
+  urls:
+    - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
 
 connection:
   rs232:
@@ -18,15 +18,12 @@ connection:
     stopbits: 1
     timeout: 2.0
 
-format:
-  command:
-    format: <{cmd}{eol}
-    eol: "\r"    # CR Carriage Return
-    separator: '#'
-
-  message:
-    format: '>{msg}{eol}'
-    eol: "\r"
+protocol:
+  command_format: '<{cmd}{eol}'
+  command_eol: "\r"    # CR Carriage Return
+  command_separator: '#'
+  message_format: '>{msg}{eol}'
+  message_eol: "\r"
 
 api:
   zone:

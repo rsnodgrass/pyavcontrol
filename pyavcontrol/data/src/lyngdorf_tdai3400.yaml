@@ -1,12 +1,13 @@
 ---
 id: lyngdorf_tdai3400
-description: Lyngdorf TDAI-3400 control
-urls:
-  - https://site.currants.info/wp-content/uploads/2021/07/TDAI-3400-External-Control-Manual-March-2021.pdf
 
-manufacturer:
-  name: Lyngdorf
-  model: TDAI-3400
+model:
+  manufacturer: Lyngdorf
+  models:
+   - TDAI-3400
+  tested: false
+  urls:
+    - https://site.currants.info/wp-content/uploads/2021/07/TDAI-3400-External-Control-Manual-March-2021.pdf
 
 models:
   - name: Lyngdorf MP-40
@@ -27,8 +28,6 @@ models:
   - name: Lyngdorf P300
     model: p300
 
-tested: false
-
 connection:
   ip:
     port: 84
@@ -39,10 +38,8 @@ connection:
     stopbits: 1
     timeout: 2.0
 
-format:
-  command:
-    eol: "\r"    # CR Carriage Return
-
+protocol:
+  command_eol: "\r"    # CR Carriage Return
 
 # FIXME:
 # !AUDIOSTATUS?

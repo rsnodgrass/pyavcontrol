@@ -1,11 +1,17 @@
 ---
 id: mcintosh_mx180
-name: McIntosh MX180 Protocol
-urls:
-  - http://www.mcintoshcompendium.com/Compendium%20Docs/Home%20Theater%20Controllers/PDFs/MX180.pdf
 
 import_models:
   - mx170
+
+info:
+  manufacturer: McIntosh
+  models:
+   - MX180
+  tested: false
+  urls:
+    - http://www.mcintoshcompendium.com/Compendium%20Docs/Home%20Theater%20Controllers/PDFs/MX180.pdf
+
 
 ref: Based on MX180 Serial Control Manual V1 (2022-03-29)
 delete:

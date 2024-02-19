@@ -37,7 +37,7 @@ class DeviceModel:
     def manufacturer(self) -> str:
         """
         :return: the model name
-        @deprecated remove this and provide a model/manufacturer dataclass/pydantic
+        @deprecated remove this and provide a model/manufacturer dataclass/pydantic via info
         """
         return self._definition.get('manufacturer', {}).get('name', 'Unknown')
 
@@ -45,7 +45,7 @@ class DeviceModel:
     def model(self) -> str:
         """
         :return: the model name
-        @deprecated remove this and provide a model/manufacturer dataclass/pydantic
+        @deprecated remove this and provide a model/manufacturer dataclass/pydantic via info
         """
         return self._definition.get('manufacturer', {}).get('model', 'Unknown')
 

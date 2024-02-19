@@ -1,12 +1,9 @@
 ---
 id: trinnov_altitude32
+
 description: Trinnov Altitude and JBL Synthesis Processor Automation Protocol over
   RS232 and IP [2016-11-22 v1.13]
-urls:
-  - https://www.trinnov.com/site/assets/files/1219/al32_usman_14_10_19_he_0001_sd.pdf
-  - https://docplayer.net/176487263-Trinnov-altitude-processor-automation-protocol.html
-  - https://www.jblsynthesis.com/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw45d0257f/pdfs/JBL%20Synthesis%20SDP-75_Automation%20Protocol%20Guide.pdf
-  - https://github.com/bjorg/RadiantPi.Trinnov.Altitude
+
 
 contacts:
   - remy.bruno@trinnov.com
@@ -15,20 +12,17 @@ contacts:
 # Port 44100, Altitude/Amethyst/JBL SDP-XX. Applies to JBL SDP-65 and SDP-75.
 # JBL SDP-35/38 and SDP-55/58 use port 50000, category SDP-35/38/55/58 Zone 1.
 
-settings:
-  min_time_between_commands: 0.4
-
-  # upon connection, initialize device with these commands
-  connection_init: id pyavcontrol_api
-
-manufacturer:
-  name: Trinnov
-  model: Altitude
-
-  name2: JBL Synthesis
-  model2: SDP-75
-
-tested: false
+info:
+  manufacturer: Trinnov
+  models:
+    - Altitude32
+  type: processor
+  urls:
+    - https://www.trinnov.com/site/assets/files/1219/al32_usman_14_10_19_he_0001_sd.pdf
+    - https://docplayer.net/176487263-Trinnov-altitude-processor-automation-protocol.html
+    - https://www.jblsynthesis.com/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw45d0257f/pdfs/JBL%20Synthesis%20SDP-75_Automation%20Protocol%20Guide.pdf
+    - https://github.com/bjorg/RadiantPi.Trinnov.Altitude
+  tested: false
 
 connection:
   ip:
@@ -41,15 +35,14 @@ connection:
     stopbits: 1
     timeout: 1.0
 
-hardware:
-  type: processor
+  # upon connection, initialize device with these commands
+  connection_init: id pyavcontrol_api
 
-format:
-  command:
-    eol: "\r"    # CR Carriage Return
 
-  message:
-    eol: "\r"
+protocol:
+  command_eol: "\r"    # CR Carriage Return
+  message_eol: "\r"
+  min_time_between_commands: 0.4
 
 vars:
   upmixer:

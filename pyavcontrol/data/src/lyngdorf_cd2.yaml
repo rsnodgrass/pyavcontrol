@@ -1,14 +1,15 @@
 ---
 id: lyngdorf_cd2
-urls:
-  - https://site.currants.info/wp-content/uploads/2021/07/TDAI-3400-External-Control-Manual-March-2021.pdf
 
-manufacturer:
-  name: Lyngdorf
-  model: CD-2
-
-tested: false
 # NOTE: None of the state subscriptions have been defined (SUBSCRIBETRACK. etc)
+
+info:
+  manufacturer: Lyngdorf
+  models:
+    - CD-2
+  tested: false
+  urls:
+    - https://site.currants.info/wp-content/uploads/2021/07/TDAI-3400-External-Control-Manual-March-2021.pdf
 
 connection:
   ip:
@@ -20,9 +21,8 @@ connection:
     stopbits: 1
     timeout: 2.0
 
-format:
-  command:
-    eol: "\r\n" # CR/LF
+protocol:
+  command_eol: "\r\n" # CR/LF
 
 api:
   device:
