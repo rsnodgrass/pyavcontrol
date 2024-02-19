@@ -1,0 +1,55 @@
+---
+id: classe_omicron
+
+info:
+  manufacturer: Classé Audio
+  models:
+   - Omicron
+  type: amp
+  tested: false
+  urls:
+    - https://support.classeaudio.com/files/documents/automation_and_control/rs232/CLASSE_OMICRON_Mono_RS232_Protocol.pdf
+
+connection:
+  rs232:
+    baudrate: 9600
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 0.15
+
+protocol:
+  command_eol: "\r"
+
+api:
+  power:
+    description: Power control for the entire system
+    actions:
+      'on':
+        description: Turn on
+        cmd:
+          fstring: 'PW1'
+      'off':
+        description: Turn off
+        cmd:
+          fstring: 'PW0'
+      toggle:
+        description: Toggle power
+        cmd:
+          fstring: 'PWR'
+
+  mute:
+    description: Mute
+    actions:
+      'on':
+        description: Mute on
+        cmd:
+          fstring: 'MUT1'
+      'off':
+        description: Mute off
+        cmd:
+          fstring: 'MUT0'
+      toggle:
+        description: Mute toggle
+        cmd:
+          fstring: 'MUT'
