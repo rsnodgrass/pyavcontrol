@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
-class _Config:
+class _ConfigKeys:
     api = 'api'
     baudrate = 'baudrate'
     clear_before_new_commands = 'clear_before_new_commands'
@@ -20,7 +20,7 @@ class _Config:
     urls = 'urls'
 
 
-CONFIG = _Config()
+CONFIG = _ConfigKeys()
 
 # FIXME: see schema!
 
