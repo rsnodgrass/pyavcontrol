@@ -1,0 +1,76 @@
+---
+id: classe_ssp600
+
+info:
+  manufacturer: Classe Audio
+  models:
+   - SSP-300
+   - SSP-600
+  tested: false
+  urls:
+    - https://support.classeaudio.com/files/documents/automation_and_control/rs232/CLASSE_SSP-300-600_RS232_Protocol.pdf
+
+connection:
+  rs232:
+    baudrate: 9600
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 0.15
+
+protocol:
+  command_eol: "\r"
+  command_prefix: "S600"  # FIXME: S300 for SSP0-300
+  message_eol: "\r\n"
+  message_prefix: "!"
+
+api:
+  mute:
+    description: Mute
+    actions:
+      get:
+        description: Get current Mute status
+        cmd:
+          fstring: 'STAT MAIN'
+        msg:
+          regex: 'SY VOLA \d+\s*(?P<mute>[muted]+)'
+          tests:
+            'SY VOLA 1 muted':
+              mute: 'muted'
+            'SY VOLA 1':
+      'on':
+        description: Mute on
+        cmd:
+          fstring: 'MUTE'
+      'off':
+        description: Mute off
+        cmd:
+          fstring: 'UNMT'
+
+  volume:
+    description: Volume controls
+    actions:
+      get:
+        description: Get current volume
+        cmd:
+          fstring: 'STAT MAIN'
+        msg:
+          regex: 'SY VOLA (?P<volume>\d+)\s*.+'
+          tests:
+            'SY VOLA 50 muted':
+              volume: 50
+            'SY VOLA 1':
+              volume: 1
+      set:
+        description: Set volume to x
+        cmd:
+          fstring: 'VOLA {volume}'
+          regex: 'VOLA (?P<volume>[0-9]{1,2})'
+      down:
+        description: Decrease volume
+        cmd:
+          fstring: 'MVOL-'
+      up:
+        description: Increase volume
+        cmd:
+          fstring: 'MVOL+'
