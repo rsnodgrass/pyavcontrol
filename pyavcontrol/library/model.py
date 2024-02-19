@@ -5,8 +5,6 @@ from pyavcontrol.const import DEFAULT_ENCODING
 LOG = logging.getLogger(__name__)
 
 
-
-
 class DeviceModel:
     def __init__(self, model_id: str, definition: dict, validate_definition=True):
         self._model_id = model_id
