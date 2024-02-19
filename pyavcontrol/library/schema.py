@@ -25,7 +25,7 @@ class RS232(BaseModel):
     parity: ALL_PARITY = PARITY_NONE
     stopbits: ALL_STOP_BITS = STOPBITS_ONE
 
-    timeout: Optional[float = DEFAULT_TIMEOUT  # pyserial read timeout
+    timeout: Optional[float] = DEFAULT_TIMEOUT  # pyserial read timeout
     encoding: Optional[str] = DEFAULT_ENCODING
     min_time_between_commands: Optional[float] = 0.25
 
