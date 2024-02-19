@@ -41,7 +41,7 @@ class SyncDeviceConnection(DeviceConnection, ABC):
 
         # FIXME: remove the following
         config = connection_config # FIXME: remove
-        self._eol = config.get(CONFIG.response_eol, DEFAULT_EOL).encode(self._encoding)
+        self._eol = config.get(CONFIG.message_eol, DEFAULT_EOL).encode(self._encoding)
 
         # FIXME: all min time between commands should probably be at the client level and
         # not at the raw connection... move up!
