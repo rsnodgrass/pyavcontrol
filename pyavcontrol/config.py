@@ -22,6 +22,8 @@ class _Config:
 
 CONFIG = _Config()
 
+# FIXME: see schema!
+
 # FIXME: other explorations below
 # https://dev.to/eblocha/using-dataclasses-for-configuration-in-python-4o53
 #
@@ -29,41 +31,6 @@ CONFIG = _Config()
 # config = Order.from_dict(raw_config)
 # config.customer.first_name
 
-
-@dataclass
-class ManufacturerInfo:
-    name: str
-    model: str
-
-    def __init__(self, conf):
-        self.name = conf[CONFIG.name]
-        self.model = conf[CONFIG.model]
-
-    def __post_init__(self):
-        if not self.name:
-            raise ValueError('name must be defined')
-        if not self.model:
-            raise ValueError('model must be defined')
-
-
-@dataclass
-class ModelDefinition:
-    id: str
-    description: str
-    urls: list[str]
-
-    manufacturer: ManufacturerInfo
-
-    def __init__(self, conf: dict):
-        self.id = conf[CONFIG.id]
-        self.description = conf[CONFIG.description]
-        self.urls = conf[CONFIG.urls]
-
-        self.manufacturer = ManufacturerInfo(conf)
-
-    def __post_init__(self):
-        if not self.id:
-            raise ValueError('id must be defined')
 
 
 # FIXME: if we want completely dynamic config we can use below
