@@ -72,6 +72,9 @@ class DeviceModel:
         """
         Validate that the given device model definition is valid
         """
+        if not model_def:
+            return False
+
         model_id = model_def.get('id', 'unknown')
         #        name = model_def.get("name")
         #        if not name:
