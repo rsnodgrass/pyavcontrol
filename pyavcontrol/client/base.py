@@ -221,9 +221,14 @@ class DeviceClient(ABC):
         """
         raise NotImplementedError()
 
-    # @abstractmethod
-    def describe(self) -> dict:
-        return self._model.definition
+    @property
+    def model(self) -> DeviceModel:
+        """
+        :return: the model this client uses for communication and commands with the device
+        """
+        return self._model
+
+
 
     @classmethod
     def create(
