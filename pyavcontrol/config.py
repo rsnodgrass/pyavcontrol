@@ -1,8 +1,5 @@
 from dataclasses import dataclass
 
-# FIXME: also consider pydantic
-
-
 @dataclass(frozen=True)
 class _Config:
     api = 'api'
@@ -16,6 +13,11 @@ class _Config:
     protocol = 'protocol'
     baudrate = 'baudrate'
     clear_before_new_commands = 'clear_before_new_commands'
+    id = 'id'
+    urls = 'urls'
+    model = 'model'
+    name = 'name'
+    description = 'description'
 
 
 CONFIG = _Config()
@@ -34,8 +36,8 @@ class ManufacturerInfo:
     model: str
 
     def __init__(self, conf):
-        self.name = conf['name']
-        self.model = conf['model']
+        self.name = conf[CONFIG.name]
+        self.model = conf[CONFIG.model]
 
     def __post_init__(self):
         if not self.name:
@@ -53,9 +55,9 @@ class ModelDefinition:
     manufacturer: ManufacturerInfo
 
     def __init__(self, conf: dict):
-        self.id = conf['id']
-        self.description = conf['description']
-        self.urls = conf['urls']
+        self.id = conf[CONFIG.id]
+        self.description = conf[CONFIG.description]
+        self.urls = conf[CONFIG.urls]
 
         self.manufacturer = ManufacturerInfo(conf)
 
