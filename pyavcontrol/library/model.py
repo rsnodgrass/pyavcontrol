@@ -1,6 +1,10 @@
 import logging
 
+from pyavcontrol.const import DEFAULT_ENCODING
+
 LOG = logging.getLogger(__name__)
+
+
 
 
 class DeviceModel:
@@ -13,26 +17,42 @@ class DeviceModel:
 
     @property
     def encoding(self) -> str:
-        return 'ascii'  # FIXME
+        return self._definition.get('format', {}).get('encoding', DEFAULT_ENCODING)
 
     @property
     def id(self) -> str:
         """
-        returns the unique identifier for this model definition
+        :return: the unique identifier for this model definition
         """
         return self._model_id
 
     @property
+    def manufacturer(self) -> str:
+        """
+        :return: the model name
+        @deprecated remove this and provide a model/manufacturer dataclass/pydantic
+        """
+        return self._definition.get('manufacturer', {}).get('name', 'Unknown')
+
+    @property
+    def model(self) -> str:
+        """
+        :return: the model name
+        @deprecated remove this and provide a model/manufacturer dataclass/pydantic
+        """
+        return self._definition.get('manufacturer', {}).get('model', 'Unknown')
+
+    @property
     def definition(self) -> dict:
         """
-        returns the raw definition for this model
+        :return: the raw definition for this model
         """
         return self._definition
 
     def validate(self) -> bool:
         """
-        Validate the device model data structure using pydantic (allows multiple physical representations
-        such as YAML/JSON/etc to be read in in the future).
+        Validate the device model data structure using pydantic (allows multiple physical
+        representations such as YAML/JSON/etc to be read in in the future).
         """
         if not DeviceModel.validate_model_definition(self._definition):
             LOG.warning(f'Error in model {self._model_id} definition')

@@ -9,6 +9,11 @@ DEFAULT_TIMEOUT = 1.0
 
 PACKAGE_PATH = os.path.dirname(__file__)
 
+PROCESSOR_TYPE = 'processor'
+RECEIVER_TYPE = 'receiver'
+MATRIX_TYPE = 'matrix'
+ALL_DEVICE_TYPES = [ PROCESSOR_TYPE, RECEIVER_TYPE, MATRIX_TYPE ]
+
 DEFAULT_MODEL_LIBRARIES = (
     f"{PACKAGE_PATH}/data/flattened",
     f"{PACKAGE_PATH}/data/src",
