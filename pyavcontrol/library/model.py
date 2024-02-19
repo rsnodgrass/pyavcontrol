@@ -27,6 +27,13 @@ class DeviceModel:
         return self._model_id
 
     @property
+    def info(self) -> dict:
+        """
+        :return: info about the model for this specific device
+        """
+        return {}
+
+    @property
     def manufacturer(self) -> str:
         """
         :return: the model name
