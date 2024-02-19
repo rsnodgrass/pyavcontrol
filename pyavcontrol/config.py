@@ -3,21 +3,21 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class _Config:
     api = 'api'
-    command_eol = 'command_eol'
-    command_separator = 'command_separator'
-    message_eol = 'message_eol'
-    serial_config = 'serial_config'
-    encoding = 'encoding'
-    timeout = 'timeout'
-    min_time_between_commands = 'min_time_between_commands'
-    protocol = 'protocol'
     baudrate = 'baudrate'
     clear_before_new_commands = 'clear_before_new_commands'
+    command_eol = 'command_eol'
+    command_separator = 'command_separator'
+    description = 'description'
+    encoding = 'encoding'
     id = 'id'
-    urls = 'urls'
+    message_eol = 'message_eol'
+    min_time_between_commands = 'min_time_between_commands'
     model = 'model'
     name = 'name'
-    description = 'description'
+    protocol = 'protocol'
+    serial_config = 'serial_config'
+    timeout = 'timeout'
+    urls = 'urls'
 
 
 CONFIG = _Config()
