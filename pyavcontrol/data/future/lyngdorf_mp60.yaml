@@ -1,8 +1,8 @@
 ---
 id: lyngdorf_mp60
 
-manufacturer:
-  name: Lyngdorf
+info:
+  manufacturer: Lyngdorf
   models:
     - MP-60
   tested: false
@@ -17,9 +17,8 @@ connection:
     stopbits: 1
     timeout: 2.0
 
-format:
-  command:
-    eol: "\r\n" # CR/LF
+protocol:
+  command_eol: "\r\n" # CR/LF
 
 api:
   device:
