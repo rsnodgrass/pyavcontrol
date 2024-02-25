@@ -196,14 +196,21 @@ class DeviceClient(ABC):
         return self._model.encoding
 
     @property
-    def is_async(self):
+    def is_async(self) -> bool:
         """
         :return: True if this client implementation is asynchronous (asyncio) versus synchronous.
         """
         return False
 
     @property
-    def is_connected(self):
+    def client(self) -> DeviceConnection:
+        """
+        :return: DeviceConnection ref to the connection this client is using
+        """
+        return self._connection
+
+    @property
+    def is_connected(self) -> bool:
         """
         :return: True if client is connected to device
         """

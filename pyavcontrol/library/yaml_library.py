@@ -1,5 +1,5 @@
 """
-Configuration and data structures around device models
+Supported for a YAML based device model definitions library
 """
 import logging
 import os
@@ -10,11 +10,12 @@ from typing import List, Set
 
 import yaml
 
+from . import DeviceModelSummary
+from .. import DeviceModelLibrary
 from ..const import DEFAULT_MODEL_LIBRARIES
 from .model import DeviceModel
 
 LOG = logging.getLogger(__name__)
-
 
 def _load_yaml_file(path: str) -> dict:
     try:
@@ -26,49 +27,14 @@ def _load_yaml_file(path: str) -> dict:
     return {}
 
 
-class DeviceModelLibrary(ABC):
-    @abstractmethod
-    def load_model(self, name: str) -> DeviceModel | None:
-        """
-        :param name: model id or a complete path to a file
-        """
-        raise NotImplementedError('Subclasses must implement!')
-
-    @abstractmethod
-    def supported_models(self) -> frozenset[str]:
-        """
-        :return: all model ids supported by this library
-        """
-        raise NotImplementedError('Subclasses must implement!')
-
-    @staticmethod
-    def create(library_dirs=DEFAULT_MODEL_LIBRARIES, event_loop=None):
-        """
-        Create an DeviceModelLibrary object representing all the complete
-        library for resolving models and includes.
-
-        If an event_loop argument is passed in this will return the
-        asynchronous implementation. By default the synchronous interface
-        is returned.
-
-        :param library_dirs: paths used to resolve model names and includes (default=pyavcontrol's library)
-        :param event_loop: to get an interface that can be used asynchronously, pass in an event loop
-
-        :return an instance of DeviceLibraryModel
-        """
-        if event_loop:
-            return DeviceModelLibraryAsync(library_dirs, event_loop)
-
-        return DeviceModelLibrarySync(library_dirs)
-
-
-class DeviceModelLibrarySync(DeviceModelLibrary, ABC):
+class YAMLDeviceModelLibrarySync(DeviceModelLibrary, ABC):
     """
-    Synchronous implementation of DeviceModelLibrary
+    Synchronous implementation of YAML DeviceModelLibrary
     """
 
     def __init__(self, library_dirs: List[str]):
         self._dirs = library_dirs
+        self._supported_model_ids = None
         self._supported_models = None
 
     def load_model(self, model_id: str) -> DeviceModel | None:
@@ -89,9 +55,9 @@ class DeviceModelLibrarySync(DeviceModelLibrary, ABC):
         model = DeviceModel(model_id, model_def)
         return model
 
-    def supported_models(self) -> frozenset[str]:
-        if self._supported_models:
-            return self._supported_models
+    def supported_model_ids(self) -> frozenset[str]:
+        if self._supported_model_ids:
+            return self._supported_model_ids
 
         # build and cache the list of supported models based all the
         # yaml device definition files that are included in the library
@@ -104,11 +70,44 @@ class DeviceModelLibrarySync(DeviceModelLibrary, ABC):
                         name = pathlib.Path(model_file).stem
                         supported_models[name] = model_file
 
-        self._supported_models = frozenset(supported_models.keys()) # make immutable
+        self._supported_model_ids = frozenset(supported_models.keys()) # immutable
+        return self._supported_model_ids
+
+    def _read_model_names(self, filename: str) -> [str]:
+        y = _load_yaml_file(filename)
+        manufacturer = y.info.get('manufacturer', 'Unknown')
+
+        model_names = []
+        for model_name in y.info.get('models', []):
+            model_names.append(model_name)
+        if not model_names:
+            LOG.warning(f"{filename} does not specify any supported model names")
+
+        return (manufacturer, model_names)
+
+
+    def supported_models(self) -> frozenset[DeviceModelSummary]:
+        if self._supported_models:
+            return self._supported_models
+
+        supported_models = []
+        for path in self._dirs:
+            for root, dirs, filenames in os.walk(path):
+                for fn in filenames:
+                    if fn.endswith('.yaml'):
+                        model_file = os.path.join(root, fn)
+                        model_id = pathlib.Path(model_file).stem
+                        (manufacturer, model_names) = self._read_model_names(model_file)
+                        for model_name in model_names:
+                            supported_models += DeviceModelSummary(manufacturer,
+                                                                   model_name,
+                                                                   model_id)
+
+        self._supported_models = frozenset(supported_models) # immutable
         return self._supported_models
 
 
-class DeviceModelLibraryAsync(DeviceModelLibrary, ABC):
+class YAMLDeviceModelLibraryAsync(DeviceModelLibrary, ABC):
     """
     Asynchronous implementation of DeviceModelLibrary
 
@@ -130,7 +129,8 @@ class DeviceModelLibraryAsync(DeviceModelLibrary, ABC):
             self._executor, self._sync.load_model, name
         )
 
-    async def supported_models(self) -> frozenset[str]:
+
+    async def supported_model_names(self) -> frozenset[str]:
         return await self._loop.run_in_executor(
-            self._executor, self._sync.supported_models
+            self._executor, self._sync.supported_model_names
         )

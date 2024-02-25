@@ -29,23 +29,7 @@ class DeviceModel:
         """
         :return: info about the model for this specific device
         """
-        return {}
-
-    @property
-    def manufacturer(self) -> str:
-        """
-        :return: the model name
-        @deprecated remove this and provide a model/manufacturer dataclass/pydantic via info
-        """
-        return self._definition.get('manufacturer', {}).get('name', 'Unknown')
-
-    @property
-    def model(self) -> str:
-        """
-        :return: the model name
-        @deprecated remove this and provide a model/manufacturer dataclass/pydantic via info
-        """
-        return self._definition.get('manufacturer', {}).get('model', 'Unknown')
+        return self._definition.get('info', {})
 
     @property
     def definition(self) -> dict:
