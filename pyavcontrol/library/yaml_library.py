@@ -4,15 +4,14 @@ Supported for a YAML based device model definitions library
 import logging
 import os
 import pathlib
-from abc import ABC, abstractmethod
+from abc import ABC
 from concurrent.futures import ThreadPoolExecutor
-from typing import List, Set
+from typing import List
 
 import yaml
 
 from . import DeviceModelSummary
 from .. import DeviceModelLibrary
-from ..const import DEFAULT_MODEL_LIBRARIES
 from .model import DeviceModel
 
 LOG = logging.getLogger(__name__)
@@ -40,20 +39,14 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibrary, ABC):
     def load_model(self, model_id: str) -> DeviceModel | None:
         if '/' in model_id:
             LOG.error(f"Invalid model '{model_id}': cannot contain / in identifier")
-
-        model_def = None
-        for path in self._dirs:
-            model_file = f'{path}/{model_id}.yaml'
-            model_def = _load_yaml_file(model_file)
-            if model_def:
-                break
-
-        if not model_def:
-            LOG.warning(f"Could not find model '{model_id}' in the library")
             return None
 
-        model = DeviceModel(model_id, model_def)
-        return model
+        for path in self._dirs:
+            if model_def := _load_yaml_file(f'{path}/{model_id}.yaml'):
+                return DeviceModel(model_id, model_def)
+
+        LOG.warning(f"Could not find model '{model_id}' in the YAML library")
+        return None
 
     def _all_library_yaml_files(self) -> list[str]:
         yaml_files = []
