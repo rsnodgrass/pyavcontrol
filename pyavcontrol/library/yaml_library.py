@@ -14,6 +14,9 @@ from . import DeviceModelSummary
 from .. import DeviceModelLibrary
 from .model import DeviceModel
 
+# TODO: investigate CUE (validation) or PKL as replacement/enhancements
+# NOTE: DO NOT USE Pydantic since the validation mechanism should be cross-language
+
 LOG = logging.getLogger(__name__)
 
 def _load_yaml_file(path: str) -> dict:
@@ -66,7 +69,7 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibrary, ABC):
         model_ids = []
         for model_def_filename in self._all_library_yaml_files():
             model_ids += pathlib.Path(model_def_filename).stem
-        self._supported_model_ids = frozenset(model_ids) # immutable
+        self._supported_model_ids = frozenset(model_ids)  # immutable
         return self._supported_model_ids
 
     def supported_models(self) -> frozenset[DeviceModelSummary]:
@@ -75,15 +78,14 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibrary, ABC):
 
         supported_models = []
         for model_filename in self._all_library_yaml_files():
-            y = _load_yaml_file(model_filename)
+            if y := _load_yaml_file(model_filename):
+                model_id = pathlib.Path(model_filename).stem
+                manufacturer = y.info.get('manufacturer', 'Unknown')
 
-            model_id = pathlib.Path(model_filename).stem
-            manufacturer = y.info.get('manufacturer', 'Unknown')
+                for model_name in y.info.get('models', []):
+                    supported_models += DeviceModelSummary(manufacturer, model_name, model_id)
 
-            for model_name in y.info.get('models', []):
-                supported_models += DeviceModelSummary(manufacturer, model_name, model_id)
-
-        self._supported_models = frozenset(supported_models) # immutable
+        self._supported_models = frozenset(supported_models)  # immutable
         return self._supported_models
 
 
@@ -93,7 +95,7 @@ class YAMLDeviceModelLibraryAsync(DeviceModelLibrary, ABC):
 
     NOTE: For simplicity in initial implementation, decided to skip writing
     the asynchronous library and instead wrap the sync version for now.
-    Especially since loading all the model files should be a rare occurrence).
+    Especially since loading all the model files should be a rare occurrence.
     """
     def __init__(self, library_dirs: List[str], event_loop):
         self._loop = event_loop
