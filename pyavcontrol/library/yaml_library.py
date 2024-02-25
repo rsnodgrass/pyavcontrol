@@ -55,53 +55,40 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibrary, ABC):
         model = DeviceModel(model_id, model_def)
         return model
 
+    def _all_library_yaml_files(self) -> list[str]:
+        yaml_files = []
+        for path in self._dirs:
+            for root, dirs, filenames in os.walk(path):
+                for fn in filenames:
+                    if fn.endswith('.yaml'):
+                        yaml_files += os.path.join(root, fn)
+        return yaml_files
+
     def supported_model_ids(self) -> frozenset[str]:
         if self._supported_model_ids:
             return self._supported_model_ids
 
         # build and cache the list of supported models based all the
         # yaml device definition files that are included in the library
-        supported_models = {}
-        for path in self._dirs:
-            for root, dirs, filenames in os.walk(path):
-                for fn in filenames:
-                    if fn.endswith('.yaml'):
-                        model_file = os.path.join(root, fn)
-                        name = pathlib.Path(model_file).stem
-                        supported_models[name] = model_file
-
-        self._supported_model_ids = frozenset(supported_models.keys()) # immutable
+        model_ids = []
+        for model_def_filename in self._all_library_yaml_files():
+            model_ids += pathlib.Path(model_def_filename).stem
+        self._supported_model_ids = frozenset(model_ids) # immutable
         return self._supported_model_ids
-
-    def _read_model_names(self, filename: str) -> [str]:
-        y = _load_yaml_file(filename)
-        manufacturer = y.info.get('manufacturer', 'Unknown')
-
-        model_names = []
-        for model_name in y.info.get('models', []):
-            model_names.append(model_name)
-        if not model_names:
-            LOG.warning(f"{filename} does not specify any supported model names")
-
-        return (manufacturer, model_names)
-
 
     def supported_models(self) -> frozenset[DeviceModelSummary]:
         if self._supported_models:
             return self._supported_models
 
         supported_models = []
-        for path in self._dirs:
-            for root, dirs, filenames in os.walk(path):
-                for fn in filenames:
-                    if fn.endswith('.yaml'):
-                        model_file = os.path.join(root, fn)
-                        model_id = pathlib.Path(model_file).stem
-                        (manufacturer, model_names) = self._read_model_names(model_file)
-                        for model_name in model_names:
-                            supported_models += DeviceModelSummary(manufacturer,
-                                                                   model_name,
-                                                                   model_id)
+        for model_filename in self._all_library_yaml_files():
+            y = _load_yaml_file(model_filename)
+
+            model_id = pathlib.Path(model_filename).stem
+            manufacturer = y.info.get('manufacturer', 'Unknown')
+
+            for model_name in y.info.get('models', []):
+                supported_models += DeviceModelSummary(manufacturer, model_name, model_id)
 
         self._supported_models = frozenset(supported_models) # immutable
         return self._supported_models
@@ -111,26 +98,27 @@ class YAMLDeviceModelLibraryAsync(DeviceModelLibrary, ABC):
     """
     Asynchronous implementation of DeviceModelLibrary
 
-    NOTE: For simplicity in initial implementation, skipped writing the
-    asynchronous library and use the sync version for now. Especially
-    since loading all the model files should be a rare occurrence).
+    NOTE: For simplicity in initial implementation, decided to skip writing
+    the asynchronous library and instead wrap the sync version for now.
+    Especially since loading all the model files should be a rare occurrence).
     """
-
     def __init__(self, library_dirs: List[str], event_loop):
         self._loop = event_loop
         self._dirs = library_dirs
         self._executor = ThreadPoolExecutor(max_workers=2)
-
-        # FUTURE: implement any actual async library
-        self._sync = DeviceModelLibrarySync(library_dirs)
+        self._sync = YAMLDeviceModelLibrarySync(library_dirs)
 
     async def load_model(self, name: str) -> DeviceModel | None:
         return await self._loop.run_in_executor(
             self._executor, self._sync.load_model, name
         )
 
-
-    async def supported_model_names(self) -> frozenset[str]:
+    async def supported_models(self) -> frozenset[str]:
         return await self._loop.run_in_executor(
-            self._executor, self._sync.supported_model_names
+            self._executor, self._sync.supported_models
+        )
+
+    async def supported_model_ids(self) -> frozenset[str]:
+        return await self._loop.run_in_executor(
+            self._executor, self._sync.supported_model_ids
         )

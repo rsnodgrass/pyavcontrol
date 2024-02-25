@@ -45,6 +45,9 @@ hardware:
   23: Balanced 2
   24: Phono
   25: 8 Channel Analog
+ baud_rates:
+   9600: '9600'
+   115200: '115200 (default)'
 
 connection:
   rs232:

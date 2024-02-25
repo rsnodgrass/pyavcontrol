@@ -21,7 +21,7 @@ class DeviceClientAsync(DeviceClient):
 
     @property
     def is_async(self):
-        """:return: always true since this client implementation is asynchronous"""
+        """:return: true since this client is asynchronous"""
         return True
 
     @locked_coro
