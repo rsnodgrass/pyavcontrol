@@ -5,8 +5,12 @@ from pyavcontrol.library.model import DeviceModel
 
 def filter_models_by_regex(models: set[DeviceModelSummary], regex: str) -> set[DeviceModelSummary]:
     """
-    :return: dict of model summaries where the manufacturer or model name matches the
-    provided regular expression
+    Filter the provided set of DeviceModelSummary down into only the ones that
+    match the given regular expression.
+
+    Returns:
+        dict of model summaries where the manufacturer or model name matches the
+        provided regular expression.
     """
     matches = set()
     rg = re.compile(regex)
