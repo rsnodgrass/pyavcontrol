@@ -1,6 +1,8 @@
 # Hardware Specific Details
 
-## Recommended RS232 Parts
+## Useful RS232 Parts
+
+The following are various useful parts, hardware, and software for interfacing with various equipment using this library.
 
 * [USB to DB9 RS232 Cable](https://amzn.com/dp/B0753HBT12?tag=carreramfi-20&tracking_id=carreramfi-20)
 * [IP/Ethernet to DB9 Adapter](https://amzn.com/dp/B0B8T95FV1?tag=carreramfi-20&tracking_id=carreramfi-20)
