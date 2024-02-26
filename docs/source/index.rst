@@ -10,7 +10,7 @@ Welcome to pyavcontrol docs!
    :maxdepth: 2
    :caption: Contents:
 
-
+   modules
 
 Indices and tables
 ==================
