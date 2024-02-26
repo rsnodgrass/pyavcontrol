@@ -2,7 +2,6 @@
 
 ![beta_badge](https://img.shields.io/badge/maturity-Beta-yellow.png)
 [![PyPi](https://img.shields.io/pypi/v/pyavcontrol.svg)](https://pypi.python.org/pypi/pyavcontrol)
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/rsnodgrass/pyavcontrol/actions/workflows/ci.yml/badge.svg)](https://github.com/rsnodgrass/pyavcontrol/actions/workflows/ci.yml)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
