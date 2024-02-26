@@ -41,7 +41,7 @@ class DeviceModel:
     def validate(self) -> bool:
         """
         Validate the device model data structure using pydantic (allows multiple physical
-        representations such as YAML/JSON/etc to be read in in the future).
+        representations such as YAML/JSON/etc to be read in the future).
         """
         if not DeviceModel.validate_model_definition(self._definition):
             LOG.warning(f'Error in model {self._model_id} definition')
@@ -53,6 +53,9 @@ class DeviceModel:
     def validate_model_definition(model_def: dict) -> bool:
         """
         Validate that the given device model definition is valid
+
+        Args:
+          model_def (dict) : model definition to validate
         """
         if not model_def:
             return False
