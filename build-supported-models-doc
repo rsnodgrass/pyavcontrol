@@ -3,13 +3,15 @@
 import logging
 
 import coloredlogs
-from jinja2 import Template
 import argparse as arg
+from jinja2 import Template
 
 from pyavcontrol import DeviceModelLibrary
 
 LOG = logging.getLogger(__name__)
 coloredlogs.install(level="DEBUG")
+
+DEFAULT_FILE='docs/source/supported.md'
 
 TEMPLATE = Template('''
 ## Supported Equipment
@@ -28,7 +30,7 @@ TEMPLATE = Template('''
 def parse_args():
     p = arg.ArgumentParser(description="Generate SUPPORTED.md using current pyavcontrol model library")
     p.add_argument(
-        "--output", default="SUPPORTED-generated.md", help="Markdown output file"
+        "--output", default=DEFAULT_FILE, help=f"Markdown output file (default={DEFAULT_FILE})"
     )
     p.add_argument(
         "--library", help="library directories"
@@ -51,7 +53,9 @@ def main():
     # sort by manufacturer and model name
     sorted_models = sorted(supported_models, key=lambda k: (k.manufacturer, k.model_name))
 
-    print( TEMPLATE.render(models=sorted_models) )
+    LOG.info(f"Saving the output to {args.output}")
+    with open(args.output , "w") as f:
+        f.write(TEMPLATE.render(models=sorted_models))
 
 if __name__ == "__main__":
     main()
