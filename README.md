@@ -29,6 +29,12 @@ Two additional goals:
 2. Create a basic IP-based RS232 emulator which allows spinning up a basic emulator for each supported
 device model based purely on the YAML definition and unit tests against those definitions. This emulator can be used by client libraries in any language for testing. See [avemu]() for more details.
 
+## Goal
+
+One of the goals for creating this library is to reduce the amount of otherwise
+great equipment being thrown away (especially esoteric equipment that isn't well
+supported). Typically these can be modernized easily via wrapping their existing
+protocols with modern integrations.
 
 ## Support
 
