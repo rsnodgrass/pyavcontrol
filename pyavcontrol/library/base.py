@@ -11,7 +11,7 @@ class DeviceModelSummary:
 
 class DeviceModelLibraryBase(ABC):
     @abstractmethod
-    def load_model(self, name: str) -> DeviceModel | None:
+    def load_model(self, name: str) -> DeviceModel: # FIXME | None:
         """
         :param name: model id or a complete path to a file
         """
