@@ -11,6 +11,7 @@ from typing import List
 import yaml
 
 from . import DeviceModelSummary
+from .base import DeviceModelLibraryBase
 from .. import DeviceModelLibrary
 from .model import DeviceModel
 
@@ -29,7 +30,7 @@ def _load_yaml_file(path: str) -> dict:
     return {}
 
 
-class YAMLDeviceModelLibrarySync(DeviceModelLibrary, ABC):
+class YAMLDeviceModelLibrarySync(DeviceModelLibraryBase, ABC):
     """
     Synchronous implementation of YAML DeviceModelLibrary
     """
@@ -54,10 +55,12 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibrary, ABC):
     def _all_library_yaml_files(self) -> list[str]:
         yaml_files = []
         for path in self._dirs:
+            LOG.info(f"Looking for YAML model defs in {path}")
             for root, dirs, filenames in os.walk(path):
+                LOG.info(f"Looking for YAML model defs in {root} {dirs}")
                 for fn in filenames:
                     if fn.endswith('.yaml'):
-                        yaml_files += os.path.join(root, fn)
+                        yaml_files.append(os.path.join(root, fn))
         return yaml_files
 
     def supported_model_ids(self) -> frozenset[str]:
@@ -77,19 +80,28 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibrary, ABC):
             return self._supported_models
 
         supported_models = []
+        all_files = self._all_library_yaml_files()
+
         for model_filename in self._all_library_yaml_files():
+            print(model_filename)
             if y := _load_yaml_file(model_filename):
                 model_id = pathlib.Path(model_filename).stem
-                manufacturer = y.info.get('manufacturer', 'Unknown')
+                if 'info' not in y:
+                    LOG.error(f'Invalid file {model_filename} without info field!')
+                    continue
 
-                for model_name in y.info.get('models', []):
-                    supported_models += DeviceModelSummary(manufacturer, model_name, model_id)
+                info = y['info']
+                manufacturer = info.get('manufacturer', 'Unknown')
 
-        self._supported_models = frozenset(supported_models)  # immutable
+                for model_name in info.get('models', []):
+                    print({model_name})
+                    supported_models.append(DeviceModelSummary(manufacturer, model_name, model_id))
+
+        self._supported_models = supported_models # frozenset(supported_models)  # immutable
         return self._supported_models
 
 
-class YAMLDeviceModelLibraryAsync(DeviceModelLibrary, ABC):
+class YAMLDeviceModelLibraryAsync(DeviceModelLibraryBase, ABC):
     """
     Asynchronous implementation of DeviceModelLibrary
 
