@@ -21,7 +21,10 @@ release = '0.0.1'
 # NOTE: Use Google Docstring format using the sphinx.ext.napolean
 # extension, since Google Docstring is a way more readable format
 # than the default Sphinx format.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+#
+# myst_parser = Markdown support (instead of RST)
+#   see  https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
+extensions = ['myst_parser', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon']
 
 templates_path = ['_templates']
 exclude_patterns = []
