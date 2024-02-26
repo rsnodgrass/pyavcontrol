@@ -81,6 +81,10 @@ definition-only package(s) in the future.
 
 ## Using pyavcontrol
 
+### Documentation
+
+See [API documentation](https://rsnodgrass.github.io/pyavcontrol/).
+
 ### Asynchronous & Synchronous APIs
 
 This library provides both an `asyncio` based and synchronous implementations.
