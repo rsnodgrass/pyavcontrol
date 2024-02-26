@@ -54,7 +54,7 @@ class Connection:
     @staticmethod
     def create(
         url: str, connection_config=None, event_loop=None
-    ) -> DeviceConnection | None:
+    ) -> DeviceConnection: # FIXME: | None:
         """
         Create a Connection instance given details about the given device.
 
