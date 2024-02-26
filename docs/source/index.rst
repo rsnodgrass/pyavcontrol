@@ -12,6 +12,7 @@ Welcome to pyavcontrol docs!
 
    pyavcontrol
    supported
+   hardware
 
 Indices and tables
 ==================
