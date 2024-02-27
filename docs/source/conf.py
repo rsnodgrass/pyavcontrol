@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'PyAVControl'
+project = 'PyAVControl' # TBD
 copyright = '2024 Ryan Snodgrass'
 author = 'Ryan Snodgrass'
 release = '0.0.1'
