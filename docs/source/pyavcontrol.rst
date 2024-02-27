@@ -1,4 +1,4 @@
-pyavcontrol package
+PyAVControl package
 ===================
 
 Subpackages

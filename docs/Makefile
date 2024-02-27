@@ -14,10 +14,12 @@ help:
 
 .PHONY: help Makefile
 
+update:
+	pip3 install -r ../requirements-dev.txt 
+	./update-supported-models
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
-	pip3 install -r ../requirements-dev.txt 
-	./update-supported-models
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
