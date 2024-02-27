@@ -14,30 +14,6 @@ Subpackages
 Submodules
 ----------
 
-pyavcontrol.config module
--------------------------
-
-.. automodule:: pyavcontrol.config
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pyavcontrol.const module
-------------------------
-
-.. automodule:: pyavcontrol.const
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pyavcontrol.core module
------------------------
-
-.. automodule:: pyavcontrol.core
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pyavcontrol.helper module
 -------------------------
 
@@ -46,6 +22,15 @@ pyavcontrol.helper module
    :undoc-members:
    :show-inheritance:
 
+pyavcontrol.utils module
+------------------------
+
+.. automodule:: pyavcontrol.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+      
 Module contents
 ---------------
 

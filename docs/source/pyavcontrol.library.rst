@@ -28,14 +28,6 @@ pyavcontrol.library.model module
    :undoc-members:
    :show-inheritance:
 
-pyavcontrol.library.schema module
----------------------------------
-
-.. automodule:: pyavcontrol.library.schema
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pyavcontrol.library.yaml\_library module
 ----------------------------------------
 

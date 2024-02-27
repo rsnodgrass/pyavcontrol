@@ -28,7 +28,7 @@ import coloredlogs
 
 from pyavcontrol import DeviceClient, DeviceModelLibrary
 from pyavcontrol.connection import NullConnection
-from pyavcontrol.core import (
+from pyavcontrol.utils import (
     camel_case,
     extract_named_regex,
     get_fstring_vars,

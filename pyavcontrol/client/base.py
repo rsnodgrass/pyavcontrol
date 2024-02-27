@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 from ..config import CONFIG
 from ..connection import DeviceConnection
-from ..core import (
+from ..utils import (
     camel_case,
     generate_docs_for_action,
     missing_keys_in_dict,
