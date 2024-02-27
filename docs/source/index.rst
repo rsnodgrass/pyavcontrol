@@ -12,6 +12,7 @@ Welcome to pyavcontrol docs!
 
    pyavcontrol
    background
+   examples
    supported
    hardware
 
