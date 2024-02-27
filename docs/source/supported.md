@@ -44,6 +44,7 @@
 | :---------------- | :----------------: | :-----: | :---------------- |
 | CD-2 | lyngdorf_cd2 | model.tested | model.notes |
 | MP-60 | lyngdorf_mp60 | model.tested | model.notes |
+| TDAI-3400 | lyngdorf_tdai3400 | model.tested | model.notes |
 
 ### Marantz
 
