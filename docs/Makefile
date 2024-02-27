@@ -17,6 +17,7 @@ help:
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
-	pip3 install -r ../requirements-dev.txt 
-	./generate-supported-models-doc
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+#	pip3 install -r ../requirements-dev.txt 
+#	./generate-supported-models-doc
