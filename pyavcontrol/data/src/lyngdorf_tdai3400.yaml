@@ -1,7 +1,7 @@
 ---
 id: lyngdorf_tdai3400
 
-model:
+info:
   manufacturer: Lyngdorf
   models:
    - TDAI-3400
