@@ -3,6 +3,9 @@ import logging
 
 import os
 import sys
+
+# force using the pyavcontrol that is relative to this tool, instead of whatever
+# pyavcontrol may be installed in the Python environment.
 sys.path.insert(0, os.path.abspath(os.path.join('..')))
 
 import coloredlogs
