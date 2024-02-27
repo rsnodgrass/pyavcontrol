@@ -1,23 +1,5 @@
-import re
 from pyavcontrol.const import DEFAULT_MODEL_LIBRARIES
-from pyavcontrol.library.base import DeviceModelSummary
 from pyavcontrol.library.model import DeviceModel
-
-def filter_models_by_regex(models: set[DeviceModelSummary], regex: str) -> set[DeviceModelSummary]:
-    """
-    Filter the provided set of DeviceModelSummary down into only the ones that
-    match the given regular expression.
-
-    Returns:
-        dict of model summaries where the manufacturer or model name matches the
-        provided regular expression.
-    """
-    matches = set()
-    rg = re.compile(regex)
-    for summary in models:
-        if rg.match(summary.manufacturer) or rg.match(summary.model_name) or rg.match(summary.model_id):
-            matches += summary
-    return matches
 
 class DeviceModelLibrary:
     @staticmethod
