@@ -11,6 +11,7 @@ Welcome to pyavcontrol docs!
    :caption: Contents:
 
    pyavcontrol
+   background
    supported
    hardware
 
