@@ -1,8 +1,8 @@
 ---
 id: monoprice_6
 
-manufacturer:
-  name: Monoprice
+info: 
+  manufacturer: Monoprice
   models:
     - MPR-6ZHMAUT
     - Model 10761
