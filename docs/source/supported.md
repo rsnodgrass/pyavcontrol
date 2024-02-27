@@ -73,6 +73,13 @@
 | MX170 | mcintosh_mx170 | model.tested | model.notes |
 | MX180 | mcintosh_mx180 | model.tested | model.notes |
 
+### Monoprice
+
+| Model             | Protocol           |  Tested | Notes             |
+| :---------------- | :----------------: | :-----: | :---------------- |
+| MPR-6ZHMAUT | monoprice_6 | model.tested | model.notes |
+| Model 10761 | monoprice_6 | model.tested | model.notes |
+
 ### Teac
 
 | Model             | Protocol           |  Tested | Notes             |
