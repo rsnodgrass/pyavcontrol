@@ -10,9 +10,7 @@ from typing import List
 
 import yaml
 
-from . import DeviceModelSummary
-from .base import DeviceModelLibraryBase
-from .. import DeviceModelLibrary
+from .base import DeviceModelLibraryBase, DeviceModelSummary
 from .model import DeviceModel
 
 # TODO: investigate CUE (validation) or PKL as replacement/enhancements
