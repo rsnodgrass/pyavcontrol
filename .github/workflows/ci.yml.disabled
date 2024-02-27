@@ -23,8 +23,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-#      - name: Run unit tests
-#        run: python -m unittest
 
   mypy-test:
     name: mypy test
@@ -43,4 +41,4 @@ jobs:
           pip install -r requirements.txt
           pip install mypy
 #      - name: Run mypy test
-#        run: mypy -p pymcintosh
+#        run: mypy -p pyavcontrol
