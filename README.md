@@ -129,6 +129,8 @@ Example URL formats supported by pyserial:
 - Add programmatic override/enhancements to the base protocol where pure
   YAML configuration would not work fully. Of course, these overrides would have
   to be implemented in each language, but that surface area should be much smaller.
+- Move to a modern schema/config language for the library (Nickel, PKL, etc)
+- Split out the library definitions from the library itself (eventually) so other language clients can share
 
 ## See Also
 
