@@ -1,0 +1,1470 @@
+// NOTES:
+//  - cmd commands are in substitution variable format (e.g. {var})
+//  - msg messages/responses are in regex format to decode
+
+{
+  "id": "mcintosh_mx160",
+  "description": "McIntosh MX160 Protocol [2017-09-18 MX160 Serial Control Manual V7]",
+  "info": {
+    "name": "McIntosh",
+    "models": [
+      "MX160"
+    ],
+    "type": "processor",
+    "tested": true,
+    "urls": [
+      "https://www.mcintoshlabs.com/legacy-products/home-theater-processors/MX160",
+      "http://www.mcintoshcompendium.com/Compendium%20Docs/Home%20Theater%20Controllers/PDFs/MX160.pdf",
+      "https://www.docdroid.net/OnipkTW/mx160-serial-control-manual-v3-pdf"
+    ]
+  },
+  "hardware": {
+    "sources": {
+      "0": "HDMI 1",
+      "1": "HDMI 2",
+      "2": "HDMI 3",
+      "3": "HDMI 4",
+      "4": "HDMI 5",
+      "5": "HDMI 6",
+      "6": "HDMI 7",
+      "7": "HDMI 8",
+      "8": "Audio Return",
+      "9": "SPDIF 1 (Optical)",
+      "10": "SPDIF 2 (Optical)",
+      "11": "SPDIF 3 (Optical)",
+      "12": "SPDIF 4 (Optical)",
+      "13": "SPDIF 5 (AES/EBU)",
+      "14": "SPDIF 6 (Coaxial)",
+      "15": "SPDIF 7 (Coaxial)",
+      "16": "SPDIF 8 (Coaxial)",
+      "17": "USB Audio",
+      "18": "Analog 1",
+      "19": "Analog 2",
+      "20": "Analog 3",
+      "21": "Analog 4",
+      "22": "Balanced 1",
+      "23": "Balanced 2",
+      "24": "Phono",
+      "25": "8 Channel Analog"
+    },
+    "baud_rates": {
+      "9600": "9600",
+      "115200": "115200 (default)"
+    }
+  },
+  "connection": {
+    "rs232": {
+      "baudrate": 115200,
+      "bytesize": 8,
+      "parity": "N",
+      "stopbits": 1,
+      "timeout": 2,
+      "encoding": "ascii",
+      "response_eol": "\r"
+    },
+    "connection_init": "!VERB(2)"
+  },
+  "protocol": {
+    "encoding": "ascii",
+    "command_eol": "\r",
+    "message_eol": "\r",
+    "min_time_between_commands": 0.4
+  },
+  "vars": {
+    "zone": {
+      "type": "int",
+      "pattern": "[1-8]",
+      "min": 1,
+      "max": 8
+    },
+    "power": {
+      "type": "int",
+      "pattern": "[01]",
+      "min": 0,
+      "max": 1
+    },
+    "mute": {
+      "type": "int",
+      "pattern": "[01]",
+      "min": 0,
+      "max": 1
+    },
+    "volume": {
+      "type": "int",
+      "min": 0,
+      "max": 38
+    },
+    "treble": {
+      "type": "int",
+      "min": 0,
+      "max": 14
+    },
+    "bass": {
+      "type": "int",
+      "min": 0,
+      "max": 14
+    },
+    "balance": {
+      "type": "int",
+      "min": 0,
+      "max": 63
+    },
+    "source": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "verbosity_level": {
+      "type": "int",
+      "min": 1,
+      "max": 3,
+      "values": {
+        "1": "Minimal",
+        "2": "Normal",
+        "3": "All"
+      }
+    },
+    "dim_level": {
+      "type": "int",
+      "min": 0,
+      "max": 3,
+      "values": {
+        "0": "Full (100%)",
+        "1": "Bright (75%)",
+        "2": "Low (50%)",
+        "3": "Dark (25%)"
+      }
+    },
+    "interface": {
+      "type": "string",
+      "values": {
+        "IP": "IP",
+        "SERIAL": "Serial"
+      }
+    },
+    "lipsync": {
+      "type": "int"
+    },
+    "loudness": {
+      "type": "int",
+      "min": 0,
+      "max": 1,
+      "pattern": "[01]",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    "roomperfect_position": {
+      "type": "int",
+      "min": 1,
+      "max": 9,
+      "pattern": "[1-9]",
+      "values": {
+        "0": "Bypass",
+        "1": "Focus 1",
+        "2": "Focus 2",
+        "3": "Focus 3",
+        "4": "Focus 4",
+        "5": "Focus 5",
+        "6": "Focus 6",
+        "7": "Focus 7",
+        "8": "Focus 8",
+        "9": "Global"
+      }
+    },
+    "input": {
+      "type": "int",
+      "min": 0,
+      "max": 25,
+      "values": {
+        "0": "HDMI 1",
+        "1": "HDMI 2",
+        "2": "HDMI 3",
+        "3": "HDMI 4",
+        "4": "HDMI 5",
+        "5": "HDMI 6",
+        "6": "HDMI 7",
+        "7": "HDMI 8",
+        "8": "Audio Return",
+        "9": "SPDIF 1 (Optical)",
+        "10": "SPDIF 2 (Optical)",
+        "11": "SPDIF 3 (Optical)",
+        "12": "SPDIF 4 (Optical)",
+        "13": "SPDIF 5 (AES/EBU)",
+        "14": "SPDIF 6 (Coaxial)",
+        "15": "SPDIF 7 (Coaxial)",
+        "16": "SPDIF 8 (Coaxial)",
+        "17": "USB Audio",
+        "18": "Analog 1",
+        "19": "Analog 2",
+        "20": "Analog 3",
+        "21": "Analog 4",
+        "22": "Balanced 1",
+        "23": "Balanced 2",
+        "24": "Phono",
+        "25": "8 Channel Analog"
+      }
+    }
+  },
+  "api": {
+    "verbosity": {
+      "actions": {
+        "set": {
+          "description": "Set verbosity level of active interface",
+          "cmd": {
+            "fstring": "!VERB({verbosity_level})",
+            "docs": {
+              "verbosity_level": "0 (min), 1 (normal), or 2 (max)"
+            }
+          }
+        },
+        "min": {
+          "description": "Set verbosity level to minimal",
+          "cmd": {
+            "fstring": "!VERB(1)"
+          }
+        },
+        "normal": {
+          "description": "Set verbosity level to normal",
+          "cmd": {
+            "fstring": "!VERB(2)"
+          }
+        },
+        "max": {
+          "description": "Set verbosity level to maximum",
+          "cmd": {
+            "fstring": "!VERB(3)"
+          }
+        },
+        "get": {
+          "description": "Request verbosity level of active interface",
+          "cmd": {
+            "fstring": "!VERB?"
+          },
+          "msg": {
+            "regex": "!VERB\\((?P<verbosity_level>[123])\\)",
+            "tests": {
+              "!VERB(2)": {
+                "verbosity_level": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    "audio_mode": {
+      "description": "Audio processing mode control",
+      "actions": {
+        "down": {
+          "description": "Audio processing mode down button",
+          "cmd": {
+            "fstring": "!AUDMODE-"
+          }
+        },
+        "up": {
+          "description": "Audio processing mode up button",
+          "cmd": {
+            "fstring": "!AUDMODE+"
+          }
+        },
+        "get": {
+          "description": "Request audio processing mode",
+          "cmd": {
+            "fstring": "!AUDMODE?"
+          },
+          "msg": {
+            "regex": "!AUDMODE\\((?P<type>\\d+)\\)\\s*\"(?P<name>.+)\"",
+            "tests": {
+              "!AUDMODE(1) \"Test\"": {
+                "type": 1,
+                "name": "Test"
+              }
+            }
+          }
+        },
+        "modes": {
+          "description": "Get list of audio processing modes",
+          "cmd": {
+            "fstring": "!AUDMODEL?"
+          },
+          "msg": {
+            "regex": "!AUDMODECOUNT\\((?P<count>\\d+)\\)\\r",
+            "tests": {
+              "!AUDMODECOUNT(2)\r!AUDMODE(0)\"Source 1\"\r!AUDMODE(1)\"Source 2\"": {
+                "count": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    "audio_type": {
+      "description": "Input audio type",
+      "actions": {
+        "get": {
+          "description": "Return string of the input audio type.",
+          "cmd": {
+            "fstring": "!AUDTYPE?"
+          },
+          "msg": {
+            "regex": "!AUDTYPE\\((?P<type>.+)\\)",
+            "tests": {
+              "!AUDTYPE(Unknown)": {
+                "type": "Unknown"
+              }
+            }
+          }
+        }
+      }
+    },
+    "button": {
+      "description": "Remote button presses",
+      "actions": {
+        "back": {
+          "description": "Back button",
+          "cmd": {
+            "fstring": "!BACK"
+          }
+        },
+        "down": {
+          "description": "Direction Down button",
+          "cmd": {
+            "fstring": "!DIRD"
+          }
+        },
+        "left": {
+          "description": "Direction Left button",
+          "cmd": {
+            "fstring": "!DIRL"
+          }
+        },
+        "right": {
+          "description": "Direction Right button",
+          "cmd": {
+            "fstring": "!DIRR"
+          }
+        },
+        "up": {
+          "description": "Direction Up button",
+          "cmd": {
+            "fstring": "!DIRU"
+          }
+        },
+        "enter": {
+          "description": "Enter button",
+          "cmd": {
+            "fstring": "!ENTER"
+          }
+        },
+        "exit": {
+          "description": "Exit button",
+          "cmd": {
+            "fstring": "!EXIT"
+          }
+        },
+        "info": {
+          "description": "Info button",
+          "cmd": {
+            "fstring": "!INFO"
+          }
+        },
+        "menu": {
+          "description": "Menu Button",
+          "cmd": {
+            "fstring": "!MENU"
+          }
+        },
+        "setup": {
+          "description": "Setup button",
+          "cmd": {
+            "fstring": "!SETUP"
+          }
+        },
+        "source": {
+          "description": "Source button",
+          "cmd": {
+            "fstring": "!SRCBTN"
+          }
+        },
+        "number": {
+          "description": "Number button",
+          "cmd": {
+            "fstring": "!NUM({num})",
+            "docs": {
+              "num": "single digit integer (0-9)"
+            }
+          }
+        },
+        "num0": {
+          "description": "Number button 0",
+          "cmd": {
+            "fstring": "!NUM(0)"
+          }
+        },
+        "num1": {
+          "description": "Number button 1",
+          "cmd": {
+            "fstring": "!NUM(1)"
+          }
+        },
+        "num2": {
+          "description": "Number button 2",
+          "cmd": {
+            "fstring": "!NUM(2)"
+          }
+        },
+        "num3": {
+          "description": "Number button 3",
+          "cmd": {
+            "fstring": "!NUM(3)"
+          }
+        },
+        "num4": {
+          "description": "Number button 4",
+          "cmd": {
+            "fstring": "!NUM(4)"
+          }
+        },
+        "num5": {
+          "description": "Number button 5",
+          "cmd": {
+            "fstring": "!NUM(5)"
+          }
+        },
+        "num6": {
+          "description": "Number button 6",
+          "cmd": {
+            "fstring": "!NUM(6)"
+          }
+        },
+        "num7": {
+          "description": "Number button 7",
+          "cmd": {
+            "fstring": "!NUM(7)"
+          }
+        },
+        "num8": {
+          "description": "Number button 8",
+          "cmd": {
+            "fstring": "!NUM(8)"
+          }
+        },
+        "num9": {
+          "description": "Number button 9",
+          "cmd": {
+            "fstring": "!NUM(9)"
+          }
+        }
+      }
+    },
+    "device": {
+      "actions": {
+        "name": {
+          "description": "Returns the name of the device (e.g. MX160)",
+          "cmd": {
+            "fstring": "!DEVICE?"
+          },
+          "msg": {
+            "regex": "!DEVICE\\((?P<name>.+)\\)",
+            "tests": {
+              "!DEVICE(MX160)": {
+                "name": "MX160"
+              }
+            }
+          }
+        }
+      }
+    },
+    "display_brightness": {
+      "description": "VFD display brightness (0 – 3; 0=100%, 1=75%, 2=50%, 3=25%)",
+      "actions": {
+        "down": {
+          "description": "Reduce brightness of the VFD display",
+          "cmd": {
+            "fstring": "!DIM-"
+          }
+        },
+        "up": {
+          "description": "Increase the brightness of the VFD display",
+          "cmd": {
+            "fstring": "!DIM+"
+          }
+        },
+        "get": {
+          "description": "Request brightness of the VFD display",
+          "cmd": {
+            "fstring": "!DIM?"
+          },
+          "msg": {
+            "regex": "!DIM\\((?P<dim_level>[0123])\\)",
+            "tests": {
+              "!DIM(2)": {
+                "dim_level": 2
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Set display brightness level",
+          "cmd": {
+            "fstring": "!DIM({dim_level})",
+            "docs": {
+              "dim_level": "0 (Full 100%), 1 (Bright 75%), 2 (Low 50%), or 3 (Dark 25%)"
+            }
+          }
+        },
+        "full": {
+          "description": "Set display brightness Full (100%)",
+          "cmd": {
+            "fstring": "!DIM(0)"
+          }
+        },
+        "bright": {
+          "description": "Set display brightness Bright (75%)",
+          "cmd": {
+            "fstring": "!DIM(1)"
+          }
+        },
+        "low": {
+          "description": "Set display brightness Low (50%)",
+          "cmd": {
+            "fstring": "!DIM(2)"
+          }
+        },
+        "dark": {
+          "description": "Set display brightness Dark (25%)",
+          "cmd": {
+            "fstring": "!DIM(3)"
+          }
+        }
+      }
+    },
+    "interface": {
+      "description": "Interface type for this session (IP or SERIAL)",
+      "actions": {
+        "get": {
+          "description": "Returns the active interface for this section",
+          "cmd": {
+            "fstring": "!INTERFACE?"
+          },
+          "msg": {
+            "regex": "!INTERFACE\\((?P<interface>(IP|SERIAL))\\)",
+            "tests": {
+              "!INTERFACE(SERIAL)": {
+                "interface": "SERIAL"
+              },
+              "!INTERFACE(IP)": {
+                "interface": "IP"
+              }
+            }
+          }
+        }
+      }
+    },
+    "lipsync": {
+      "description": "Lipsync adjustments",
+      "actions": {
+        "set": {
+          "description": "Set the lipsync value",
+          "cmd": {
+            "fstring": "!LIPSYNC({lipsync})",
+            "regex": "!LIPSYNC\\((?P<lipsync>\\d+)\\)",
+            "docs": {
+              "lipsync": "lipsync value"
+            }
+          }
+        },
+        "get": {
+          "description": "Get the lipsync value",
+          "cmd": {
+            "fstring": "!LIPSYNC?"
+          },
+          "msg": {
+            "regex": "!LIPSYNC\\((?P<lipsync>\\d)\\)",
+            "tests": {
+              "!LIPSYNC(1)": {
+                "lipsync": 1
+              }
+            }
+          }
+        },
+        "range": {
+          "description": "Get the lipsync value range",
+          "cmd": {
+            "fstring": "!LIPSYNCRANGE?"
+          },
+          "msg": {
+            "regex": "!LIPSYNCRANGE\\((?P<min>\\d+),(?P<max>\\d+)\\)\r",
+            "tests": {
+              "!LIPSYNCRANGE(1,3)": {
+                "min": 1,
+                "max": 3
+              }
+            }
+          }
+        },
+        "down": {
+          "description": "Reduce lipsync value",
+          "cmd": {
+            "fstring": "!LIPSYNC-"
+          }
+        },
+        "up": {
+          "description": "Increase lipsync value",
+          "cmd": {
+            "fstring": "!LIPSYNC+"
+          }
+        }
+      }
+    },
+    "loudness": {
+      "description": "Loudness",
+      "actions": {
+        "on": {
+          "description": "Turn loudness on",
+          "cmd": {
+            "fstring": "!LOUDNESS(1)"
+          }
+        },
+        "off": {
+          "description": "Turn loudness off",
+          "cmd": {
+            "fstring": "!LOUDNESS(0)"
+          }
+        },
+        "get": {
+          "description": "Get the loudness setting (0=off; 1=on)",
+          "cmd": {
+            "fstring": "!LOUDNESS?"
+          },
+          "msg": {
+            "regex": "!LOUDNESS\\((?P<loudness>[01])\\)",
+            "tests": {
+              "!LOUDNESS(0)": {
+                "loudness": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "mute": {
+      "description": "Mute",
+      "actions": {
+        "toggle": {
+          "description": "Mute toggle button",
+          "cmd": {
+            "fstring": "!MUTE"
+          }
+        },
+        "get": {
+          "description": "get current Mute status",
+          "cmd": {
+            "fstring": "!MUTE?"
+          },
+          "msg": {
+            "regex": "!MUTE\\\\((?P<mute>[01])\\)",
+            "tests": {
+              "!MUTE(1)": {
+                "mute": 1
+              }
+            }
+          }
+        },
+        "off": {
+          "description": "Mute off",
+          "cmd": {
+            "fstring": "!MUTEOFF"
+          }
+        },
+        "on": {
+          "description": "Mute on",
+          "cmd": {
+            "fstring": "!MUTEON"
+          }
+        }
+      }
+    },
+    "ping": {
+      "description": "Ping test",
+      "actions": {
+        "ping": {
+          "description": "Ping for a pong (returns PONG)",
+          "cmd": {
+            "fstring": "!PING?"
+          },
+          "msg": {
+            "regex": "!PONG"
+          }
+        }
+      }
+    },
+    "power": {
+      "description": "Power control for the entire system",
+      "actions": {
+        "on": {
+          "description": "Turn entire system on",
+          "cmd": {
+            "fstring": "!PON"
+          }
+        },
+        "off": {
+          "description": "Turn entire system off",
+          "cmd": {
+            "fstring": "!POFF"
+          }
+        },
+        "toggle": {
+          "description": "Toggle system power",
+          "cmd": {
+            "fstring": "!PTOGGLE"
+          }
+        },
+        "get": {
+          "description": "Get system power status (0=off; 1=on)",
+          "cmd": {
+            "fstring": "!POWER?"
+          },
+          "msg": {
+            "regex": "!POWER\\((?P<power>[01])\\)",
+            "tests": {
+              "!POWER(1)": {
+                "power": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "power_zone_main": {
+      "description": "Main zone power",
+      "actions": {
+        "on": {
+          "description": "Turn main zone power on",
+          "cmd": {
+            "fstring": "!POWERONMAIN"
+          }
+        },
+        "off": {
+          "description": "Turn main zone power off",
+          "cmd": {
+            "fstring": "!POWEROFFMAIN"
+          }
+        },
+        "get": {
+          "description": "get main zone power status (0=standby; 1=on)",
+          "cmd": {
+            "fstring": "!POWERMAIN?"
+          },
+          "msg": {
+            "regex": "!POWER\\((?P<power>[01])\\)",
+            "tests": {
+              "!POWER(1)": {
+                "power": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "power_zone_2": {
+      "description": "Zone 2 power",
+      "actions": {
+        "on": {
+          "description": "Turn zone 2 power on",
+          "cmd": {
+            "fstring": "!POWERONZONE2"
+          }
+        },
+        "off": {
+          "description": "Turn zone 2 power off",
+          "cmd": {
+            "fstring": "!POWEROFFZONE2"
+          }
+        },
+        "get": {
+          "description": "Get zone 2 power status (0=off; 1=on)",
+          "cmd": {
+            "fstring": "!POWERZONE2?"
+          },
+          "msg": {
+            "regex": "!POWER\\((?P<power>[01])\\)",
+            "tests": {
+              "!POWERZONE2(1)": {
+                "power": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "roomperfect_focus": {
+      "description": "RoomPerfect room correction focus",
+      "actions": {
+        "previous": {
+          "description": "Previous RoomPerfect position button",
+          "cmd": {
+            "fstring": "!RPFOC-"
+          }
+        },
+        "position": {
+          "description": "Request RoomPerfect position (0=bypass, 1-8=focus1-8, 9=global)",
+          "cmd": {
+            "fstring": "!RPFOC?"
+          }
+        },
+        "set": {
+          "description": "Set RoomPerfect position",
+          "cmd": {
+            "fstring": "!RPFOC({roomperfect_position})",
+            "docs": {
+              "roomperfect_position": "RoomPerfect position (0=bypass, 1-8=focus1-8, 9=global)"
+            }
+          }
+        },
+        "next": {
+          "description": "Next Roomperfect position button",
+          "cmd": {
+            "fstring": "!RPFOC+"
+          }
+        },
+        "get": {
+          "description": "Get available RoomPerfect positions",
+          "cmd": {
+            "fstring": "!RPFOCS?"
+          },
+          "msg": {
+            "regex": "!PPFOCOUNT\\((?P<power>[01])\\)",
+            "tests": {
+              "FIXME": {
+                "positions": 3
+              }
+            }
+          }
+        }
+      }
+    },
+    "roomperfect_voice": {
+      "description": "RoomPerfect room correction voice",
+      "actions": {
+        "previous": {
+          "description": "Previous voicing button",
+          "cmd": {
+            "fstring": "!RPVOI-"
+          }
+        },
+        "get": {
+          "description": "Get active voicing",
+          "cmd": {
+            "fstring": "!RPVOI?"
+          },
+          "msg": {
+            "regex": "!RPVOI\\((?P<active_voice>[01])\\)\\s*\"(?P<name>.+)\"",
+            "tests": {
+              "!RPVOI(1) \"Test\"": {
+                "active_voice": 1,
+                "name": "Test"
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Set voicing",
+          "cmd": {
+            "fstring": "!RPVOI({roomperfect_voicing})"
+          },
+          "docs": {
+            "roomperfect_voicing": "RoomPerfect voicing value"
+          }
+        },
+        "next": {
+          "description": "Next voicing button",
+          "cmd": {
+            "fstring": "!RPVOI+"
+          }
+        },
+        "list": {
+          "description": "Request list of available voicings",
+          "cmd": {
+            "fstring": "!RPVOIS?"
+          },
+          "msg": {
+            "regex": "!RPVOICOUNT\\((?P<voice_count>\\d+)\\)\r",
+            "tests": {
+              "!RPIVOICOUNT(2)": {
+                "voice_count": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    "source": {
+      "description": "Input source selection",
+      "actions": {
+        "previous": {
+          "description": "Previous source button",
+          "cmd": {
+            "fstring": "!SRC-"
+          }
+        },
+        "get": {
+          "description": "Get info for currently active source",
+          "cmd": {
+            "fstring": "!SRC?"
+          },
+          "msg": {
+            "regex": "!SRC\\((?P<source>\\d+)\\)\\s*\"(?P<name>.+)\"",
+            "tests": {
+              "!SRC(1) CD": {
+                "source": 1,
+                "name": "CD"
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Select source",
+          "cmd": {
+            "fstring": "!SRC({source})",
+            "docs": {
+              "source": "Source to select (integer)"
+            }
+          }
+        },
+        "info": {
+          "description": "Get info for a specific source",
+          "cmd": {
+            "fstring": "!SRC({source})?",
+            "docs": {
+              "source": "the integer identifying the source input"
+            }
+          },
+          "msg": {
+            "regex": "!SRC\\((?P<source>\\d+)\\)\\s*\"(?P<name>.+)\"",
+            "tests": {
+              "!SRC(2) HiFiBerry": {
+                "source": 2,
+                "name": "HiFiBerry"
+              }
+            }
+          }
+        },
+        "next": {
+          "description": "Next source button",
+          "cmd": {
+            "fstring": "!SRC+"
+          }
+        },
+        "list": {
+          "description": "Get list of available sources",
+          "cmd": {
+            "fstring": "!SRCS?"
+          },
+          "msg": {
+            "regex": "!SRCOUNT\\((?P<count>\\d+)\\)\r",
+            "tests": {
+              "FIXME": {
+                "count": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    "volume_offset": {
+      "description": "Volume offset",
+      "actions": {
+        "down": {
+          "description": "Decrease Source volume offset",
+          "cmd": {
+            "fstring": "!SRCOFF-"
+          }
+        },
+        "get": {
+          "description": "Get source volume offset for current source",
+          "cmd": {
+            "fstring": "!SRCOFF?"
+          }
+        },
+        "set": {
+          "description": "Set source volume offset for current source",
+          "cmd": {
+            "fstring": "!SRCOFF(x)"
+          }
+        },
+        "up": {
+          "description": "Increase source volume offset",
+          "cmd": {
+            "fstring": "!SRCOFF+"
+          }
+        }
+      }
+    },
+    "software": {
+      "description": "Software/firmware info",
+      "actions": {
+        "info": {
+          "description": "Request SW information (prints a list of version numbers)",
+          "cmd": {
+            "fstring": "!SWINFO?"
+          },
+          "msg": {
+            "regex": "!SWINFO\\((?P<version>.+)\\)",
+            "tests": {
+              "!SWINFO(1)": {
+                "version": "1"
+              }
+            }
+          }
+        }
+      }
+    },
+    "trim_bass": {
+      "description": "Bass trim controls",
+      "actions": {
+        "get": {
+          "description": "Get current bass level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMBASS?"
+          },
+          "msg": {
+            "regex": "!TRIMBASS\\((?P<bass_level>-?[0-9]{1,3})\\)",
+            "tests": {
+              "!TRIMBASS(10)": {
+                "bass_level": 10
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Sets bass level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMBASS({bass_level})",
+            "regex": "!TRIMBASS\\((?P<bass_level>-?[0-9]{1,3})\\)"
+          }
+        },
+        "up": {
+          "description": "Increases bass level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMBASS+"
+          }
+        },
+        "down": {
+          "description": "Decreases bass level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMBASS-"
+          }
+        }
+      }
+    },
+    "trim_center": {
+      "description": "Center channel trim controls",
+      "actions": {
+        "get": {
+          "description": "get current center channel level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMCENTER?"
+          },
+          "msg": {
+            "regex": "!TRIMCENTER\\((?P<center_level>-?[0-9]{1,3})\\)",
+            "tests": {
+              "!TRIMCENTER(10)": {
+                "center_level": 10
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Sets center channel level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMCENTER({center_level})",
+            "regex": "!TRIMCENTER\\((?P<center_level>-?[0-9]{1,3})\\)"
+          }
+        },
+        "up": {
+          "description": "Increases center channel level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMCENTER+"
+          }
+        },
+        "down": {
+          "description": "Decreases center channel level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMCENTER-"
+          }
+        }
+      }
+    },
+    "trim_height": {
+      "description": "Height channels trim controls",
+      "actions": {
+        "get": {
+          "description": "Gete current height channels level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMHEIGHT?"
+          },
+          "msg": {
+            "regex": "!TRIMHEIGHT\\((?P<height_level>-?[0-9]{1,3})\\)",
+            "tests": {
+              "!TRIMHEIGHT(9)": {
+                "height_level": 9
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Sets height channels level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMHEIGHT({height_level})",
+            "regex": "!TRIMHEIGHT\\((?P<height_level>-?[0-9]{1,3})\\)"
+          }
+        },
+        "up": {
+          "description": "Increases height channels level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMHEIGHT+"
+          }
+        },
+        "down": {
+          "description": "Decreases height channels level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMHEIGHT-"
+          }
+        }
+      }
+    },
+    "trim_lfe": {
+      "description": "LFE channel trim controls",
+      "actions": {
+        "get": {
+          "description": "Get current LFE channel level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMLFE?"
+          },
+          "msg": {
+            "regex": "!TRIMLFE\\((?P<lfe_level>-?[0-9]{1,3})\\)",
+            "tests": {
+              "!TRIMLFE(2)": {
+                "lfe_level": 2
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Sets LFE channel level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMLFE({lfe_level})",
+            "regex": "!TRIMLFE\\((?P<lfe_level>-?[0-9]{1,3})\\)"
+          }
+        },
+        "up": {
+          "description": "Increases LFE channel level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMLFE+"
+          }
+        },
+        "down": {
+          "description": "Decreases LFE channel level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMLFE-"
+          }
+        }
+      }
+    },
+    "trim_surrounds": {
+      "description": "Surround channels trim controls",
+      "actions": {
+        "down": {
+          "description": "Decreases surround channels level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMSURRS-"
+          }
+        },
+        "get": {
+          "description": "Get current surround channels level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMSURRS?"
+          },
+          "msg": {
+            "regex": "!TRIMSURRS\\((?P<surround_level>-?[0-9]{1,3})\\)",
+            "tests": {
+              "!TRIMSURRS(1)": {
+                "surround_level": 1
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Sets surround channels level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMSURRS({surround_level})",
+            "regex": "!TRIMSURRS\\((?P<surround_level>-?[0-9]{1,3})\\)"
+          }
+        },
+        "up": {
+          "description": "Increases surround channels level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMSURRS+"
+          }
+        }
+      }
+    },
+    "trim_treble": {
+      "description": "Treble trim controls",
+      "actions": {
+        "get": {
+          "description": "Get current treble level trim (10 = 1dB; -120=-10 dB to 120=+10 dB)",
+          "cmd": {
+            "fstring": "!TRIMTREB?"
+          },
+          "msg": {
+            "regex": "!TRIMTREB\\(?P<trebble_level>-?[0-9]{1,3})\\)",
+            "tests": {
+              "!TRIMTREB(100)": {
+                "trebble_level": 100
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Sets treble level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMTREB({trebble_level})",
+            "regex": "!TRIMTREB\\((?P<trebble_level>-?[0-9]{1,3})\\)"
+          }
+        },
+        "down": {
+          "description": "Decreases treble level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMTREB-"
+          }
+        },
+        "up": {
+          "description": "Increases treble level trim (10 = 1dB)",
+          "cmd": {
+            "fstring": "!TRIMTREB+"
+          }
+        }
+      }
+    },
+    "volume": {
+      "description": "Volume controls",
+      "actions": {
+        "get": {
+          "description": "Get current volume",
+          "cmd": {
+            "fstring": "!VOL?"
+          },
+          "msg": {
+            "regex": "!VOL\\((?P<volume>[0-9]{1,2})\\)",
+            "tests": {
+              "!VOL(1)": {
+                "volume": 1
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Set volume to x",
+          "cmd": {
+            "fstring": "!VOL({volume})",
+            "regex": "!VOL\\((?P<volume>[0-9]{1,2})\\)"
+          }
+        },
+        "down": {
+          "description": "Decrease volume",
+          "cmd": {
+            "fstring": "!VOL-"
+          }
+        },
+        "down_by_x": {
+          "description": "Decrease volume by x",
+          "cmd": {
+            "fstring": "!VOL-({volume_amount})",
+            "regex": "!VOL-\\((?P<volume_amount>[0-9]{1,2})\\)"
+          }
+        },
+        "up": {
+          "description": "Increase volume",
+          "cmd": {
+            "fstring": "!VOL+"
+          }
+        },
+        "up_by_x": {
+          "description": "Increase volume by x",
+          "cmd": {
+            "fstring": "!VOL+({volume_amount})",
+            "regex": "!VOL\\+\\((?P<volume_amount>[0-9]{1,2})\\)"
+          }
+        }
+      }
+    },
+    "zone_2_mute": {
+      "description": "Zone 2 mute",
+      "actions": {
+        "get": {
+          "description": "get current Zone B Mute status",
+          "cmd": {
+            "fstring": "!ZMUTE?"
+          },
+          "msg": {
+            "regex": "!ZMUTE\\((?P<mute>[01])\\)",
+            "tests": {
+              "!ZMUTE(1)": {
+                "mute": 1
+              }
+            }
+          }
+        },
+        "on": {
+          "description": "Zone B Mute on",
+          "cmd": {
+            "fstring": "!ZMUTEON"
+          }
+        },
+        "off": {
+          "description": "Zone B Mute off",
+          "cmd": {
+            "fstring": "!ZMUTEOFF"
+          }
+        },
+        "toggle": {
+          "description": "Toggle Zone B Mute",
+          "cmd": {
+            "fstring": "!ZMUTE"
+          }
+        }
+      }
+    },
+    "zone_2_power": {
+      "description": "Zone 2 power",
+      "actions": {
+        "on": {
+          "description": "Zone Power On",
+          "cmd": {
+            "fstring": "!ZPON"
+          }
+        },
+        "off": {
+          "description": "Zone Power Off",
+          "cmd": {
+            "fstring": "!ZPOFF"
+          }
+        },
+        "toggle": {
+          "description": "Zone Power Toggle",
+          "cmd": {
+            "fstring": "!ZPTOGGLE"
+          }
+        }
+      }
+    },
+    "zone_2_source": {
+      "description": "Zone 2 input source selection",
+      "actions": {
+        "previous": {
+          "description": "Previous zone B source button",
+          "cmd": {
+            "fstring": "!ZSRC-"
+          }
+        },
+        "get": {
+          "description": "Get current Zone B source",
+          "cmd": {
+            "fstring": "!ZSRC?"
+          },
+          "msg": {
+            "regex": "!ZSRC\\((?P<source>\\d+)\\s*\"(?P<name>.+)\"\\)",
+            "tests": {
+              "!ZSRC(1) \"Source 1\"": {
+                "source": 1,
+                "name": "Source 1"
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Set Zone B source",
+          "cmd": {
+            "fstring": "!ZSRC({source})",
+            "regex": "!ZSRC\\((?P<source>\\d+)\\)"
+          }
+        },
+        "next": {
+          "description": "Next Zone B source button",
+          "cmd": {
+            "fstring": "!ZSRC+"
+          }
+        },
+        "list": {
+          "description": "Get list of available Zone B sources",
+          "cmd": {
+            "fstring": "!ZSRCS?"
+          },
+          "msg": {
+            "regex": "!ZSRCCOUNT\\\\((?P<count>\\\\d+)\\r!ZSRC\\\\((?P<source_id>.+)\\\\)\\s*\"(?P<name>.+)\"",
+            "tests": {
+              "!ZSRCCOUNT(1)\\r!ZSRC(1) \"Source 1\"": {
+                "count": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "zone_2_volume": {
+      "description": "Zone 2 volume control",
+      "actions": {
+        "down": {
+          "description": "Decrease zone B volume",
+          "cmd": {
+            "fstring": "!ZVOL-"
+          }
+        },
+        "down_by_x": {
+          "description": "decrease zone B volume by X",
+          "cmd": {
+            "fstring": "!ZVOL-({volume_amount})",
+            "regex": "!ZVOL-\\((?P<volume_amount>[0-9]{1,2})\\)"
+          }
+        },
+        "get": {
+          "description": "Get current zone B volume",
+          "cmd": {
+            "fstring": "!ZVOL?"
+          },
+          "msg": {
+            "regex": "!ZVOL\\((?P<volume>[0-9]{1,2})\\)",
+            "tests": {
+              "!ZVOL(2)": {
+                "volume": 2
+              }
+            }
+          }
+        },
+        "set": {
+          "description": "Set zone B volume",
+          "cmd": {
+            "fstring": "!ZVOL({volume})",
+            "regex": "!ZVOL\\((?P<volume>[0-9]{1,2})\\)"
+          }
+        },
+        "up": {
+          "description": "Increase zone B volume",
+          "cmd": {
+            "fstring": "!ZVOL+"
+          }
+        },
+        "up_by_x": {
+          "description": "Increase zone B volume by x",
+          "cmd": {
+            "fstring": "!ZVOL+({volume_amount})",
+            "regex": "!ZVOL\\+\\((?P<volume_amount>[0-9]{1,2})\\)"
+          }
+        }
+      }
+    }
+  }
+}
