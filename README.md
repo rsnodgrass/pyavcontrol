@@ -138,4 +138,4 @@ Example URL formats supported by pyserial:
 - [Earlier McIntosh control in Home Assistant](https://community.home-assistant.io/t/need-help-using-rs232-to-control-a-receiver/95210/8)
 - https://drivers.control4.com/solr/drivers/browse?q=mcintosh
 - [RS232 to USB cable](https://www.amazon.com/RS232-to-USB/dp/B0759HSLP1?tag=carreramfi-20)
-
+* [IO Ninja](https://ioninja.com/)

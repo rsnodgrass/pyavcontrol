@@ -10,8 +10,8 @@ sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'PyAVControl' # TBD
-copyright = '2024 Ryan Snodgrass'
+project = 'PyAVControl'
+copyright = '2024, Ryan Snodgrass'
 author = 'Ryan Snodgrass'
 release = '0.0.1'
 
@@ -34,3 +34,8 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+
+# -- Generate documentation for Dynamic classes ------------------------------
+# see https://pypi.org/project/sphinx-autorun/#description
+
+import pyavcontrol.library.docs
