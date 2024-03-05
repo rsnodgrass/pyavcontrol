@@ -17,6 +17,7 @@ This indicates that there should be a build pipeline that converts the definitio
 * support access to the intrefaces via JSON by clients (no need to implement complex config parsing for new languages IF it is acceptable to tradeoff "compiling" the definitions down into a large repository of JSON files)
 * separate the definition from the runtime dependency
 * schema/limited type checking
+* ability to add comments
 
 #### Config Languages Considered
 
@@ -30,7 +31,7 @@ This indicates that there should be a build pipeline that converts the definitio
 
 And of course raw formats, which was the initial implementation, but quickly abandoned due to the sheer volume of files and duplicate config needed to support minute differences between a vast array of physical device features:
 
-* JSON: most compatible and frequently used for data interfaces
+* JSON: most compatible and frequently used for data interfaces; no ability to add comments
 * YAML: more readable than json, with some limited support for references
 * TOML
 

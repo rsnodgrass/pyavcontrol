@@ -8,6 +8,16 @@ Welcome to PyAVControl
 
 Library created to control a wide variety of A/V equipment which expose text-based control protocols over RS232, USB serial connections, and/or remote IP sockets.
 
+
+.. image:: https://img.shields.io/badge/Donate-PayPal-green.svg
+   :target: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G
+   :alt: Done
+
+.. image:: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg
+   :target: https://buymeacoffee.com/DYks67r
+   :alt: Buy Me A Coffee
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
