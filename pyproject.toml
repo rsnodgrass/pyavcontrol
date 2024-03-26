@@ -35,6 +35,9 @@ profile = "black"
 force_to_top = [ "logging" ]
 balanced_wrapping = true
 
+[tool.ruff]
+
+
 [tool.black]
 line-length = 88
 
