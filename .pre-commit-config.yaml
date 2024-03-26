@@ -17,12 +17,21 @@ repos:
       - id: brunette
         args: [--line-length=88, --single-quotes, --target-version py311]
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.4
+    hooks:
+      - id: ruff
+        args: [ --fix ]  # run linter
+      - id: ruff-format  # run formatter
+
+# pycln - formatter for finding and removing unused import statements
 #-   repo: https://github.com/hadialqattan/pycln
 #    rev: v2.4.0
 #    hooks:
 #    -   id: pycln
 #        args: [--config=pyproject.toml]
 
+  # isort - sort import statements
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
