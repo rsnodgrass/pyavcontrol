@@ -1,0 +1,92 @@
+---
+id: acurus_m8
+description: Acurus Amplifier Control Protocol 1.0
+
+info:
+  manufacturer: Acurus
+  models:
+    - M8
+  tested: false
+  urls:
+    - https://app.box.com/s/bp7h228vihe92nmjlo6o8w6e66tvj58o
+
+connection:
+  rs232:
+    baudrate: 9600
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 1.0
+
+protocol:
+  command_eol: "\r"    # CR Carriage Return
+  command_format: '{cmd}{eol}'
+
+  message_format: '{msg}{eol}'
+  message_eol: "\r\n"
+
+api:
+  power:
+    actions:
+      status:
+        cmd:
+          fstring: STSPOW
+      toggle:
+        cmd:
+          fstring: PWRTGL
+        msg:
+          regex: '!OK POWER O(?P<power>[NF])[F]*'
+      on:
+        cmd:
+          fstring: PWRONN
+      off:
+        cmd:
+          fstring: PWROFF
+
+  mute:
+    description: Mute
+    actions:
+      toggle:
+        description: Mute toggle button
+        cmd:
+          fstring: MUTTGL
+        msg:
+          regex: '!OK MUTE O(?P<power>[NF])[F]*'
+      get:
+        description: get current Mute status
+        cmd:
+          fstring: STSMUT
+        msg:
+          regex: '!OK MUTE O(?P<power>[NF])[F]*'
+      off:
+        description: Mute off
+        cmd:
+          fstring: MUTOFF
+      on:
+        description: Mute on
+        cmd:
+          fstring: MUTONN
+      channel_on:
+        cmd:
+          fstring: MONCH{zone}
+          regex: MONCH\d
+      channel_off:
+        cmd:
+          fstring: MOFCH{zone}
+          regex: MOFCH\d
+      channel_toggle:
+        cmd:
+          fstring: MOTCH{zone}
+          regex: MOTCH\d
+
+  volume:
+    description: Volume controls
+    actions:
+      down:
+        description: Decrease volume
+        cmd:
+          fstring: VOLDWN
+      up:
+        description: Increase volume
+        cmd:
+          fstring: VOLUPP

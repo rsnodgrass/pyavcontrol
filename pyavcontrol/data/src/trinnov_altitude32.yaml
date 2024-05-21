@@ -1,0 +1,168 @@
+---
+id: trinnov_altitude32
+
+description: Trinnov Altitude and JBL Synthesis Processor Automation Protocol over
+  RS232 and IP [2016-11-22 v1.13]
+
+
+contacts:
+  - remy.bruno@trinnov.com
+
+# FUTURE: add bindings for other models
+# Port 44100, Altitude/Amethyst/JBL SDP-XX. Applies to JBL SDP-65 and SDP-75.
+# JBL SDP-35/38 and SDP-55/58 use port 50000, category SDP-35/38/55/58 Zone 1.
+
+info:
+  manufacturer: Trinnov
+  models:
+    - Altitude32
+  type: processor
+  urls:
+    - https://www.trinnov.com/site/assets/files/1219/al32_usman_14_10_19_he_0001_sd.pdf
+    - https://docplayer.net/176487263-Trinnov-altitude-processor-automation-protocol.html
+    - https://www.jblsynthesis.com/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw45d0257f/pdfs/JBL%20Synthesis%20SDP-75_Automation%20Protocol%20Guide.pdf
+    - https://github.com/bjorg/RadiantPi.Trinnov.Altitude
+  tested: false
+
+connection:
+  ip:
+    port: 44100
+    timeout: 1.0
+  rs232:
+    baudrate: 19200
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 1.0
+
+  # upon connection, initialize device with these commands
+  connection_init: id pyavcontrol_api
+
+
+protocol:
+  command_eol: "\r"    # CR Carriage Return
+  message_eol: "\r"
+  min_time_between_commands: 0.4
+
+vars:
+  upmixer:
+    auro3d: Auro 3D
+    dts: DTS
+    dolby: Dolby
+    auto: Auto
+    native: Native
+    legacy: Legacy
+  profile:
+    0: hdmi1
+    1: hdmi2
+    2: hdmi3
+    3: hdmi4
+    4: hdmi5
+    5: hdmi6
+    6: hdmi7
+    7: hdmi8
+    8: network
+    9: spdif1
+    10: spdif2
+    11: spdif3
+    12: spdif4
+    13: spdif71Pcm
+    14: optional5
+    15: optional6
+    16: optional7
+    17: optional71PCM
+    18: dcimchaes
+    19: aes1
+    20: aes2
+    21: analogBalanced1
+    22: analogBalanced2
+    23: analogBalanced1And2
+    24: microphone
+    25: analogSingleEnded1
+    26: analogSingleEnded2
+    27: analogSingleEnded3
+    28: analogSingleEnded4
+    29: roon
+
+
+api:
+  button:
+    description: Remote button presses
+    actions:
+      light:
+        description: Light button
+        cmd:
+          fstring: fav_light
+
+  mute:
+    description: Mute
+    actions:
+      toggle:
+        description: Mute toggle button
+        cmd:
+          fstring: mute 2
+      get:
+        description: Get current mute setting
+        cmd:
+          fstring: send_volume
+        msg:
+          regex: MUTE (?P<power>[01])
+          tests:
+            'MUTE 1':
+              mute: 1
+      'off':
+        description: Mute off
+        cmd:
+          fstring: mute 0
+      'on':
+        description: Mute on
+        cmd:
+          fstring: mute 1
+
+  power_system:
+    description: Entire system power
+    actions:
+      off:
+        description: Turn entire system off
+        cmd:
+          fstring: power_off_SECURED_FHZMCH48FE
+
+  volume:
+    description: Volume controls
+    actions:
+      get:
+        description: get current volume status
+        cmd:
+          fstring: send_volume    # FIXME: also 'send volume' for JBL 1.0
+        msg:
+          regex: 'VOLUME (?P<volume>[0-9]{1,2})'
+          tests:
+            VOLUME 10:
+              volume: 10
+      set:
+        description: Set volume to x (in dB) Volume attenuation in dB. Range -100
+          to 20.
+        cmd:
+          fstring: 'volume {volume}'
+          regex: 'volume (?P<volume>[0-9]{1,2})'
+      down:
+        description: Decrease volume
+        cmd:
+          fstring: dvolume -1
+      down_by_x:
+        description: Decrease volume by x
+        cmd:
+          fstring: dvolume -{volume_amount}
+          regex: dvolume -(?P<volume_amount>[0-9]{1,2})
+      up:
+        description: Increase volume
+        cmd:
+          fstring: dvolume 1
+      up_by_x:
+        description: Increase volume by x
+        cmd:
+          fstring: dvolume {volume_amount}
+          regex: dvolume (?P<volume_amount>[0-9]{1,2})
+
+# FIXME: input source = profile
+# FIXME: preset selection

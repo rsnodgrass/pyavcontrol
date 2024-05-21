@@ -1,0 +1,50 @@
+---
+id: lyngdorf_mp60
+
+info:
+  manufacturer: Lyngdorf
+  models:
+    - MP-60
+  tested: false
+
+connection:
+  ip:
+    port: 84
+  rs232:
+    baudrate: 115200
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 2.0
+
+protocol:
+  command_eol: "\r\n" # CR/LF
+
+api:
+  device:
+    actions:
+      name:
+        description: Returns the name of the device
+        cmd:
+          fstring: '!DEVICE?'
+        msg:
+          regex: '!DEVICE\((?P<name>.+)\)'
+          tests:
+            '!DEVICE(MP-60)':
+              name: MP-60
+
+  power:
+    description: Power controls
+    actions:
+      on:
+        description: Turn CD on
+        cmd:
+          fstring: '!ON'
+      off:
+        description: Turn CD off
+        cmd:
+          fstring: '!OFF'
+      toggle:
+        description: Toggle power
+        cmd:
+          fstring: '!PWR'
