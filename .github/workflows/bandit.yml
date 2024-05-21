@@ -1,0 +1,33 @@
+# see https://github.com/shundor/python-bandit-scan
+# see https://github.com/mdegis/bandit-action
+
+name: Bandit
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    # branches below must be a subset of the branches above
+    branches: [ "main" ]
+  schedule:
+    - cron: '22 4 * * 6'
+
+jobs:
+  bandit:
+    permissions:
+      contents: read          # for actions/checkout to fetch code
+      security-events: write  # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read           # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Bandit Scan
+#        uses: shundor/bandit-action@v1
+        uses: mdegis/bandit-action@v1.0.1
+        with:
+          # Github token of the repository (automatically created by Github)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # needed to get PR info
+
+          # exit with 0, even with results found
+          exit_zero: true # optional, default is DEFAULT

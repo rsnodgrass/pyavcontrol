@@ -1,0 +1,100 @@
+---
+id: mcintosh_mx170
+description: McIntosh MX170 Protocol [2019-11-27 MX170 Serial Control Manual V2]
+
+info:
+  manufacturer: McIntosh
+  models:
+    - MX170
+  type: processor
+  tested: false
+  urls:
+    - http://www.mcintoshcompendium.com/Compendium%20Docs/Home%20Theater%20Controllers/PDFs/MX170.pdf
+
+delete:
+  api:
+    trim_treble:
+      actions:
+        get:
+
+  # FIXME: what about VIDTYPE? VIDIN? ZAUDIN?
+
+api:
+  trim_treble:
+      # NOTE: overrides older MX160 definition (as of 11-27-19)
+    actions:
+      get:
+        description: Get current treble level trim (10 = 1dB; -120=-10 dB to 120=+10
+          dB)
+        cmd:
+          fstring: '!TRIMTREB?'
+        msg:
+          regex: '!TRIMTREBLE\(?P<trebble_level>-?[0-9]{1,3})\)'
+          tests:
+            '!TRIMTREBLE(-120)':
+              trebble_level: -120
+
+  volume:
+    actions:
+      max_vol:
+        description: Requests the maximum volume setting (12-99) [MX170+]
+        cmd:
+          fstring: '!MAXVOL?'
+        msg:
+          regex: '!MAXVOL(\(?P<volume>[0-9]{1,2}\))'
+          tests:
+            '!MAXVOL(99)':
+              volume: 99
+
+  zone_2_mute:
+    description: Zone 2 mute
+    actions:
+      get:
+        description: get current Zone B Mute status
+        cmd:
+          fstring: '!ZMUTE?'
+        msg:
+          regex: '!ZMUTEO\(?P<mute>[NF]F?'    # FIXME: how to map to 0 or 1?
+        mappings:
+          mute:
+            O: 0
+            F: 1
+        tests:
+          msg:
+            '!ZMUTEON':
+              mute: N      # FIXME: 1
+            '!ZMUTEOFF':
+              mute: F      # FIXME: 0
+
+vars:
+  input:
+    type: int
+    min: 0
+    max: 25
+    values:
+      0: HDMI 1
+      1: HDMI 2
+      2: HDMI 3
+      3: HDMI 4
+      4: HDMI 5
+      5: HDMI 6
+      6: HDMI 7
+      7: HDMI 8
+      8: Audio Return
+      9: SPDIF 1 (Optical)
+      10: SPDIF 2 (Optical)
+      11: SPDIF 3 (Optical)
+      12: SPDIF 4 (Optical)
+      13: SPDIF 5 (AES/EBU)
+      14: SPDIF 6 (Coaxial)
+      15: SPDIF 7 (Coaxial)
+      16: SPDIF 8 (Coaxial)
+      17: USB Audio
+      18: Analog 1
+      19: Analog 2
+      20: Analog 3
+      21: Analog 4
+      22: Balanced 1
+      23: Balanced 2
+      24: Phono
+      25: 8 Channel Analog
