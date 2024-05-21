@@ -1,6 +1,0 @@
-# Background
-
-## Goals
-
-## History
-
