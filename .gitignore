@@ -11,3 +11,6 @@ build
 __pycache__
 .mypy_cache
 *.swp
+pypi.key
+poetry.lock
+.idea
