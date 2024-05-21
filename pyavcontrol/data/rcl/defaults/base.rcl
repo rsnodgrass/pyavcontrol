@@ -1,7 +1,0 @@
-// defaults that all equipment should include as default values
-{
-  info = {
-      name = "Unknown",
-      tested = false
-  }
-}
