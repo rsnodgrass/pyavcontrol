@@ -36,7 +36,11 @@ force_to_top = [ "logging" ]
 balanced_wrapping = true
 
 [tool.ruff]
+line-length = 88
+indent-width = 4
 
+[tool.ruff.format]
+quote-style = "single" # Use a single quote instead of double
 
 [tool.black]
 line-length = 88
