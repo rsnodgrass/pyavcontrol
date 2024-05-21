@@ -11,12 +11,12 @@ repos:
       - id: end-of-file-fixer
       - id: requirements-txt-fixer
 
-#  - repo: https://github.com/astral-sh/ruff-pre-commit
-#    rev: v0.4.4
-#    hooks:
-#      - id: ruff
-#        args: [ --fix ]  # run linter
-#      - id: ruff-format  # run formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [ --fix ]  # run linter
+      - id: ruff-format  # run formatter
 
 # pycln - formatter for finding and removing unused import statements
 #-   repo: https://github.com/hadialqattan/pycln
@@ -33,10 +33,10 @@ repos:
         files: \.(py)$
         args: [--settings-path=pyproject.toml]  # ["--profile", "black" ]
 
-#  - repo: https://github.com/dosisod/refurb
-#    rev: v2.0.0
-#    hooks:
-#      - id: refurb
+  - repo: https://github.com/dosisod/refurb
+    rev: v2.0.0
+    hooks:
+      - id: refurb
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.15.2
