@@ -5,26 +5,12 @@ fail_fast: true
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
-#      - id: trailing-whitespace
+      - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: requirements-txt-fixer
-
-
-# pycln - formatter for finding and removing unused import statements
-#-   repo: https://github.com/hadialqattan/pycln
-#    rev: v2.4.0
-#    hooks:
-#    -   id: pycln
-#        args: [--config=pyproject.toml]
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.4
-    hooks:
-      - id: ruff
-        args: [ --fix ]  # run linter
-      - id: ruff-format  # run formatter
+      - id: check-yaml
 
   # isort - sort import statements
   - repo: https://github.com/pycqa/isort
@@ -34,13 +20,25 @@ repos:
         files: \.(py)$
         args: [--settings-path=pyproject.toml]  # ["--profile", "black" ]
 
-  - repo: https://github.com/dosisod/refurb
-    rev: v2.0.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
     hooks:
-      - id: refurb
+      - id: ruff
+        args: [ --fix ]  # run linter
+      - id: ruff-format  # run formatter
+
+
+
+
+  #### OPTIONAL: for keeping syntax more current
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.15.2
     hooks:
       - id: pyupgrade
-        args: [--py312-plus]
+        args: [--py310-plus] # keep 2 versions behind current
+
+  - repo: https://github.com/dosisod/refurb
+    rev: v2.0.0
+    hooks:
+      - id: refurb
