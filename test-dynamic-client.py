@@ -34,7 +34,7 @@ coloredlogs.install(level='DEBUG')
 
 
 def main():
-    #url = 'socket://localhost:4999'
+    # url = 'socket://localhost:4999'
     connection = NullConnection()
 
     library = DeviceModelLibrary.create()

@@ -50,7 +50,7 @@ def _create_activity_group_class(
     # dynamically add methods (and associated documentation) for each action
     for action_name, action_def in group_actions.items():
         # handle yamlfmt/yamlfix rewriting of "on" and "off" as YAML keys into bools
-        if type(action_name) is bool: # noqa: E721
+        if type(action_name) is bool:  # noqa: E721
             action_name = 'on' if action_name else 'off'
 
         action = ActionDef(group_name, action_name, action_def)

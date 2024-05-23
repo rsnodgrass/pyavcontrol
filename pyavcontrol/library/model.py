@@ -60,7 +60,7 @@ class DeviceModel:
         if not model_def:
             return False
 
-        #model_id = model_def.get('id', 'unknown')
+        # model_id = model_def.get('id', 'unknown')
         #        name = model_def.get("name")
         #        if not name:
         #            LOG.warning(f"Model '{model_id}' is missing required 'name'")
