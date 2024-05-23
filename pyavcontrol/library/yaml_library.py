@@ -7,7 +7,6 @@ import os
 import pathlib
 from abc import ABC
 from concurrent.futures import ThreadPoolExecutor
-from typing import List
 
 import yaml
 
