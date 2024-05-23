@@ -1,5 +1,6 @@
 from pyavcontrol.const import DEFAULT_MODEL_LIBRARIES
-from pyavcontrol.library.model import DeviceModel
+
+# from pyavcontrol.library.model import DeviceModel
 
 
 class DeviceModelLibrary:
