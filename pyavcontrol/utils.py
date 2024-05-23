@@ -1,6 +1,5 @@
 import logging
 import re
-from typing import List
 
 LOG = logging.getLogger(__name__)
 
