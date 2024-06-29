@@ -1,0 +1,19 @@
+name: Home Assistant CI
+
+jobs:
+  home-assistant:
+    name: "Home Assistant Core ${{ matrix.version }} Configuration Check"
+    needs: [yamllint]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ["beta"]
+    steps:
+      - name: ⤵️ Check out configuration from GitHub
+        uses: actions/checkout@v4.1.7
+      - name: 🚀 Run Home Assistant Configuration Check
+        uses: frenck/action-home-assistant@v1.4
+        with:
+          path: "."
+          secrets: ./secrets.fake.yaml
+          version: "${{ matrix.version }}"
