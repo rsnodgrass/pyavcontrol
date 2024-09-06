@@ -1,0 +1,243 @@
+---
+id: meridian_g98
+
+# NOTE: None of the state subscriptions have been defined (SUBSCRIBETRACK. etc)
+
+info:
+  manufacturer: Meridian
+  models:
+    - G98
+  tested: false
+  urls:
+    -
+
+connection:
+  rs232:
+    baudrate: 9600
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 1.0
+
+protocol:
+  command_eol: "\r\n" # CR/LF
+
+api:
+  device:
+    actions:
+      name:
+        description: Returns the name of the device
+        cmd:
+          fstring: '!DEVICE?'
+        msg:
+          regex: '!DEVICE\((?P<name>.+)\)'
+          tests:
+            '!DEVICE(CD2)':
+              name: CD2
+
+  power:
+    description: Power controls
+    actions:
+      on:
+        description: Turn CD on
+        cmd:
+          fstring: '!ON'
+      off:
+        description: Turn CD off
+        cmd:
+          fstring: '!OFF'
+      toggle:
+        description: Toggle power
+        cmd:
+          fstring: '!PWR'
+
+  playback:
+    actions:
+      next:
+        description: Next track
+        cmd:
+          fstring: '!NEXT'
+      play:
+        description: Play
+        cmd:
+          fstring: '!PLAY'
+      pause:
+        description: Pause
+        cmd:
+          fstring: '!STOP'
+      stop:
+        description: Stop
+        cmd:
+          fstring: '!STOP'
+      previous:
+        description: Previous track
+        cmd:
+          fstring: '!PREV'
+      eject:
+        description: Eject
+        cmd:
+          fstring: '!EJECT'
+      rewind:
+        description: Start scanning backwards
+        cmd:
+          fstring: '!REWIND'
+      wind:
+        description: Start scanning forwards
+        cmd:
+          fstring: '!WIND'
+      stopwind:
+        description: Stop winding
+        cmd:
+          fstring: '!STOPWIND'
+      state:
+        description: Current state of playback
+        cmd:
+          fstring: '!STATE?'
+        msg:
+          regex: '!STATE\((?P<state>(OFF|OPENING|OPEN|CLOSING|NODISC|DISCERROR|READING|PLAY|STOP|PAUSE|WIND|REWIND))\)'
+          tests:
+            '!STATE(PLAY)':
+              state: PLAY
+            '!STATE(NODISC)':
+              state: NODISC
+
+  buttons:
+    actions:
+      num1:
+        description: Button number 1
+        cmd:
+          fstring: '!DIGIT(1)'
+      num2:
+        description: Button number 2
+        cmd:
+          fstring: '!DIGIT(2)'
+
+  play_status:
+    actions:
+      track:
+        description: Get current track
+        cmd:
+          fstring: '!TRACK?'
+        msg:
+          regex: '!TRACK\((?P<track>([-]|\d+))\)'
+          tests:
+            '!TRACK(-)':
+              track: '-'
+            '!TRACK(14)':
+              track: 14
+      total_tracks:
+        description: Total number of tracks being played
+        cmd:
+          fstring: '!NOFTRACKS?'
+        msg:
+          regex: '!NOFTRACKS\((?P<track>([-]|\d+))\)'
+          tests:
+            '!NOFTRACKS(-)':
+              track: '-'
+            '!NOFTRACKS(20)':
+              track: 20
+      time:
+        description: Requests the elapsed time of the playing track.
+        cmd:
+          fstring: '!TIME?'
+        msg:
+          regex: '!TIME\((?P<time>[-]*\d+)\)'
+          tests:
+            '!TIME(-0:01)':
+              time: '-0:01'
+            '!TIME(1:23)':
+              time: '1:23'
+      remaining_time:
+        description: Requests the remaining time of the playing track.
+        cmd:
+          fstring: '!REMTIME?'
+        msg:
+          regex: '!REMTIME\((?P<time>[-]*\d+)\)'
+          tests:
+            '!REMTIME(-0:01)':
+              time: '-0:01'
+            '!REMTIME(3:21)':
+              time: '3:21'
+
+
+  playback_mode:
+    description: Playback modes
+    actions:
+      set:
+        description: Set playback mode
+        cmd:
+          fstring: '!PLAYMODE({mode})'
+          regex: '!PLAYMODE\((?P<mode>[0-3])\)'
+      normal:
+        description: Normal play mode
+        cmd:
+          fstring: '!PLAYMODE(0)'
+      repeat_disc:
+        description: Repeat disc playback mode
+        cmd:
+          fstring: '!PLAYMODE(1)'
+      repeat_track:
+        description: Repeat track playback mode
+        cmd:
+          fstring: '!PLAYMODE(2)'
+      random_play:
+        description: Random shuffle playback
+        cmd:
+          fstring: '!PLAYMODE(3)'
+
+  display_mode:
+    description: Display modes
+    actions:
+      set:
+        description: Set display mode
+        cmd:
+          fstring: '!DISPMODE({mode})'
+          regex: '!DISPMODE\((?P<mode>[0-3])\)'
+      elapsed_time:
+        description: Elapsed time, no CD-Text info.
+        cmd:
+          fstring: '!DISPMODE(0)'
+      remaining_time:
+        description: 'Remaining time, no CD-Text info.'
+        cmd:
+          fstring: '!DISPMODE(1)'
+      elapsed_time_info:
+        description: Elapsed time, CD-Text info active.
+        cmd:
+          fstring: '!DISPMODE(2)'
+      remaining_time_info:
+        description: Remaining time, CD-Text info active.
+        cmd:
+          fstring: '!DISPMODE(3)'
+
+  sample_rate:
+    description: Sample rate controls
+    actions:
+      set:
+        description: Set sample rate (0=44.1 kHz; 1=48 kHz; 2=96 kHz; 3=192kHz)
+        cmd:
+          fstring: '!SAMPLERATE({sample_rate})'
+          regex: '!SAMPLERATE\((?P<sample_rate>[0-3])\)'
+
+  gain:
+    description: Gain controls
+    actions:
+      set:
+        description: Selects a new value for the analog output gain. Possible values for g is from -120 (corresponding to attenuating 12 dB) and up to 0 (no attenuation). Only steps of 5 (0.5 dB) is possible.
+        cmd:
+          fstring: '!GAIN({gain})'
+          regex: '!GAIN\((?P<gain>-?[0-9]{1,3})\)'
+
+  source:
+    description: Input source selection
+    actions:
+      get:
+        description: Get info for currently active source
+        cmd:
+          fstring: '!SRC?'
+        msg:
+          regex: '!SRC\((?P<source>\d+),"(?P<name>.+)"\)'
+          tests:
+            '!SRC(1,"CD")':
+              source: 0
+              name: CD
