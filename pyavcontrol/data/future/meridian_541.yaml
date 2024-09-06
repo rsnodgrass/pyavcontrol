@@ -1,0 +1,73 @@
+---
+id: meridian_g98
+
+# NOTE: None of the state subscriptions have been defined (SUBSCRIBETRACK. etc)
+
+info:
+  manufacturer: Meridian
+  models:
+    - 541
+  tested: false
+  urls:
+    - https://www.meridian-audio.com/download/AppNotes/232_541.pdf
+
+connection:
+  rs232:
+    baudrate: 9600
+    bytesize: 8
+    parity: N
+    stopbits: 1
+    timeout: 1.0
+
+protocol:
+  command_eol: "\r\n" # CR/LF
+
+api:
+  power:
+    description: Power controls
+    actions:
+      on:
+        description: Turn on
+        cmd:
+          fstring: 'DI'   # hack: show display
+      off:
+        description: Turn off (standby)
+        cmd:
+          fstring: 'SB'
+
+  playback:
+    actions:
+      next:
+        description: Next track
+        cmd:
+          fstring: 'NE'
+      play:
+        description: Play
+        cmd:
+          fstring: 'PP'
+      pause:
+        description: Pause
+        cmd:
+          fstring: 'PS'
+      stop:
+        description: Stop
+        cmd:
+          fstring: 'ST'
+      previous:
+        description: Previous track
+        cmd:
+          fstring: 'PR'
+      rewind:
+        description: Start scanning backwards
+        cmd:
+          fstring: 'FB'
+      wind:
+        description: Start scanning forwards
+        cmd:
+          fstring: 'FF'
+      state:
+        description: Current state of playback
+        cmd:
+          fstring: ''
+        msg:
+          regex: '123456789012'

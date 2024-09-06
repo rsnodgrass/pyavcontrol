@@ -21,7 +21,7 @@ repos:
         args: [--settings-path=pyproject.toml]  # ["--profile", "black" ]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.4
+    rev: v0.6.4
     hooks:
       - id: ruff
         args: [ --fix ]  # run linter
@@ -33,7 +33,7 @@ repos:
   #### OPTIONAL: for keeping syntax more current
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.2
+    rev: v3.17.0
     hooks:
       - id: pyupgrade
         args: [--py310-plus] # keep 2 versions behind current
