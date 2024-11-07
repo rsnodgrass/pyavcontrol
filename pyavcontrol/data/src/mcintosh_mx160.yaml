@@ -59,6 +59,10 @@ connection:
     encoding: 'ascii' # FIXME: remove
     response_eol: "\r"
 
+  ip:
+    port: 84
+    response_eol: "\r"
+
   # upon connection, initialize device with these commands
   connection_init: '!VERB(2)'
 
