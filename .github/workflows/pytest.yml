@@ -27,7 +27,7 @@ jobs:
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.*') }}
-        restore-keys: | 
+        restore-keys: |
           ${{ runner.os }}-pip-
 
     - name: Install dependencies
@@ -36,5 +36,5 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run pytest
-      run: | 
+      run: |
         pytest
