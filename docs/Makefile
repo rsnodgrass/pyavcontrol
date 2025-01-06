@@ -16,7 +16,7 @@ help:
 
 # Update all the supported models from the library sources
 update_supported_models:
-	pip3 install --quiet -r ../requirements-dev.txt 
+	pip3 install --quiet -r ../requirements-dev.txt
 	./update-supported-models
 
 # Catch-all target: route all unknown targets to Sphinx using the new
