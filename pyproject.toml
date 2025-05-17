@@ -11,7 +11,7 @@ license = "LICENSE"
 authors = [ "Ryan Snodgrass <rsnodgrass@gmail.com>" ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.13"
 pyserial = "^3.5"
 pyserial-asyncio = "^0.6"
 ratelimit = "^2.2.1"
@@ -46,30 +46,22 @@ lint.ignore = [ "F403", "F405" ]
 [tool.ruff.format]
 quote-style = "single" # Use a single quote instead of double
 
-[tool.black]
-line-length = 88
-
-# NOTE: brunette does not use pyproject.toml -- see .pre-commit and .github/workflows/bruneete.yml
-#[tool.brunette]
-#line-length = 88
-#single-quotes = true
+# import sorting settings (replaces isort)
+[tool.ruff.lint.isort]
+force-single-line = false
+force-sort-within-sections = true
+known-first-party = ["custom_components"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+combine-as-imports = true
+force-to-top = ["logging"]
 
 [tool.pycln]
 all = true
 
 [tool.refurb]
-python_version = "3.11"
+python_version = "3.12"
 quiet = true
 ignore = [ "FURB184" ]
-
-[tool.pylint.format]
-max-line-length = "88"
-
-[tool.pylint.FORMAT]
-expected-line-ending-format = "LF"
-
-[tool.pylint.CODE_STYLE]
-max-line-length-suggestions = 90
 
 [tool.pytest.ini_options]
 pythonpath = [ "." ]

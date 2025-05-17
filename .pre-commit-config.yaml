@@ -13,23 +13,12 @@ repos:
       - id: requirements-txt-fixer
       - id: check-yaml
 
-  # isort - sort import statements
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        files: \.(py)$
-        args: [--settings-path=pyproject.toml]  # ["--profile", "black" ]
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.6
+    rev: v0.11.10
     hooks:
       - id: ruff
         args: [ --fix ]  # run linter
       - id: ruff-format  # run formatter
-
-
-
 
   #### OPTIONAL: for keeping syntax more current
 
@@ -40,6 +29,6 @@ repos:
         args: [--py310-plus] # keep 2 versions behind current
 
   - repo: https://github.com/dosisod/refurb
-    rev: v2.0.0
+    rev: v2.1.0
     hooks:
       - id: refurb
