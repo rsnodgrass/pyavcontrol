@@ -20,13 +20,19 @@ repos:
         args: [ --fix ]  # run linter
       - id: ruff-format  # run formatter
 
+  # check python type issues
+#  - repo: https://github.com/RobertCraigie/pyright-python
+#    rev: v1.1.400
+#    hooks:
+#    - id: pyright
+
   #### OPTIONAL: for keeping syntax more current
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.19.1
     hooks:
       - id: pyupgrade
-        args: [--py310-plus] # keep 2 versions behind current
+        args: [--py312-plus] # keep 2 versions behind current
 
   - repo: https://github.com/dosisod/refurb
     rev: v2.1.0
