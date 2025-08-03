@@ -1,0 +1,302 @@
+---
+# Monoprice Blackbird 27842 8x8 HDMI Matrix
+# Based on validated commands from testing with real device
+
+id: monoprice_blackbird_27842
+description: Monoprice Blackbird 27842 8x8 HDMI Matrix Switch
+
+info:
+  name: Monoprice
+  manufacturer: Monoprice
+  models:
+    - Blackbird 27842
+  type: hdmi_matrix
+  tested: true
+  urls:
+    - https://www.monoprice.com/product?p_id=27842
+
+hardware:
+  inputs:
+    1: HDMI Input 1
+    2: HDMI Input 2
+    3: HDMI Input 3
+    4: HDMI Input 4
+    5: HDMI Input 5
+    6: HDMI Input 6
+    7: HDMI Input 7
+    8: HDMI Input 8
+  outputs:
+    1: HDBaseT Output 1
+    2: HDBaseT Output 2
+    3: HDBaseT Output 3
+    4: HDBaseT Output 4
+    5: HDBaseT Output 5
+    6: HDBaseT Output 6
+    7: HDBaseT Output 7
+    8: HDBaseT Output 8
+    9: Local HDMI Output 1
+    10: Local HDMI Output 2
+    11: Local HDMI Output 3
+    12: Local HDMI Output 4
+    13: Local HDMI Output 5
+    14: Local HDMI Output 6
+    15: Local HDMI Output 7
+    16: Local HDMI Output 8
+
+connection:
+  ip:
+    port: 4001
+    timeout: 10.0
+    multi_line_timeout: 1.0
+
+protocol:
+  encoding: 'ascii'
+  command_eol: ""
+  message_eol: "\r\n"
+  min_time_between_commands: 2.0
+  error_responses:
+    - 'Unknown Command!'
+  notes: |
+    - Most responses include 'Please Input Your Command :' as first line
+    - Multi-line responses are common, especially for status commands
+    - Invalid commands return 'Unknown Command!'
+    - Some commands may return no response on error
+
+vars:
+  input:
+    type: int
+    min: 1
+    max: 8
+    pattern: '[1-8]'
+    values:
+      1: HDMI Input 1
+      2: HDMI Input 2
+      3: HDMI Input 3
+      4: HDMI Input 4
+      5: HDMI Input 5
+      6: HDMI Input 6
+      7: HDMI Input 7
+      8: HDMI Input 8
+  output:
+    type: int
+    min: 1
+    max: 8
+    pattern: '0[1-8]'
+    values:
+      1: HDBaseT Output 1
+      2: HDBaseT Output 2
+      3: HDBaseT Output 3
+      4: HDBaseT Output 4
+      5: HDBaseT Output 5
+      6: HDBaseT Output 6
+      7: HDBaseT Output 7
+      8: HDBaseT Output 8
+    notes: "Only HDBaseT outputs 1-8 support routing. Local HDMI outputs 9-16 are not controllable via routing commands."
+  cec_port:
+    type: string
+    pattern: '(0[1-8]|FF)'
+    values:
+      01: Port 1
+      02: Port 2
+      03: Port 3
+      04: Port 4
+      05: Port 5
+      06: Port 6
+      07: Port 7
+      08: Port 8
+      FF: All Ports
+  cec_device_type:
+    type: string
+    values:
+      04: Blu-ray Player
+      08: DVD Player
+      20: TV Type 2
+      40: TV Type 1
+      80: TV Type 3
+  cec_command:
+    type: string
+    values:
+      00: Enter/OK
+      01: Up
+      02: Down
+      03: Left
+      04: Right/Power On (outputs)
+      09: Back to submenu
+      0A: Enter main menu
+      0D: Exit menu
+      36: Power Off (outputs)
+      6C: Power Off (inputs)
+      6D: Power On (inputs)
+      41: Volume Up
+      42: Volume Down
+      43: Mute
+
+api:
+  power:
+    description: System power control
+    actions:
+      'on':
+        description: Power on the matrix system
+        cmd:
+          fstring: 'PowerON.'
+        msg:
+          regex: '(?P<response>Power ON!)'
+          tests:
+            'Power ON!\r\n':
+              response: 'Power ON!'
+      'off':
+        description: Power off the matrix system (standby mode)
+        cmd:
+          fstring: 'PowerOFF.'
+        msg:
+          regex: ''
+          notes: "Device enters standby mode and may not respond until powered back on"
+
+  device_info:
+    description: Device information
+    actions:
+      model:
+        description: Get device model number
+        cmd:
+          fstring: '/*Name.'
+        msg:
+          regex: 'Please Input Your Command[\s\S]*?(?P<model>\d+)'
+          tests:
+            'Please Input Your Command :\r\n27842\r\n':
+              model: '27842'
+      version:
+        description: Get firmware version information
+        cmd:
+          fstring: '/^Version.'
+        msg:
+          regex: 'V(?P<version>[\d\.]+)[\s\S]*?CPLD:V(?P<cpld_version>[\d\.]+)[\s\S]*?VideoDriverVersion:V(?P<video_driver_version>[\d\.]+)'
+          tests:
+            'V1.0.3\r\nCPLD:V1.0.2\r\nVideoDriverVersion:V1.0.2\r\n':
+              version: '1.0.3'
+              cpld_version: '1.0.2'
+              video_driver_version: '1.0.2'
+
+  status:
+    description: System status information
+    actions:
+      full:
+        description: Get comprehensive system status
+        cmd:
+          fstring: 'STA.'
+        msg:
+          regex: '(?P<status>.*)'
+          tests:
+            '\r\nGUI Or RS232 Query Status:\r\nHDBaseT Matrix\r\n27842\r\nV1.0.3\r\nPower ON!\r\nHDBT Power ON!':
+              status: '\r\nGUI Or RS232 Query Status:\r\nHDBaseT Matrix\r\n27842\r\nV1.0.3\r\nPower ON!\r\nHDBT Power ON!'
+      video:
+        description: Get video routing status only
+        cmd:
+          fstring: 'STA_VIDEO.'
+        msg:
+          regex: 'Output (?P<output>\d+) Switch To In (?P<input>\d+)!'
+          tests:
+            'Output 01 Switch To In 01!\r\nOutput 02 Switch To In 01!\r\nOutput 03 Switch To In 01!':
+              output: '01'
+              input: '01'
+
+  routing:
+    description: Video routing control
+    actions:
+      set:
+        description: Route input to output
+        cmd:
+          fstring: 'OUT{output:02d}:{input:02d}.'
+          docs:
+            output: Output number (01-08, HDBaseT outputs only)
+            input: Input number (01-08)
+        msg:
+          regex: 'Output (?P<output>\d+) Switch To In (?P<input>\d+)!'
+          tests:
+            'Output 01 Switch To In 01!\r\nLocal 01 IR Out Switch To Remote 01 IR IN!\r\n':
+              output: '01'
+              input: '01'
+
+  cec:
+    description: CEC (Consumer Electronics Control) commands
+    actions:
+      send_input:
+        description: Send CEC command to input device
+        cmd:
+          fstring: 'CECI{cec_port}{cec_device_type}44{cec_command}.'
+          docs:
+            cec_port: Port number (01-08 or FF for all)
+            cec_device_type: Device type (04=Blu-ray, 08=DVD)
+            cec_command: Command code (see CEC command values)
+        msg:
+          regex: 'CEC Input (?P<port>\d+) Send Success!'
+          tests:
+            'CEC Input 01 Send Success!\r\n':
+              port: '01'
+      send_output:
+        description: Send CEC command to output device
+        cmd:
+          fstring: 'CECO{cec_port}{cec_device_type}44{cec_command}.'
+          docs:
+            cec_port: Port number (01-16 or FF for all)
+            cec_device_type: Device type (40/20/80=TV types)
+            cec_command: Command code (see CEC command values)
+        msg:
+          regex: 'CEC Output (?P<port>\d+) Send Success!'
+          tests:
+            'CEC Output 01 Send Success!\r\n':
+              port: '01'
+      power_on_input:
+        description: Power on device connected to input port
+        cmd:
+          fstring: 'CECI{cec_port}04446D.'
+          docs:
+            cec_port: Input port number (01-08)
+        msg:
+          regex: 'CEC Input (?P<port>\d+) Send Success!'
+          tests:
+            'CEC Input 01 Send Success!\r\n':
+              port: '01'
+      power_on_output:
+        description: Power on TV connected to output port
+        cmd:
+          fstring: 'CECO{cec_port}404404.'
+          docs:
+            cec_port: Output port number (01-16)
+        msg:
+          regex: 'CEC Output (?P<port>\d+) Send Success!'
+          tests:
+            'CEC Output 01 Send Success!\r\n':
+              port: '01'
+      volume_up_output:
+        description: Volume up on TV connected to output port
+        cmd:
+          fstring: 'CECO{cec_port}404441.'
+          docs:
+            cec_port: Output port number (01-16)
+        msg:
+          regex: 'CEC Output (?P<port>\d+) Send Success!'
+          tests:
+            'CEC Output 01 Send Success!\r\n':
+              port: '01'
+      volume_down_output:
+        description: Volume down on TV connected to output port
+        cmd:
+          fstring: 'CECO{cec_port}404442.'
+          docs:
+            cec_port: Output port number (01-16)
+        msg:
+          regex: 'CEC Output (?P<port>\d+) Send Success!'
+          tests:
+            'CEC Output 01 Send Success!\r\n':
+              port: '01'
+      mute_output:
+        description: Mute TV connected to output port
+        cmd:
+          fstring: 'CECO{cec_port}404443.'
+          docs:
+            cec_port: Output port number (01-16)
+        msg:
+          regex: 'CEC Output (?P<port>\d+) Send Success!'
+          tests:
+            'CEC Output 01 Send Success!\r\n':
+              port: '01'

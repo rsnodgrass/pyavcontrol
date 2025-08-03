@@ -24,6 +24,7 @@ MODELS = [
     'trinnov_altitude32',
     'lyngdorf_cd2',
     'mcintosh_mx160',
+    'monoprice_blackbird_27842',
     'xantech_mx88_audio',
     'lyngdorf_tdai3400',
 ]

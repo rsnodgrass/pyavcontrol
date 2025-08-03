@@ -54,7 +54,11 @@ class SyncDeviceConnection(DeviceConnection, ABC):
             CONFIG.clear_before_new_commands, True
         )
 
-        self._port = serial.serial_for_url(self._url, **self._connection_config)
+        # Separate pyserial config from our custom config
+        pyserial_config = {k: v for k, v in self._connection_config.items() 
+                          if k not in ['multi_line_timeout']}
+        
+        self._port = serial.serial_for_url(self._url, **pyserial_config)
 
     def __repr__(self) -> str:
         #        return f'{self.__class__.__name__}->{self._url}'
@@ -103,26 +107,56 @@ class SyncDeviceConnection(DeviceConnection, ABC):
 
     def handle_receive(self) -> bytes:
         skip = 0
-
         len_eol = len(self._eol)
-
-        # FIXME: implement a much better receive mechanism, without timeouts.
-
-        # receive
-        result = bytearray()
-        while True:
-            c = self._port.read(1)
-            if not c:
-                ret = bytes(result)
-                LOG.info(ret)
-                raise serial.SerialTimeoutException(
-                    'Connection timed out! Last received bytes {}'.format(
-                        [hex(a) for a in result]
+        
+        # Check if multi-line response reading is enabled
+        multi_line_timeout = self._connection_config.get('multi_line_timeout', None)
+        if multi_line_timeout:
+            # Multi-line response handling with timeout
+            import time
+            result = bytearray()
+            start_time = time.time()
+            last_data_time = start_time
+            
+            while True:
+                # Set a short timeout for individual reads
+                original_timeout = self._port.timeout
+                self._port.timeout = 0.1
+                
+                c = self._port.read(1)
+                self._port.timeout = original_timeout
+                
+                current_time = time.time()
+                
+                if c:
+                    result += c
+                    last_data_time = current_time
+                else:
+                    # No data received, check if we should timeout
+                    if current_time - last_data_time > multi_line_timeout:
+                        # Timeout reached, return what we have
+                        break
+                    if current_time - start_time > (multi_line_timeout * 10):
+                        # Absolute timeout to prevent infinite loops
+                        raise serial.SerialTimeoutException(
+                            f'Multi-line response timeout after {current_time - start_time:.2f}s'
+                        )
+        else:
+            # Original single-line response handling
+            result = bytearray()
+            while True:
+                c = self._port.read(1)
+                if not c:
+                    ret = bytes(result)
+                    LOG.info(ret)
+                    raise serial.SerialTimeoutException(
+                        'Connection timed out! Last received bytes {}'.format(
+                            [hex(a) for a in result]
+                        )
                     )
-                )
-            result += c
-            if len(result) > skip and result[-len_eol:] == self._eol:
-                break
+                result += c
+                if len(result) > skip and result[-len_eol:] == self._eol:
+                    break
 
         ret = bytes(result)
         LOG.debug(f'Received {self._url} "%s"', ret)

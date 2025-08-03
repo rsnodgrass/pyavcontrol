@@ -7,7 +7,8 @@ and/or library directly.
 
 import logging
 
-from pyavcontrol import DeviceClient, DeviceModelLibrary
+from pyavcontrol.client import DeviceClient
+from pyavcontrol.library import DeviceModelLibrary
 
 LOG = logging.getLogger(__name__)
 
@@ -63,8 +64,23 @@ def construct_synchronous_client(
     # FIXME: need to load connection_config also from the model!?
     if not connection_config:
         connection_config = {}
+    
+    # Merge model connection config with provided config
+    model_connection_config = {}
+    if hasattr(model_def, 'definition'):
+        definition = model_def.definition
+        if 'connection' in definition and 'ip' in definition['connection']:
+            model_connection_config.update(definition['connection']['ip'])
+    
+    # Provided config takes precedence over model config
+    merged_config = {**model_connection_config, **connection_config}
+    
+    # Remove 'port' from config as it's already in the URL and conflicts with pyserial
+    merged_config.pop('port', None)
+    
 
-    connection = SyncDeviceConnection(url, connection_config)
+
+    connection = SyncDeviceConnection(url, merged_config)
 
     # FIXME: how does this handle failed connections? retries? lazy connections? that can be
     # a wrapper around the DeviceConnection object.
