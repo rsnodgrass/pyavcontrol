@@ -7,7 +7,8 @@ and/or library directly.
 
 import logging
 
-from pyavcontrol import DeviceClient, DeviceModelLibrary
+from pyavcontrol.client.base import DeviceClient
+from pyavcontrol.library import DeviceModelLibrary
 
 LOG = logging.getLogger(__name__)
 

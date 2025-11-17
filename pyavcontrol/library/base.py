@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pyavcontrol.library.model import DeviceModel
 
 
-@dataclass
+@dataclass(frozen=True)
 class DeviceModelSummary:
     manufacturer: str
     model_name: str
