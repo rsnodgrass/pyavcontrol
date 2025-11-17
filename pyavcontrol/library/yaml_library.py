@@ -3,10 +3,9 @@ Supported for a YAML based device model definitions library
 """
 
 import logging
-import os
-import pathlib
 from abc import ABC
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 import yaml
 
@@ -19,13 +18,14 @@ from .model import DeviceModel
 LOG = logging.getLogger(__name__)
 
 
-def _load_yaml_file(path: str) -> dict:
+def _load_yaml_file(path: str | Path) -> dict:
     try:
-        if pathlib.Path(path).is_file():
-            with open(path) as stream:
+        file_path = Path(path) if isinstance(path, str) else path
+        if file_path.is_file():
+            with file_path.open() as stream:
                 return yaml.safe_load(stream)
     except yaml.YAMLError as exc:
-        LOG.error(f'Failed reading YAML {path}: {exc}')
+        LOG.error(f'Failed reading YAML: path={path}', exc_info=exc)
     return {}
 
 
@@ -51,15 +51,12 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibraryBase, ABC):
         LOG.warning(f"Could not find model '{model_id}' in the YAML library")
         return None
 
-    def _all_library_yaml_files(self) -> list[str]:
+    def _all_library_yaml_files(self) -> list[Path]:
         yaml_files = []
-        for path in self._dirs:
-            LOG.info(f'Looking for YAML model defs in {path}')
-            for root, dirs, filenames in os.walk(path):
-                LOG.info(f'Looking for YAML model defs in {root} {dirs}')
-                for fn in filenames:
-                    if fn.endswith('.yaml'):
-                        yaml_files.append(os.path.join(root, fn))
+        for path_str in self._dirs:
+            path = Path(path_str)
+            LOG.info(f'Looking for YAML model defs: path={path}')
+            yaml_files.extend(path.rglob('*.yaml'))
         return yaml_files
 
     def supported_model_ids(self) -> frozenset[str]:
@@ -68,9 +65,9 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibraryBase, ABC):
 
         # build and cache the list of supported models based all the
         # yaml device definition files that are included in the library
-        model_ids = []
-        for model_def_filename in self._all_library_yaml_files():
-            model_ids += pathlib.Path(model_def_filename).stem
+        model_ids = [
+            model_def_path.stem for model_def_path in self._all_library_yaml_files()
+        ]
         self._supported_model_ids = frozenset(model_ids)  # immutable
         return self._supported_model_ids
 
@@ -79,19 +76,21 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibraryBase, ABC):
             return self._supported_models
 
         supported_models = []
-        for model_filename in self._all_library_yaml_files():
-            print(model_filename)
-            if y := _load_yaml_file(model_filename):
-                model_id = pathlib.Path(model_filename).stem
+        for model_path in self._all_library_yaml_files():
+            LOG.debug(f'Loading model: path={model_path}')
+            if y := _load_yaml_file(model_path):
+                model_id = model_path.stem
                 if 'info' not in y:
-                    LOG.error(f'Invalid file {model_filename} without info field!')
+                    LOG.error(f'Invalid file without info field: path={model_path}')
                     continue
 
                 info = y['info']
                 manufacturer = info.get('manufacturer', 'Unknown')
 
                 for model_name in info.get('models', []):
-                    print({model_name})
+                    LOG.debug(
+                        f'Adding model: name={model_name}, manufacturer={manufacturer}'
+                    )
                     supported_models.append(
                         DeviceModelSummary(manufacturer, model_name, model_id)
                     )

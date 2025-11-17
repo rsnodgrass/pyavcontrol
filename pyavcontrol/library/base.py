@@ -31,7 +31,7 @@ def filter_models_by_regex(
             or rg.match(summary.model_name)
             or rg.match(summary.model_id)
         ):
-            matches += summary
+            matches.add(summary)
     return matches
 
 

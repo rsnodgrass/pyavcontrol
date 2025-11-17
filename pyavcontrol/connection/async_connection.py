@@ -17,19 +17,6 @@ LOG = logging.getLogger(__name__)
 
 ONE_MINUTE = 60
 
-# FIXME: for a specific instance we do not want communication to happen
-# simultaneously...for now just lock ALL accesses to ANY device.
-async_lock = asyncio.Lock()
-
-
-def locked_coro(coro):
-    @wraps(coro)
-    async def wrapper(*args, **kwargs):
-        async with async_lock:
-            return await coro(*args, **kwargs)
-
-    return wrapper
-
 
 class AsyncDeviceConnection(DeviceConnection, ABC):
     def __init__(self, url: str, connection_config: dict, loop):
@@ -63,7 +50,7 @@ class AsyncDeviceConnection(DeviceConnection, ABC):
                     self._event_loop,
                 )
             except Exception as e:
-                LOG.error(f'Failed connecting to {self._url}', e)
+                LOG.error(f'Failed connecting: url={self._url}', exc_info=e)
 
     def is_async(self) -> bool:
         """
