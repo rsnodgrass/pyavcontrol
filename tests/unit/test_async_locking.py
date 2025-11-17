@@ -84,7 +84,11 @@ class TestAsyncLocking:
         clients = []
         for i in range(3):
             mock_conn = AsyncMock()
-            mock_conn.send = lambda d, w=False, dev_id=i: mock_send_track(dev_id, d, w)
+            mock_conn.send = (
+                lambda d, wait_for_response=False, dev_id=i: mock_send_track(
+                    dev_id, d, wait_for_response
+                )
+            )
             mock_conn.is_async = Mock(return_value=True)
 
             model = DeviceModel(f'test_device_{i}', sample_device_definition)
@@ -163,7 +167,11 @@ class TestAsyncLocking:
         clients = []
         for i in range(3):
             mock_conn = AsyncMock()
-            mock_conn.send = lambda d, w=False, dev_id=i: mock_send_timed(dev_id, d, w)
+            mock_conn.send = (
+                lambda d, wait_for_response=False, dev_id=i: mock_send_timed(
+                    dev_id, d, wait_for_response
+                )
+            )
             mock_conn.is_async = Mock(return_value=True)
 
             model = DeviceModel(f'test_device_{i}', sample_device_definition)
