@@ -56,7 +56,11 @@ class YAMLDeviceModelLibrarySync(DeviceModelLibraryBase, ABC):
         for path_str in self._dirs:
             path = Path(path_str)
             LOG.info(f'Looking for YAML model defs: path={path}')
-            yaml_files.extend(path.rglob('*.yaml'))
+            try:
+                yaml_files.extend(path.rglob('*.yaml'))
+            except (TimeoutError, PermissionError, OSError) as e:
+                LOG.warning(f'Skipping path due to error: path={path}, error={e}')
+                continue
         return yaml_files
 
     def supported_model_ids(self) -> frozenset[str]:
