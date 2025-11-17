@@ -23,11 +23,7 @@ def missing_keys_in_dict(required_keys: list[str], d: dict) -> list[str]:
     Checks that the provided dictionary contains all the required keys,
     and if not, return a list of the missing keys.
     """
-    missing_keys = []
-    for key in required_keys:
-        if key not in d:
-            missing_keys += key
-    return missing_keys
+    return [key for key in required_keys if key not in d]
 
 
 def substitute_fstring_vars(fstring: str, vars: dict) -> str:

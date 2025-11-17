@@ -59,7 +59,7 @@ force-to-top = ["logging"]
 all = true
 
 [tool.refurb]
-python_version = "3.12"
+python_version = "3.13"
 quiet = true
 ignore = [ "FURB184" ]
 

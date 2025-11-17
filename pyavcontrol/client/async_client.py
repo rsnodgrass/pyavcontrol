@@ -1,8 +1,8 @@
+import asyncio
 import logging
 from collections.abc import Callable
 
 from ..connection import DeviceConnection
-from ..connection.async_connection import locked_coro
 from ..library.model import DeviceModel
 from .base import DeviceClient
 
@@ -16,6 +16,7 @@ class DeviceClientAsync(DeviceClient):
         super().__init__(model, connection)
         self._loop = loop
         self._callback = None
+        self._lock = asyncio.Lock()  # instance-level lock for this specific device
 
         if not connection.is_async():
             raise RuntimeError('Provided DeviceConnection is not asynchronous!')
@@ -25,18 +26,23 @@ class DeviceClientAsync(DeviceClient):
         """:return: true since this client is asynchronous"""
         return True
 
-    @locked_coro
     async def send_raw(self, data: bytes, wait_for_response=False):
-        # if LOG.isEnabledFor(logging.DEBUG):
-        #    LOG.debug(f'Sending {self._connection!r}: {data}')
-        return await self._connection.send(data, wait_for_response=wait_for_response)
+        """Send raw data to the device with instance-level locking."""
+        async with self._lock:
+            # if LOG.isEnabledFor(logging.DEBUG):
+            #    LOG.debug(f'Sending {self._connection!r}: {data}')
+            return await self._connection.send(
+                data, wait_for_response=wait_for_response
+            )
 
-    @locked_coro
-    def register_callback(self, callback: Callable[[str], None]) -> None:
-        if not callable(callback):
-            raise ValueError('Callback is not Callable')
-        self._callback = callback
+    async def register_callback(self, callback: Callable[[str], None]) -> None:
+        """Register a callback for received messages."""
+        async with self._lock:
+            if not callable(callback):
+                raise ValueError('Callback is not Callable')
+            self._callback = callback
 
-    @locked_coro
     async def received_message(self):
-        await self._loop.call_soon(self._callback)
+        """Handle received message by calling the registered callback."""
+        async with self._lock:
+            self._loop.call_soon(self._callback)

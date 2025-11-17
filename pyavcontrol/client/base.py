@@ -153,7 +153,8 @@ def _create_action_method(client: DeviceClient, cls_name: str, action: ActionDef
 
         if msg := action.definition.get('msg'):
             if regex := msg.get('regex'):
-                return re.match(regex, response_text).groupdict()
+                if match := re.match(regex, response_text):
+                    return match.groupdict()
 
         return {}
 
