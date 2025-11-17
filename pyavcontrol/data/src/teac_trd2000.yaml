@@ -57,7 +57,7 @@ api:
             'T1B2P00F1011S11':
               tuner: 1
               band: 2  # FM
-              preset: 00
+              preset: '00'
               frequency: 1011
 
               signal_lock: 1
@@ -65,7 +65,7 @@ api:
             'T2B1P02F1011S10':
               tuner: 2
               band: 1  # AM
-              preset: 2
+              preset: '02'
               frequency: 1011
               signal_lock: 1
               stereo: 0 # mono
