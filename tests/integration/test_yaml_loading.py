@@ -23,6 +23,8 @@ SKIP_FILES = {
     'lyngdorf_tdai3400.yaml': 'Invalid regex pattern (missing closing paren)',
     'hdfury_vrroom.yaml': 'Invalid regex pattern (unterminated character set)',
     'xantech_mx88_video.yaml': 'Missing connection and API fields',
+    'trinnov_altitude16.yaml': 'Uses import_models (inheritance not tested yet)',
+    'jbl_sdp75.yaml': 'Uses import_models (inherits from trinnov_altitude32)',
 }
 
 

@@ -106,7 +106,7 @@ api:
         cmd:
           fstring: send_volume
         msg:
-          regex: MUTE (?P<power>[01])
+          regex: MUTE (?P<mute>[01])
           tests:
             'MUTE 1':
               mute: 1

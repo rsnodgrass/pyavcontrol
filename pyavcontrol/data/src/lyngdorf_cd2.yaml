@@ -143,7 +143,7 @@ api:
         cmd:
           fstring: '!TIME?'
         msg:
-          regex: '!TIME\((?P<time>[-]*\d+)\)'
+          regex: '!TIME\((?P<time>[-]?\d+:\d+)\)'
           tests:
             '!TIME(-0:01)':
               time: '-0:01'
@@ -154,7 +154,7 @@ api:
         cmd:
           fstring: '!REMTIME?'
         msg:
-          regex: '!REMTIME\((?P<time>[-]*\d+)\)'
+          regex: '!REMTIME\((?P<time>[-]?\d+:\d+)\)'
           tests:
             '!REMTIME(-0:01)':
               time: '-0:01'
@@ -241,5 +241,5 @@ api:
           regex: '!SRC\((?P<source>\d+),"(?P<name>.+)"\)'
           tests:
             '!SRC(1,"CD")':
-              source: 0
+              source: 1
               name: CD
