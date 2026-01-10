@@ -1,26 +1,21 @@
 """
-Pytest configuration and fixtures for testing pyavcontrol without physical devices.
+Pytest configuration and fixtures for testing pyavcontrol.
 
 All tests use mocked serial/IP connections to avoid needing real hardware.
 """
 
+from __future__ import annotations
+
 import asyncio
 from pathlib import Path
+from typing import Any
 from unittest.mock import AsyncMock, Mock
 
 import pytest
 
 
 @pytest.fixture
-def event_loop():
-    """Create an event loop for async tests."""
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
-
-
-@pytest.fixture
-def mock_serial_transport():
+def mock_serial_transport() -> Mock:
     """Mock pyserial transport for RS232 connections."""
     transport = Mock()
     transport.serial = Mock()
@@ -31,23 +26,20 @@ def mock_serial_transport():
 
 
 @pytest.fixture
-def mock_serial_protocol(mock_serial_transport):
+def mock_serial_protocol(mock_serial_transport: Mock) -> AsyncMock:
     """Mock RS232 protocol for testing device communication."""
     protocol = AsyncMock()
     protocol._transport = mock_serial_transport
     protocol._connected = asyncio.Event()
-    protocol._connected.set()  # Start as connected
+    protocol._connected.set()
     protocol._q = asyncio.Queue()
-
-    # Mock send to return predefined responses
     protocol.send = AsyncMock(return_value=b'OK\r')
     protocol.receive_response = AsyncMock(return_value=b'OK\r')
-
     return protocol
 
 
 @pytest.fixture
-def mock_connection(mock_serial_protocol):
+def mock_connection(mock_serial_protocol: AsyncMock) -> AsyncMock:
     """Mock AsyncDeviceConnection for testing clients."""
     connection = AsyncMock()
     connection._legacy_connection = mock_serial_protocol
@@ -58,7 +50,7 @@ def mock_connection(mock_serial_protocol):
 
 
 @pytest.fixture
-def sample_device_definition():
+def sample_device_definition() -> dict[str, Any]:
     """Sample device definition for testing."""
     return {
         'id': 'test_device',
@@ -126,12 +118,12 @@ def sample_device_definition():
 
 
 @pytest.fixture
-def yaml_library_path():
+def yaml_library_path() -> Path:
     """Path to YAML device definitions."""
     return Path(__file__).parent.parent / 'pyavcontrol' / 'data' / 'src'
 
 
 @pytest.fixture
-def all_device_yaml_files(yaml_library_path):
+def all_device_yaml_files(yaml_library_path: Path) -> list[Path]:
     """List all device YAML files for integration testing."""
     return list(yaml_library_path.glob('*.yaml'))
