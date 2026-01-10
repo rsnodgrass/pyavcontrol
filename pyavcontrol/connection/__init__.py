@@ -1,36 +1,62 @@
+"""Connection implementations for serial and IP communication."""
+
+from __future__ import annotations
+
 import logging
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Any
 
 from pyavcontrol.const import DEFAULT_ENCODING
+
+if TYPE_CHECKING:
+    from asyncio import AbstractEventLoop
+    from collections.abc import Callable
 
 LOG = logging.getLogger(__name__)
 
 
-class DeviceConnection:
+class DeviceConnection(ABC):
     """
-    Connection base class that defines communication APIs.
+    Abstract base class that defines communication APIs for device connections.
+
+    Subclasses implement either synchronous or asynchronous communication
+    with A/V equipment over RS232 or IP.
     """
 
-    def __init__(self):
-        LOG.error('Use factory method create(url, config_overrides')
-        raise NotImplementedError()
-
+    @abstractmethod
     def is_connected(self) -> bool:
         """
-        :return: True if the connection is established
-        """
-        raise NotImplementedError()
+        Check if the connection is established.
 
-    def send(self, data: bytes, callback=None, wait_for_response: bool = False):
+        Returns:
+            True if connected to the device.
+        """
+
+    @abstractmethod
+    def send(
+        self,
+        data: bytes,
+        callback: Callable[[bytes], None] | None = None,
+        wait_for_response: bool = False,
+    ) -> bytes | None:
         """
         Send data to the remote device.
 
-        Optional callback can be provided for responses, otherwise any response is returned.
+        Args:
+            data: Bytes to send
+            callback: Optional callback for async response handling
+            wait_for_response: Whether to wait for and return a response
+
+        Returns:
+            Response bytes if wait_for_response is True, otherwise None.
         """
-        raise NotImplementedError()
 
     def is_async(self) -> bool:
         """
-        :return: True if this connection implementation is asynchronous (asyncio) versus synchronous.
+        Check if this connection is asynchronous.
+
+        Returns:
+            True if this is an async connection implementation.
         """
         return False
 
@@ -39,44 +65,49 @@ class DeviceConnection:
 
 
 class NullConnection(DeviceConnection):
-    """NullConnection that sends all data to /dev/null; useful for testing"""
+    """
+    NullConnection sends all data to /dev/null.
 
-    def __init__(self):
-        pass
+    Useful for testing without real hardware.
+    """
 
     def is_connected(self) -> bool:
         return True
 
-    def send(self, data: bytes, callback=None, wait_for_response: bool = False) -> None:
+    def send(
+        self,
+        data: bytes,
+        callback: Callable[[bytes], None] | None = None,
+        wait_for_response: bool = False,
+    ) -> None:
         pass
 
 
 class Connection:
+    """Factory for creating device connections."""
+
     @staticmethod
     def create(
-        url: str, connection_config=None, event_loop=None
-    ) -> DeviceConnection:  # FIXME: | None:
+        url: str,
+        connection_config: dict[str, Any] | None = None,
+        event_loop: AbstractEventLoop | None = None,
+    ) -> DeviceConnection:
         """
-        Create a Connection instance given details about the given device.
+        Create a Connection instance for the given device.
 
-        If an event_loop argument is passed in this will return the
-        asynchronous implementation. By default, the synchronous interface
-        is returned.
+        If an event_loop is provided, returns an async implementation.
+        Otherwise returns a synchronous implementation.
 
-        :param url: pyserial supported url for communication (e.g. '/dev/ttyUSB0' or 'socket://remote-host:7000/')
-        :param connection_config: pyserial connection configuration (optional)
-        :param event_loop: pass in an event loop to get an interface that can be used asynchronously (optional)
+        Args:
+            url: pyserial-compatible URL (e.g. '/dev/ttyUSB0' or 'socket://host:7000/')
+            connection_config: Optional pyserial configuration overrides
+            event_loop: Optional event loop for async operation
 
-        :return an instance of DeviceConnection
+        Returns:
+            DeviceConnection instance.
         """
-        if not connection_config:
+        if connection_config is None:
             connection_config = {}
-
-        # FIXME: Types of config needed:
-        #  - connection (pyserial style)...must be passed in since it is determined based on connection type (ip, rs232, etc)
-        #
-        #  - timeouts/etc (from ???)
-        #  - encoding (from protocol def)
 
         LOG.debug(f'Connecting to {url}: %s', connection_config)
 
@@ -84,7 +115,7 @@ class Connection:
             from pyavcontrol.connection.async_connection import AsyncDeviceConnection
 
             return AsyncDeviceConnection(url, connection_config, event_loop)
-        else:
-            from pyavcontrol.connection.sync_connection import SyncDeviceConnection
 
-            return SyncDeviceConnection(url, connection_config)
+        from pyavcontrol.connection.sync_connection import SyncDeviceConnection
+
+        return SyncDeviceConnection(url, connection_config)

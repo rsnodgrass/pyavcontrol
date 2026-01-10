@@ -1,73 +1,122 @@
 [project]
-version = "0.1.4" # see below
-requires-python = ">=3.10"
-
-[tool.poetry]
 name = "pyavcontrol"
-version = "0.1.4"
+version = "0.1.5"
 description = "Python Control of Audio/Visual Equipment (RS232/IP)"
 readme = "README.md"
-license = "LICENSE"
-authors = [ "Ryan Snodgrass <rsnodgrass@gmail.com>" ]
+license = "MIT"
+authors = [{ name = "Ryan Snodgrass", email = "rsnodgrass@gmail.com" }]
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Home Automation",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Typing :: Typed",
+]
+keywords = ["audio", "video", "av", "rs232", "serial", "control", "home-automation"]
+dependencies = [
+    "pyserial>=3.5",
+    "pyserial-asyncio>=0.6",
+    "ratelimit>=2.2.1",
+    "pyyaml>=6.0.1",
+    "pydantic>=2.0.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.13"
-pyserial = "^3.5"
-pyserial-asyncio = "^0.6"
-ratelimit = "^2.2.1"
-pyyaml = "^6.0.1"
+[project.optional-dependencies]
+dev = [
+    "coloredlogs>=15.0.1",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=7.0.0",
+    "pytest-mock>=3.12.0",
+    "mypy>=1.18.0",
+    "types-PyYAML>=6.0.0",
+    "types-pyserial>=3.5.0",
+    "ruff>=0.8.0",
+]
+doc = ["sphinx>=7.0.0"]
 
-[tool.poetry.group.dev.dependencies]
-coloredlogs = "^15.0.1"
-pytest = "^8.0.0"
-pytest-asyncio = "^0.23.0"
-pytest-cov = "^7.0.0"
-pytest-mock = "^3.12.0"
-mypy = "^1.18.0"
-types-PyYAML = "^6.0.0"
-types-pyserial = "^3.5.0"
+[project.urls]
+Homepage = "https://github.com/rsnodgrass/pyavcontrol"
+Repository = "https://github.com/rsnodgrass/pyavcontrol"
+Documentation = "https://github.com/rsnodgrass/pyavcontrol#readme"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-# pip install .[test]
-[project.optional-dependencies]
-test = [ "coloredlogs", "pre-commit" ]
-doc = [ "sphinx" ]
-
-[tool.isort]
-profile = "black"
-force_to_top = [ "logging" ]
-balanced_wrapping = true
+[tool.hatch.build.targets.wheel]
+packages = ["pyavcontrol"]
 
 [tool.ruff]
 line-length = 88
 indent-width = 4
-lint.ignore = [ "F403", "F405" ]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "PTH",    # flake8-use-pathlib
+    "RUF",    # Ruff-specific rules
+]
+ignore = ["F403", "F405", "B008"]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = [ "F401" ]
+"__init__.py" = ["F401"]
+"tests/*" = ["B008"]
 
 [tool.ruff.format]
-quote-style = "single" # Use a single quote instead of double
+quote-style = "single"
 
-# import sorting settings (replaces isort)
 [tool.ruff.lint.isort]
 force-single-line = false
 force-sort-within-sections = true
-known-first-party = ["custom_components"]
+known-first-party = ["pyavcontrol"]
 section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
 combine-as-imports = true
 force-to-top = ["logging"]
 
-[tool.pycln]
-all = true
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
 
-[tool.refurb]
-python_version = "3.13"
-quiet = true
-ignore = [ "FURB184" ]
+[[tool.mypy.overrides]]
+module = ["serial.*", "serial_asyncio.*", "ratelimit.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-pythonpath = [ "." ]
+pythonpath = ["."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["pyavcontrol"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]

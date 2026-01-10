@@ -1,47 +1,57 @@
+"""Configuration key definitions for pyavcontrol."""
+
 from dataclasses import dataclass
+from typing import Any
 
 
-@dataclass(frozen=True)
-class _ConfigKeys:
-    api = 'api'
-    baudrate = 'baudrate'
-    clear_before_new_commands = 'clear_before_new_commands'
-    command_eol = 'command_eol'
-    command_separator = 'command_separator'
-    description = 'description'
-    encoding = 'encoding'
-    id = 'id'
-    message_eol = 'message_eol'
-    min_time_between_commands = 'min_time_between_commands'
-    model = 'model'
-    name = 'name'
-    protocol = 'protocol'
-    serial_config = 'serial_config'
-    timeout = 'timeout'
-    urls = 'urls'
+@dataclass(frozen=True, slots=True)
+class ConfigKeys:
+    """Configuration key names used throughout the library."""
+
+    api: str = 'api'
+    baudrate: str = 'baudrate'
+    clear_before_new_commands: str = 'clear_before_new_commands'
+    command_eol: str = 'command_eol'
+    command_separator: str = 'command_separator'
+    description: str = 'description'
+    encoding: str = 'encoding'
+    id: str = 'id'
+    message_eol: str = 'message_eol'
+    min_time_between_commands: str = 'min_time_between_commands'
+    model: str = 'model'
+    name: str = 'name'
+    protocol: str = 'protocol'
+    serial_config: str = 'serial_config'
+    timeout: str = 'timeout'
+    urls: str = 'urls'
 
 
-CONFIG = _ConfigKeys()
-
-# FIXME: see schema!
-
-# FIXME: other explorations below
-# https://dev.to/eblocha/using-dataclasses-for-configuration-in-python-4o53
-#
-# raw_config = {...}
-# config = Order.from_dict(raw_config)
-# config.customer.first_name
+CONFIG = ConfigKeys()
 
 
-# FIXME: if we want completely dynamic config we can use below
-# https://alexandra-zaharia.github.io/posts/python-configuration-and-dataclasses/
-# config = DynamicConfig({'host': 'example.com', 'port': 80, 'timeout': 0.5})
-# print(f'host: {config.host}, port: {config.port}, timeout: {config.timeout}')
 class DynamicConfig:
-    def __init__(self, conf):
+    """
+    Allows completely dynamic configuration from a dictionary.
+
+    Attributes are set dynamically from dict keys, enabling access like:
+        config = DynamicConfig({'host': 'example.com', 'port': 80})
+        print(config.host, config.port)
+    """
+
+    __slots__ = ('_raw',)
+
+    def __init__(self, conf: dict[str, Any]) -> None:
         if not isinstance(conf, dict):
             raise TypeError(f'dict expected, found {type(conf).__name__}')
 
-        self._raw = conf
-        for key, value in self._raw.items():
-            setattr(self, key, value)
+        object.__setattr__(self, '_raw', conf)
+        for key, value in conf.items():
+            object.__setattr__(self, key, value)
+
+    def __getattr__(self, name: str) -> Any:
+        try:
+            return self._raw[name]
+        except KeyError as e:
+            raise AttributeError(
+                f"'{type(self).__name__}' has no attribute '{name}'"
+            ) from e

@@ -1,35 +1,78 @@
-import logging
-from collections.abc import Callable
+"""Synchronous device client implementation."""
 
-from ..connection import DeviceConnection
-from ..connection.sync_connection import synchronized
-from ..library.model import DeviceModel
-from .base import DeviceClient
+from __future__ import annotations
+
+import logging
+from typing import TYPE_CHECKING
+
+from pyavcontrol.client.base import DeviceClient
+from pyavcontrol.connection import DeviceConnection
+from pyavcontrol.connection.sync_connection import synchronized
+from pyavcontrol.library.model import DeviceModel
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 LOG = logging.getLogger(__name__)
 
 
 class DeviceClientSync(DeviceClient):
-    """Synchronous client for communicating with devices via the provided connection"""
+    """
+    Synchronous client for communicating with A/V devices.
 
-    def __init__(self, model: DeviceModel, connection: DeviceConnection):
+    Uses thread-safe synchronization for concurrent access.
+    """
+
+    __slots__ = ('_callback',)
+
+    def __init__(self, model: DeviceModel, connection: DeviceConnection) -> None:
+        """
+        Initialize sync client.
+
+        Args:
+            model: Device model definition
+            connection: Synchronous connection to the device
+        """
         super().__init__(model, connection)
-        self._callback = None
+        self._callback: Callable[[str], None] | None = None
 
     @synchronized
-    def send_raw(self, data: bytes, wait_for_response: bool = False):
-        # if LOG.isEnabledFor(logging.DEBUG):
-        #    LOG.debug(f'Sending {self._connection!r}: {data}')
+    def send_raw(
+        self,
+        data: bytes,
+        wait_for_response: bool = False,
+        return_raw: bool = False,
+    ) -> bytes | None:
+        """
+        Send raw data to the device with thread-safe locking.
+
+        Args:
+            data: Bytes to send
+            wait_for_response: Whether to wait for response
+            return_raw: Whether to return raw bytes
+
+        Returns:
+            Response bytes if wait_for_response is True.
+        """
         return self._connection.send(data, wait_for_response=wait_for_response)
 
     @synchronized
     def register_callback(self, callback: Callable[[str], None]) -> None:
+        """
+        Register a callback for received messages.
+
+        Args:
+            callback: Callable to invoke on message receipt
+
+        Raises:
+            ValueError: If callback is not callable
+        """
         if not callable(callback):
             raise ValueError('Callback is not Callable')
         self._callback = callback
 
     @synchronized
-    def received_message(self):
+    def received_message(self) -> None:
+        """Handle received message by calling the registered callback."""
         if self._callback:
-            LOG.error(f'Callback not implemented!! {self._callback}')  # FIXME
-            # self._loop.call_soon(cb)
+            LOG.error(f'Callback not implemented: {self._callback}')

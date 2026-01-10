@@ -1,3 +1,7 @@
+"""Base classes for device model libraries."""
+
+from __future__ import annotations
+
 import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -5,8 +9,10 @@ from dataclasses import dataclass
 from pyavcontrol.library.model import DeviceModel
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class DeviceModelSummary:
+    """Summary information about a device model."""
+
     manufacturer: str
     model_name: str
     model_id: str
@@ -16,46 +22,58 @@ def filter_models_by_regex(
     models: set[DeviceModelSummary], regex: str
 ) -> set[DeviceModelSummary]:
     """
-    Filter the provided set of DeviceModelSummary down into only the ones that
-    match the given regular expression.
+    Filter device models by matching manufacturer, model name, or ID.
+
+    Args:
+        models: Set of DeviceModelSummary to filter
+        regex: Regular expression pattern to match
 
     Returns:
-        dict of model summaries where the manufacturer or model name matches the
-        provided regular expression.
+        Set of matching DeviceModelSummary objects.
     """
-    matches = set()
-    rg = re.compile(regex)
+    pattern = re.compile(regex)
+    matches: set[DeviceModelSummary] = set()
+
     for summary in models:
         if (
-            rg.match(summary.manufacturer)
-            or rg.match(summary.model_name)
-            or rg.match(summary.model_id)
+            pattern.match(summary.manufacturer)
+            or pattern.match(summary.model_name)
+            or pattern.match(summary.model_id)
         ):
             matches.add(summary)
+
     return matches
 
 
 class DeviceModelLibraryBase(ABC):
+    """Abstract base class for device model libraries."""
+
     @abstractmethod
-    def load_model(self, name: str) -> DeviceModel:  # FIXME | None:
+    def load_model(self, name: str) -> DeviceModel | None:
         """
-        :param name: model id or a complete path to a file
+        Load a device model by ID or file path.
+
+        Args:
+            name: Model ID or complete path to a definition file
+
+        Returns:
+            DeviceModel instance or None if not found.
         """
-        raise NotImplementedError('Subclass must implement!')
 
     @abstractmethod
     def supported_model_ids(self) -> frozenset[str]:
         """
-        :return: all model ids supported by this library
+        Get all model IDs supported by this library.
+
+        Returns:
+            Frozen set of model identifier strings.
         """
-        raise NotImplementedError('Subclass must implement!')
 
     @abstractmethod
     def supported_models(self) -> frozenset[DeviceModelSummary]:
         """
-        NOTE: Subclasses may want to implement a more efficient mechanism than
-        reading all the individual model definition files.
+        Get summaries of all supported models.
 
-        :return: dict of all manufacturer + model names -> model_ids (e.g. 'McIntosh MX160' -> mcintosh_mx160)
+        Returns:
+            Frozen set of DeviceModelSummary objects.
         """
-        raise NotImplementedError('Subclass must implement!')

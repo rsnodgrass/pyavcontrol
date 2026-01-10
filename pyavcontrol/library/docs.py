@@ -1,25 +1,21 @@
 """
-This includes all models to ensure that Sphinx documentation picks up all the
-dynamically created classes.
+Documentation support for generating Sphinx docs from device models.
 
-THIS SHOULD NOT BE INCLUDED IN PRODUCTION CODE, it is specifically to force
-documentation to be generated.
+This module loads all device models to ensure Sphinx documentation
+picks up dynamically created classes.
 
-# FIXME: for Sphinx docs we may need to get more creative
-# see also https://stackoverflow.com/questions/44316745/how-to-autogenerate-python-documentation-using-sphinx-when-using-dynamic-classes
-#
-# one idea...generate pyavcontrol/clients/<model_name>/yaml_library.py  (or just model_name.py)
-#   which creates the class for the client + action groups
-# then Sphinx will be able to document as it actually loads the vclasses.
-
-FIXME: We may want to move this to tools/ or docs/
+NOTE: This should not be included in production code - it forces
+all model definitions to be loaded for documentation purposes only.
 """
 
-from .. import DeviceClient
-from ..connection import NullConnection
-from . import DeviceModelLibrary
+from __future__ import annotations
 
-MODELS = [
+from pyavcontrol import DeviceClient
+from pyavcontrol.connection import NullConnection
+from pyavcontrol.library import DeviceModelLibrary
+
+# models to include in documentation
+MODELS: list[str] = [
     'hdfury_vrroom',
     'trinnov_altitude32',
     'lyngdorf_cd2',
@@ -28,12 +24,21 @@ MODELS = [
     'lyngdorf_tdai3400',
 ]
 
-MODEL_DEFS = []
-CLIENTS = []
+MODEL_DEFS: list = []
+CLIENTS: list = []
 
-for model_id in MODELS:
-    model_def = DeviceModelLibrary.create().load_model(model_id)
-    MODEL_DEFS.append(model_def)
 
-    client = DeviceClient.create(model_def, NullConnection())
-    CLIENTS.append(client)
+def _load_models_for_docs() -> None:
+    """Load all models and clients for documentation generation."""
+    library = DeviceModelLibrary.create()
+
+    for model_id in MODELS:
+        model_def = library.load_model(model_id)
+        if model_def:
+            MODEL_DEFS.append(model_def)
+            client = DeviceClient.create(model_def, NullConnection())
+            CLIENTS.append(client)
+
+
+# load on module import for Sphinx autodoc
+_load_models_for_docs()

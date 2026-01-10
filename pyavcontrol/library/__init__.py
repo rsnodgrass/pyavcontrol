@@ -1,32 +1,46 @@
+"""Device model library for loading A/V equipment definitions."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from pyavcontrol.const import DEFAULT_MODEL_LIBRARIES
 
-# from pyavcontrol.library.model import DeviceModel
+if TYPE_CHECKING:
+    from asyncio import AbstractEventLoop
+
+    from pyavcontrol.library.yaml_library import (
+        YAMLDeviceModelLibraryAsync,
+        YAMLDeviceModelLibrarySync,
+    )
 
 
 class DeviceModelLibrary:
+    """Factory for creating device model library instances."""
+
     @staticmethod
-    def create(library_dirs=DEFAULT_MODEL_LIBRARIES, event_loop=None):
+    def create(
+        library_dirs: tuple[str, ...] = DEFAULT_MODEL_LIBRARIES,
+        event_loop: AbstractEventLoop | None = None,
+    ) -> YAMLDeviceModelLibrarySync | YAMLDeviceModelLibraryAsync:
         """
-        Create an DeviceModelLibrary object representing all the complete
-        library for resolving models and includes.
+        Create a DeviceModelLibrary for resolving device models.
 
-        If an event_loop argument is passed in this will return the
-        asynchronous implementation. By default the synchronous interface
-        is returned.
+        If an event_loop is provided, returns an async implementation.
+        Otherwise returns a synchronous implementation.
 
-        :param library_dirs: paths used to resolve model names and includes (default=pyavcontrol's library)
-        :param event_loop: to get an interface that can be used asynchronously, pass in an event loop
+        Args:
+            library_dirs: Paths to search for model definitions
+            event_loop: Optional event loop for async operation
 
-        :return an instance of DeviceLibraryModel
+        Returns:
+            Library instance for loading device models.
         """
-
-        # NOTE: This is currently hardcoded to the YAML style libraries. May want to explore converting
-        # this to Apple PKL instead, since that is more in line of the spirit of what model definitions are.
         if event_loop:
             from pyavcontrol.library.yaml_library import YAMLDeviceModelLibraryAsync
 
-            return YAMLDeviceModelLibraryAsync(library_dirs, event_loop)
+            return YAMLDeviceModelLibraryAsync(list(library_dirs), event_loop)
 
         from pyavcontrol.library.yaml_library import YAMLDeviceModelLibrarySync
 
-        return YAMLDeviceModelLibrarySync(library_dirs)
+        return YAMLDeviceModelLibrarySync(list(library_dirs))
