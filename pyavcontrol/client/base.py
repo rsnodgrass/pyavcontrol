@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import logging
-import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+import re
 from typing import TYPE_CHECKING, Any
 
 from pyavcontrol.config import CONFIG
@@ -33,7 +33,7 @@ class DynamicActions:
     Actions are callable methods generated from device model definitions.
     """
 
-    __slots__ = ('_model_name', '_group_actions')
+    __slots__ = ('_group_actions', '_model_name')
 
     def __init__(self, model_name: str, group_actions_def: dict[str, Any]) -> None:
         self._model_name = model_name
@@ -207,7 +207,7 @@ class DeviceClient(ABC):
     and dynamically generates action methods from device model definitions.
     """
 
-    __slots__ = ('_model', '_connection')
+    __slots__ = ('_connection', '_model')
 
     def __init__(self, model: DeviceModel, connection: DeviceConnection) -> None:
         """

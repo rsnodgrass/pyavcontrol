@@ -93,8 +93,10 @@ class TestAsyncLocking:
 
         for i in range(3):
             mock_conn = AsyncMock()
-            mock_conn.send = lambda d, wait_for_response=False, dev_id=i: mock_send_track(
-                dev_id, d, wait_for_response
+            mock_conn.send = (
+                lambda d, wait_for_response=False, dev_id=i: mock_send_track(
+                    dev_id, d, wait_for_response
+                )
             )
             mock_conn.is_async = Mock(return_value=True)
 
@@ -113,9 +115,7 @@ class TestAsyncLocking:
         assert max_concurrent == 3, f'Expected 3 concurrent, got {max_concurrent}'
 
     @pytest.mark.asyncio
-    async def test_send_receive_atomic(
-        self, sample_device_definition: dict
-    ) -> None:
+    async def test_send_receive_atomic(self, sample_device_definition: dict) -> None:
         """Verify send+receive is atomic (not interruptible)."""
         operation_states: list[str] = []
 
@@ -152,9 +152,7 @@ class TestAsyncLocking:
         ]
 
     @pytest.mark.asyncio
-    async def test_no_global_lock_exists(
-        self, sample_device_definition: dict
-    ) -> None:
+    async def test_no_global_lock_exists(self, sample_device_definition: dict) -> None:
         """Verify there's no global lock blocking all devices."""
         start_times: dict[int, float] = {}
         end_times: dict[int, float] = {}
@@ -172,8 +170,10 @@ class TestAsyncLocking:
 
         for i in range(3):
             mock_conn = AsyncMock()
-            mock_conn.send = lambda d, wait_for_response=False, dev_id=i: mock_send_timed(
-                dev_id, d, wait_for_response
+            mock_conn.send = (
+                lambda d, wait_for_response=False, dev_id=i: mock_send_timed(
+                    dev_id, d, wait_for_response
+                )
             )
             mock_conn.is_async = Mock(return_value=True)
 

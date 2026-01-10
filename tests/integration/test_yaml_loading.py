@@ -11,7 +11,7 @@ Tests verify that all 22 device YAML files:
 import pytest
 
 from pyavcontrol.library.model import DeviceModel
-from pyavcontrol.library.yaml_library import _load_yaml_file, YAMLDeviceModelLibrarySync
+from pyavcontrol.library.yaml_library import YAMLDeviceModelLibrarySync, _load_yaml_file
 
 # Known problematic YAML files to skip in certain tests
 # TODO: Fix these YAML files or update tests when fixed

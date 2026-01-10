@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import re
 
 from pyavcontrol.library.model import DeviceModel
 

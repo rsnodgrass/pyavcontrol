@@ -6,12 +6,13 @@ import logging
 from typing import TYPE_CHECKING
 
 from pyavcontrol.client.base import DeviceClient
-from pyavcontrol.connection import DeviceConnection
 from pyavcontrol.connection.sync_connection import synchronized
-from pyavcontrol.library.model import DeviceModel
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+
+    from pyavcontrol.connection import DeviceConnection
+    from pyavcontrol.library.model import DeviceModel
 
 LOG = logging.getLogger(__name__)
 

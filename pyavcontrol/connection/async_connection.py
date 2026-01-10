@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import logging
 import asyncio
 import functools
-import logging
-import time
 from functools import wraps
+import time
 from typing import TYPE_CHECKING, Any
 
 from ratelimit import limits
@@ -34,11 +34,11 @@ class AsyncDeviceConnection(DeviceConnection):
     """
 
     __slots__ = (
-        '_url',
         '_connection_config',
-        '_legacy_connection',
-        '_event_loop',
         '_encoding',
+        '_event_loop',
+        '_legacy_connection',
+        '_url',
     )
 
     def __init__(
@@ -99,6 +99,7 @@ class AsyncDeviceConnection(DeviceConnection):
 
         Automatically attempts reconnection if not connected.
         """
+
         @wraps(method)
         async def wrapper(
             self: AsyncDeviceConnection, *args: Any, **kwargs: Any
@@ -147,18 +148,18 @@ class RS232ControlProtocol(asyncio.Protocol):
     """
 
     __slots__ = (
-        '_url',
         '_config',
+        '_connected',
         '_connection_config',
-        '_loop',
         '_encoding',
-        '_min_time_between_commands',
         '_last_send',
+        '_lock',
+        '_loop',
+        '_min_time_between_commands',
+        '_queue',
         '_timeout',
         '_transport',
-        '_connected',
-        '_queue',
-        '_lock',
+        '_url',
     )
 
     def __init__(
@@ -274,6 +275,7 @@ class RS232ControlProtocol(asyncio.Protocol):
             return bytes(data)
 
         except TimeoutError:
+
             @limits(calls=2, period=ONE_MINUTE)
             def log_timeout() -> None:
                 LOG.info(

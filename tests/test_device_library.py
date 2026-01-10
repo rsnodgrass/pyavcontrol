@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from pyavcontrol import DeviceModelLibrary
 from pyavcontrol.library.base import DeviceModelSummary, filter_models_by_regex
 from pyavcontrol.library.yaml_library import YAMLDeviceModelLibrarySync

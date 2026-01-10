@@ -20,7 +20,9 @@ def extract_named_regex(text: str) -> dict[str, str]:
     Returns:
         Dictionary mapping group names to their regex patterns.
     """
-    return {m.group('name'): m.group('regex') for m in NAMED_REGEX_PATTERN.finditer(text)}
+    return {
+        m.group('name'): m.group('regex') for m in NAMED_REGEX_PATTERN.finditer(text)
+    }
 
 
 def missing_keys_in_dict(required_keys: list[str], d: dict[str, Any]) -> list[str]:

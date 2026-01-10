@@ -160,7 +160,7 @@ class YAMLDeviceModelLibraryAsync(DeviceModelLibraryBase):
     Wraps synchronous library for async contexts using thread executor.
     """
 
-    __slots__ = ('_loop', '_dirs', '_executor', '_sync')
+    __slots__ = ('_dirs', '_executor', '_loop', '_sync')
 
     def __init__(self, library_dirs: list[str], event_loop: AbstractEventLoop) -> None:
         """

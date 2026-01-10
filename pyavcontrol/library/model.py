@@ -19,7 +19,7 @@ class DeviceModel:
     connection parameters.
     """
 
-    __slots__ = ('_model_id', '_definition')
+    __slots__ = ('_definition', '_model_id')
 
     def __init__(
         self,

@@ -17,9 +17,7 @@ from pyavcontrol.library.model import DeviceModel
 class TestDeviceClientCreation:
     """Test DeviceClient factory method."""
 
-    def test_create_sync_client(
-        self, sample_device_definition: dict[str, Any]
-    ) -> None:
+    def test_create_sync_client(self, sample_device_definition: dict[str, Any]) -> None:
         """Test creating a synchronous client."""
         model = DeviceModel('test_device', sample_device_definition)
         connection = NullConnection()
@@ -72,7 +70,7 @@ class TestDeviceClientCreation:
         client = DeviceClient.create(model, connection)
 
         # power group should have on and off methods
-        power_group = getattr(type(client), 'power')
+        power_group = type(client).power
         assert hasattr(power_group, 'on')
         assert hasattr(power_group, 'off')
 
@@ -92,9 +90,7 @@ class TestDeviceClientSync:
         assert result == b'OK\r'
         mock_conn.send.assert_called_once()
 
-    def test_register_callback(
-        self, sample_device_definition: dict[str, Any]
-    ) -> None:
+    def test_register_callback(self, sample_device_definition: dict[str, Any]) -> None:
         """Test registering a callback."""
         model = DeviceModel('test_device', sample_device_definition)
         mock_conn = Mock()
@@ -122,9 +118,7 @@ class TestDeviceClientAsync:
     """Test asynchronous client functionality."""
 
     @pytest.mark.asyncio
-    async def test_send_raw(
-        self, sample_device_definition: dict[str, Any]
-    ) -> None:
+    async def test_send_raw(self, sample_device_definition: dict[str, Any]) -> None:
         """Test sending raw data through async client."""
         import asyncio
 
@@ -179,9 +173,7 @@ class TestDeviceClientAsync:
 class TestClientEncoding:
     """Test encoding handling."""
 
-    def test_default_encoding(
-        self, sample_device_definition: dict[str, Any]
-    ) -> None:
+    def test_default_encoding(self, sample_device_definition: dict[str, Any]) -> None:
         """Test default ASCII encoding."""
         model = DeviceModel('test_device', sample_device_definition)
         connection = NullConnection()

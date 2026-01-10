@@ -29,9 +29,7 @@ from pyavcontrol.const import (
 
 # type aliases for serial configuration
 ByteSizeType = Literal[FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS]
-ParityType = Literal[
-    PARITY_NONE, PARITY_EVEN, PARITY_ODD, PARITY_MARK, PARITY_SPACE
-]
+ParityType = Literal[PARITY_NONE, PARITY_EVEN, PARITY_ODD, PARITY_MARK, PARITY_SPACE]
 StopBitsType = Literal[STOPBITS_ONE, STOPBITS_ONE_POINT_FIVE, STOPBITS_TWO]
 BaudRateType = Literal[
     2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000

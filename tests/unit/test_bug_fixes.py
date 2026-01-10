@@ -12,8 +12,6 @@ from __future__ import annotations
 
 import re
 
-import pytest
-
 from pyavcontrol.library.base import DeviceModelSummary, filter_models_by_regex
 from pyavcontrol.utils import missing_keys_in_dict
 

@@ -7,8 +7,8 @@ from functools import wraps
 from threading import RLock
 from typing import TYPE_CHECKING, Any
 
-import serial
 from ratelimit import limits
+import serial
 
 from pyavcontrol.config import CONFIG
 from pyavcontrol.connection import DeviceConnection
@@ -29,10 +29,12 @@ def synchronized(func: Callable[..., Any]) -> Callable[..., Any]:
 
     Ensures thread-safe access to serial port operations.
     """
+
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         with _sync_lock:
             return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -45,13 +47,13 @@ class SyncDeviceConnection(DeviceConnection):
     """
 
     __slots__ = (
-        '_url',
+        '_clear_before_new_commands',
         '_connection_config',
         '_encoding',
         '_eol',
         '_min_time_between_commands',
-        '_clear_before_new_commands',
         '_port',
+        '_url',
     )
 
     def __init__(self, url: str, connection_config: dict[str, Any]) -> None:
@@ -112,6 +114,7 @@ class SyncDeviceConnection(DeviceConnection):
         Raises:
             serial.SerialTimeoutException: If response times out
         """
+
         @limits(calls=1, period=self._min_time_between_commands)
         def write_rate_limited(data_bytes: bytes) -> None:
             LOG.debug(f'>> {self._url}: %s', data_bytes)

@@ -2,17 +2,18 @@
 
 from __future__ import annotations
 
-import asyncio
 import logging
-from typing import TYPE_CHECKING, Any
+import asyncio
+from typing import TYPE_CHECKING
 
 from pyavcontrol.client.base import DeviceClient
-from pyavcontrol.connection import DeviceConnection
-from pyavcontrol.library.model import DeviceModel
 
 if TYPE_CHECKING:
     from asyncio import AbstractEventLoop
     from collections.abc import Callable
+
+    from pyavcontrol.connection import DeviceConnection
+    from pyavcontrol.library.model import DeviceModel
 
 LOG = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ class DeviceClientAsync(DeviceClient):
     per-device while allowing concurrent operations across devices.
     """
 
-    __slots__ = ('_loop', '_callback', '_lock')
+    __slots__ = ('_callback', '_lock', '_loop')
 
     def __init__(
         self,

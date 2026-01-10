@@ -4,9 +4,7 @@ from __future__ import annotations
 
 from unittest.mock import Mock, patch
 
-import pytest
-
-from pyavcontrol.connection import Connection, DeviceConnection, NullConnection
+from pyavcontrol.connection import Connection, NullConnection
 
 
 class TestNullConnection:
@@ -63,9 +61,7 @@ class TestConnectionFactory:
 
         loop = asyncio.new_event_loop()
         try:
-            with patch(
-                'pyavcontrol.connection.async_connection.asyncio.create_task'
-            ):
+            with patch('pyavcontrol.connection.async_connection.asyncio.create_task'):
                 conn = Connection.create(
                     '/dev/ttyUSB0', {'baudrate': 9600}, event_loop=loop
                 )

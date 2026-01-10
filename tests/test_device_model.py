@@ -4,15 +4,15 @@ from __future__ import annotations
 
 from typing import Any
 
-import pytest
-
 from pyavcontrol.library.model import DeviceModel
 
 
 class TestDeviceModel:
     """Test DeviceModel class functionality."""
 
-    def test_valid_model_creation(self, sample_device_definition: dict[str, Any]) -> None:
+    def test_valid_model_creation(
+        self, sample_device_definition: dict[str, Any]
+    ) -> None:
         """Test creating a valid DeviceModel."""
         model = DeviceModel('test_device', sample_device_definition)
 
@@ -20,7 +20,9 @@ class TestDeviceModel:
         assert model.definition == sample_device_definition
         assert model.encoding == 'ascii'
 
-    def test_model_info_property(self, sample_device_definition: dict[str, Any]) -> None:
+    def test_model_info_property(
+        self, sample_device_definition: dict[str, Any]
+    ) -> None:
         """Test accessing model info."""
         model = DeviceModel('test_device', sample_device_definition)
 
