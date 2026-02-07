@@ -7,6 +7,11 @@
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
 
+> **Note: This repository has been superseded by [avprotocol](https://github.com/rsnodgrass/avprotocol).**
+> The v2 rewrite in avprotocol produces the same `pyavcontrol` package (1.0.0+) with a new API,
+> 448+ device protocol definitions, YAML inheritance, and a 6-layer documentation model.
+> All new protocol work and features should be contributed there.
+
 Library created to control a wide variety of A/V equipment which expose text-based control
 protocols over RS232, USB serial connections, and/or remote IP sockets.
 
